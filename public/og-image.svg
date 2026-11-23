@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="ogSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#DEE9F5" />
+      <stop offset="45%" stop-color="#FFF9F6" />
+      <stop offset="85%" stop-color="#F7E4E1" />
+      <stop offset="100%" stop-color="#F2D5D8" />
+    </linearGradient>
+    <radialGradient id="ogGlow" cx="50%" cy="35%" r="45%">
+      <stop offset="0%" stop-color="#FFF5D6" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#F1D98B" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#FFF9F6" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ogGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B8913A" />
+      <stop offset="50%" stop-color="#F1D98B" />
+      <stop offset="100%" stop-color="#B8913A" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#ogSky)" />
+  <circle cx="600" cy="240" r="320" fill="url(#ogGlow)" />
+
+  <!-- Borders -->
+  <rect x="30" y="30" width="1140" height="570" rx="24" fill="none" stroke="#C9A24B" stroke-width="1.8" stroke-opacity="0.5" />
+  <rect x="42" y="42" width="1116" height="546" rx="18" fill="none" stroke="#C9A24B" stroke-width="0.8" stroke-dasharray="6,6" stroke-opacity="0.4" />
+
+  <!-- Content -->
+  <text x="600" y="140" font-family="'Cinzel', serif" font-size="20" letter-spacing="8" fill="#8D6B26" text-anchor="middle" font-weight="600">THE WEDDING CELEBRATION OF</text>
+  
+  <text x="600" y="270" font-family="'Pinyon Script', cursive" font-size="120" fill="url(#ogGold)" text-anchor="middle">Amaani &amp; Rayyan</text>
+
+  <line x1="420" y1="330" x2="780" y2="330" stroke="#C9A24B" stroke-width="1.2" stroke-opacity="0.6" />
+  <circle cx="600" cy="330" r="4" fill="#B8913A" />
+
+  <text x="600" y="400" font-family="'Cinzel', serif" font-size="24" letter-spacing="6" fill="#4E3E37" text-anchor="middle">12 OCTOBER 2026</text>
+  <text x="600" y="445" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-size="26" fill="#8A7468" text-anchor="middle">Rose Valley Estate · Nowra Hills</text>
+
+  <text x="600" y="525" font-family="'Cinzel', serif" font-size="16" letter-spacing="5" fill="#8D6B26" text-anchor="middle">JOIN US FOR THE CELEBRATION</text>
+</svg>

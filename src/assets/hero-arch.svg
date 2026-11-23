@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goldArchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B8913A" />
+      <stop offset="50%" stop-color="#F1D98B" />
+      <stop offset="100%" stop-color="#B8913A" />
+    </linearGradient>
+    <linearGradient id="archFill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8F3" />
+      <stop offset="60%" stop-color="#F7E4E1" />
+      <stop offset="100%" stop-color="#E8B4B8" stop-opacity="0.5" />
+    </linearGradient>
+    <filter id="watercolorBlend">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+  <!-- Architectural Arch Shape -->
+  <path d="M 40 540 L 40 200 A 160 160 0 0 1 360 200 L 360 540 Z" fill="url(#archFill)" stroke="url(#goldArchGrad)" stroke-width="2.5" />
+  <path d="M 50 535 L 50 205 A 150 150 0 0 1 350 205 L 350 535 Z" fill="none" stroke="#C9A24B" stroke-width="0.8" stroke-dasharray="4,4" opacity="0.6" />
+  
+  <!-- Romantic floral/silhouette hint -->
+  <g opacity="0.25">
+    <circle cx="200" cy="240" r="60" fill="#E8B4B8" />
+    <circle cx="160" cy="300" r="70" fill="#BFD3EA" />
+    <circle cx="240" cy="310" r="75" fill="#CFC3DD" />
+  </g>
+  <text x="200" y="380" font-family="'Cinzel', serif" font-size="12" letter-spacing="4" fill="#8A7468" text-anchor="middle" opacity="0.7">CELEBRATING LOVE</text>
+</svg>
