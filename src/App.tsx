@@ -17,7 +17,6 @@ import { SectionCountdown } from './components/sections/SectionCountdown';
 import { SectionRSVP } from './components/sections/SectionRSVP';
 import { SectionOurStory } from './components/sections/SectionOurStory';
 import { SectionGallery } from './components/sections/SectionGallery';
-import { SectionCompliments } from './components/sections/SectionCompliments';
 import { SectionClosing } from './components/sections/SectionClosing';
 
 export const App: React.FC = () => {
@@ -173,12 +172,7 @@ export const App: React.FC = () => {
 
         <LaceDivider />
 
-        {/* 11. With Best Compliments family list */}
-        <SectionCompliments />
-
-        <LaceDivider variant="subtle" />
-
-        {/* 12. Closing blessing + footer credit */}
+        {/* 11. Closing blessing + footer credit */}
         <SectionClosing />
       </main>
     </div>
