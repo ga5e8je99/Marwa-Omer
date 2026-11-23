@@ -11,7 +11,6 @@ import { AudioPlayer } from './components/common/AudioPlayer';
 // Sections in order
 import { SectionEnvelopeIntro } from './components/sections/SectionEnvelopeIntro';
 import { SectionHero } from './components/sections/SectionHero';
-import { SectionSaveTheDate } from './components/sections/SectionSaveTheDate';
 import { SectionEventCards } from './components/sections/SectionEventCards';
 import { SectionLocation } from './components/sections/SectionLocation';
 import { SectionCountdown } from './components/sections/SectionCountdown';
@@ -148,12 +147,7 @@ export const App: React.FC = () => {
 
         <LaceDivider />
 
-        {/* 3. Save the Date interactive scratch-to-reveal */}
-        <SectionSaveTheDate />
-
-        <LaceDivider variant="subtle" />
-
-        {/* 4. Wedding Event Cards (Comprehensive details for Mehndi, Nikkah, Walima) */}
+        {/* 3. Wedding Event Cards (Comprehensive details for Mehndi, Nikkah, Walima) */}
         <SectionEventCards />
 
         <LaceDivider variant="subtle" />
