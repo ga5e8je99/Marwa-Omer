@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -47,7 +47,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#1E1815] text-[#4E3E37] antialiased selection:bg-rose/40 selection:text-taupe-dark">
+      <body
+        suppressHydrationWarning
+        className="bg-[#1E1815] text-[#4E3E37] antialiased selection:bg-rose/40 selection:text-taupe-dark"
+      >
         {children}
       </body>
     </html>
