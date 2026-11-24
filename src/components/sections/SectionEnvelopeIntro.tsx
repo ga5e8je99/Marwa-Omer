@@ -126,74 +126,74 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             </div>
           </div>
 
-          {/* 2. THE WEDDING INVITATION CARD (Layer 2 - slides out of envelope!) */}
+          {/* 2. THE WEDDING INVITATION CARD (Layer 2: tucked neatly inside, glides UP out of the envelope!) */}
           <motion.div
-            initial={{ y: 25, scale: 0.96 }}
+            initial={{ y: 0, scale: 0.98 }}
             animate={
               isCardExpanding
                 ? {
-                  y: -110,
-                  scale: 1.15,
-                  opacity: 0,
-                  transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
-                }
+                    y: -100,
+                    scale: 1.15,
+                    opacity: 0,
+                    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+                  }
                 : isCardRising
-                  ? {
-                    y: -190,
+                ? {
+                    y: -120,
                     scale: 1.02,
                     opacity: 1,
                     transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
                   }
-                  : { y: 25, scale: 0.96, opacity: 1 }
+                : { y: 0, scale: 0.98, opacity: 1 }
             }
-            className={`absolute left-3 right-3 top-2 h-[340px] sm:h-[360px] rounded-2xl bg-cream border-2 border-gold/60 shadow-2xl p-5 flex flex-col items-center justify-between overflow-hidden cursor-pointer ${isCardRising ? 'z-35' : 'z-15'
-              }`}
+            className="absolute left-3.5 right-3.5 top-3.5 h-[215px] sm:h-[230px] rounded-xl bg-cream border border-gold/60 shadow-xl p-4 flex flex-col items-center justify-between overflow-hidden cursor-pointer"
             style={{
               backgroundImage: 'radial-gradient(circle at 50% 30%, #FFFFFF 0%, #FFF8F3 60%, #FAECE1 100%)',
+              zIndex: isCardExpanding ? 50 : 20,
             }}
           >
             {/* Fine Inner Gold Border */}
-            <div className="absolute inset-2 rounded-xl border border-gold/30 pointer-events-none" />
+            <div className="absolute inset-1.5 rounded-lg border border-gold/30 pointer-events-none" />
 
             {/* Top: Quranic Verse Preview */}
-            <div className="text-center pt-2 z-10">
-              <span className="font-amiri text-xs text-taupe-dark tracking-wide block">
+            <div className="text-center pt-1 z-10">
+              <span className="font-amiri text-[11px] text-taupe-dark tracking-wide block">
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </span>
-              <p className="font-serif italic text-[10px] text-taupe/80 mt-1 max-w-[240px] mx-auto leading-tight">
+              <p className="font-serif italic text-[9px] text-taupe/80 mt-0.5 max-w-[240px] mx-auto leading-tight">
                 "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا"
               </p>
             </div>
 
             {/* Center: Grand Couple Names */}
             <div className="text-center my-auto z-10 flex flex-col items-center">
-              <span className="font-cinzel text-[9px] tracking-loose-tracked text-gold uppercase block mb-1">
+              <span className="font-cinzel text-[8px] tracking-loose-tracked text-gold uppercase block mb-0.5">
                 TOGETHER WITH THEIR FAMILIES
               </span>
-              <h2 className="font-script text-4xl sm:text-5xl text-gold-gradient py-1">
+              <h2 className="font-script text-3xl sm:text-4xl text-gold-gradient py-0.5">
                 {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
               </h2>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cream/80 border border-gold/40 shadow-2xs mt-2">
-                <Sparkles className="w-3 h-3 text-gold" />
-                <span className="font-cinzel text-[9px] tracking-wider text-taupe-dark uppercase font-semibold">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cream/80 border border-gold/40 shadow-2xs mt-1">
+                <Sparkles className="w-2.5 h-2.5 text-gold" />
+                <span className="font-cinzel text-[8px] tracking-wider text-taupe-dark uppercase font-semibold">
                   MONDAY, 12TH OF OCTOBER 2026
                 </span>
               </div>
             </div>
 
-            {/* Bottom: Couple Illustration Thumbnail & Venue */}
-            <div className="w-full text-center pb-2 z-10 flex flex-col items-center">
-              <p className="font-cinzel text-[9px] tracking-wider text-taupe/80 uppercase">
+            {/* Bottom: Venue & Invitation prompt */}
+            <div className="w-full text-center pb-1 z-10 flex flex-col items-center">
+              <p className="font-cinzel text-[8px] tracking-wider text-taupe/80 uppercase">
                 {INVITATION_DATA.venue.address}
               </p>
-              <div className="w-12 h-[1px] bg-gold/40 mt-1 mb-1.5" />
-              <span className="font-serif italic text-[10px] text-gold-dark">
-                Tap to enter the celebration ✦
+              <div className="w-10 h-[1px] bg-gold/40 mt-0.5 mb-1" />
+              <span className="font-serif italic text-[9px] text-gold-dark">
+                Wedding Invitation ✦ دعوة زفاف
               </span>
             </div>
 
             {/* Background subtle watermark couple cartoon */}
-            <div className="absolute bottom-0 right-0 w-32 h-32 opacity-15 pointer-events-none">
+            <div className="absolute -bottom-2 -right-2 w-24 h-24 opacity-15 pointer-events-none">
               <img
                 src={ASSETS.coupleCartoon}
                 alt=""
@@ -270,11 +270,11 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             initial={{ rotateX: 0 }}
             animate={isFlapOpen ? { rotateX: -180 } : { rotateX: 0 }}
             transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
-            className={`absolute top-0 left-0 right-0 h-[135px] pointer-events-none origin-top ${isFlapOpen ? 'z-5' : 'z-40'
-              }`}
+            className="absolute top-0 left-0 right-0 h-[135px] pointer-events-none origin-top"
             style={{
               transformStyle: 'preserve-3d',
               willChange: 'transform',
+              zIndex: isFlapOpen ? 5 : 40,
             }}
           >
             {/* Front of Flap (pointing down when closed) */}
@@ -346,21 +346,19 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
           </motion.div>
 
           {/* 5. GOLDEN WAX SEAL (Centered at flap tip, pops/fades when opened) */}
-          <AnimatePresence>
-            {!isFlapOpen && (
-              <motion.div
-                initial={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 1.25, opacity: 0, y: -10 }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
-                className="absolute z-50 pointer-events-auto cursor-pointer"
-                style={{
-                  top: '125px',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                }}
-              >
-                {/* 3D Wax Seal with Arabic Bismillah */}
-                <div className="relative w-20 h-20 flex items-center justify-center filter drop-shadow-[0_8px_16px_rgba(70,30,8,0.45)] group">
+          <div
+            className="absolute left-1/2 -translate-x-1/2 z-50 pointer-events-auto cursor-pointer"
+            style={{ top: '90px', width: '80px', height: '80px' }}
+            onClick={handleOpen}
+          >
+            <AnimatePresence>
+              {!isFlapOpen && (
+                <motion.div
+                  initial={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 1.25, opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  className="w-full h-full flex items-center justify-center filter drop-shadow-[0_8px_16px_rgba(70,30,8,0.45)] group"
+                >
                   {/* Organic Gold Seal SVG */}
                   <svg
                     viewBox="0 0 80 80"
@@ -422,10 +420,10 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                       الرَّحِيمِ
                     </text>
                   </svg>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
 
         {/* 6. "TAP TO OPEN" Call to action */}
