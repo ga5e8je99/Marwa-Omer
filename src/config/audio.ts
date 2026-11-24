@@ -50,7 +50,7 @@ export async function fetchServerMusicConfig(): Promise<number> {
         if (typeof window !== 'undefined') {
           try {
             localStorage.setItem('wedding_music_start_time', String(cachedStartTime));
-          } catch {}
+          } catch { }
         }
         return cachedStartTime;
       }
@@ -66,7 +66,7 @@ export async function updateMusicStartTime(seconds: number): Promise<boolean> {
   if (typeof window !== 'undefined') {
     try {
       localStorage.setItem('wedding_music_start_time', String(seconds));
-    } catch {}
+    } catch { }
   }
 
   try {

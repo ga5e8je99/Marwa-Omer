@@ -96,7 +96,7 @@ export default function DashboardPage() {
       setPinError('');
       try {
         localStorage.setItem('wedding_couple_authenticated', 'true');
-      } catch {}
+      } catch { }
     } else {
       setPinError('رمز الدخول غير صحيح، جرب سنة الفرح (2027)');
       setPinInput('');
@@ -107,7 +107,7 @@ export default function DashboardPage() {
     setIsAuthenticated(false);
     try {
       localStorage.removeItem('wedding_couple_authenticated');
-    } catch {}
+    } catch { }
   };
 
   // Filtered list
@@ -121,8 +121,8 @@ export default function DashboardPage() {
         activeFilter === 'all'
           ? true
           : activeFilter === 'yes'
-          ? item.attending === 'yes'
-          : item.attending === 'no';
+            ? item.attending === 'yes'
+            : item.attending === 'no';
 
       return matchesSearch && matchesFilter;
     });
@@ -172,7 +172,7 @@ export default function DashboardPage() {
     if (previewAudioRef.current) {
       previewAudioRef.current.currentTime = seconds;
       if (!isPlayingPreview) {
-        previewAudioRef.current.play().then(() => setIsPlayingPreview(true)).catch(() => {});
+        previewAudioRef.current.play().then(() => setIsPlayingPreview(true)).catch(() => { });
       }
     }
   };
@@ -183,7 +183,7 @@ export default function DashboardPage() {
       await updateMusicStartTime(startTimeInput);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2500);
-    } catch {}
+    } catch { }
   };
 
   // Delete wish
@@ -444,11 +444,10 @@ export default function DashboardPage() {
                       key={preset.seconds}
                       type="button"
                       onClick={() => handleSelectPreset(preset.seconds)}
-                      className={`px-2.5 py-1 text-xs rounded-full border transition-all cursor-pointer font-medium ${
-                        startTimeInput === preset.seconds
-                          ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
-                          : 'bg-white text-taupe border-gold/40 hover:border-gold'
-                      }`}
+                      className={`px-2.5 py-1 text-xs rounded-full border transition-all cursor-pointer font-medium ${startTimeInput === preset.seconds
+                        ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
+                        : 'bg-white text-taupe border-gold/40 hover:border-gold'
+                        }`}
                     >
                       {preset.timeStr} • {preset.label}
                     </button>
@@ -544,31 +543,28 @@ export default function DashboardPage() {
             <div className="flex items-center gap-1 bg-white/80 p-1 rounded-full border border-gold/30 shadow-xs">
               <button
                 onClick={() => setActiveFilter('all')}
-                className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
-                  activeFilter === 'all'
-                    ? 'bg-[#78550E] text-white shadow-xs'
-                    : 'text-taupe hover:text-[#78550E]'
-                }`}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${activeFilter === 'all'
+                  ? 'bg-[#78550E] text-white shadow-xs'
+                  : 'text-taupe hover:text-[#78550E]'
+                  }`}
               >
                 الكل ({items.length})
               </button>
               <button
                 onClick={() => setActiveFilter('yes')}
-                className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
-                  activeFilter === 'yes'
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'text-taupe hover:text-emerald-800'
-                }`}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${activeFilter === 'yes'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'text-taupe hover:text-emerald-800'
+                  }`}
               >
                 جايين ({stats.attendingCount})
               </button>
               <button
                 onClick={() => setActiveFilter('no')}
-                className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
-                  activeFilter === 'no'
-                    ? 'bg-rose-700 text-white shadow-xs'
-                    : 'text-taupe hover:text-rose-800'
-                }`}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${activeFilter === 'no'
+                  ? 'bg-rose-700 text-white shadow-xs'
+                  : 'text-taupe hover:text-rose-800'
+                  }`}
               >
                 اعتذار ({stats.declinedCount})
               </button>
