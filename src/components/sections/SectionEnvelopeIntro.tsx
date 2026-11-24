@@ -1,50 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useAnimate, useReducedMotion } from 'framer-motion';
+'use client';
+
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
+import { INVITATION_DATA } from '../../data/invitation';
 import { ASSETS } from '../../config/assets';
-
-/**
- * ENVELOPE_TIMINGS
- * Master timeline constants for the cinematic opening sequence (total duration: 4.2s)
- */
-export const ENVELOPE_TIMINGS = {
-  totalDuration: 4.2, // Total sequence duration in seconds
-
-  // 0.00 - 0.45s: Wax Seal scales and fades with upward drift; TAP TO OPEN fades
-  sealStart: 0.0,
-  sealDuration: 0.45,
-  sealScale: 1.12,
-  sealDriftY: -8,
-  tapFadeDuration: 0.25,
-
-  // 0.30 - 1.40s: White lace V slides/retracts toward the tip (195, 422)
-  laceStart: 0.3,
-  laceDuration: 1.1, // 0.30 to 1.40s
-  laceEndScale: 0.25,
-
-  // 1.20 - 2.10s: Envelope group camera zoom-in toward folds center
-  zoomStart: 1.2,
-  zoomDuration: 0.9, // 1.20 to 2.10s
-  zoomScale: 2.2,
-  zoomEase: [0.65, 0, 0.35, 1], // cubic-bezier(0.65, 0, 0.35, 1)
-
-  // 1.90 - 2.60s: Warm white light flash overlay & soft bloom
-  flashStart: 1.9,
-  flashFadeInDuration: 0.45, // reaches peak at 2.35s
-  flashHoldDuration: 0.1, // peak hold 2.35s to 2.45s
-  flashFadeOutStart: 2.6,
-  flashFadeOutDuration: 0.9, // 2.60s to 3.50s
-
-  // 2.30 - 3.70s: Hero Reveal & settle
-  revealTime: 2.3, // unmount envelope, trigger hero reveal
-  heroSettleDuration: 1.4, // 2.30s to 3.70s
-
-  // 2.60 - 4.20s: Hero choreography (staggered text, sun flare, doves)
-  heroChoreographyStart: 2.6,
-  staggerInterval: 0.25,
-
-  // 4.20s: Complete sequence & unlock scroll
-  scrollUnlockTime: 4.2,
-};
 
 interface SectionEnvelopeIntroProps {
   onOpenStart?: () => void;
@@ -57,546 +17,440 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
   onRevealHero,
   onOpenComplete,
 }) => {
-  const [scope, animate] = useAnimate();
-  const [envelopeHidden, setEnvelopeHidden] = useState(false);
+  // Phases: 'closed' -> 'opening' (flap flips up) -> 'rising' (card comes out) -> 'expanding' (card becomes page) -> 'done'
+  const [phase, setPhase] = useState<'closed' | 'opening' | 'rising' | 'expanding' | 'done'>('closed');
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const interactionLockRef = useRef(false);
 
-  const hasTriggeredRef = useRef(false);
-  const shouldReduceMotion = useReducedMotion();
-
-  // Preload Hero background and assets on mount
-  useEffect(() => {
-    const img = new Image();
-    img.src = ASSETS.heroBg;
-  }, []);
-
-  // Hard scroll lock on iOS Safari & mobile touch devices
+  // Prevent scroll during envelope phase
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
-      if (e.cancelable) {
-        e.preventDefault();
-      }
+      if (e.cancelable) e.preventDefault();
     };
-
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     return () => {
       document.removeEventListener('touchmove', handleTouchMove);
     };
   }, []);
 
-  // Master Cinematic Timeline
-  const handleEnvelopeTap = () => {
-    // Skip safety: if user taps again during animation, ignore it
-    if (hasTriggeredRef.current) return;
-    hasTriggeredRef.current = true;
+  const handleOpen = () => {
+    if (interactionLockRef.current) return;
+    interactionLockRef.current = true;
+    setHasInteracted(true);
 
-    // 0.00s: Start music immediately
+    // 1. Start audio immediately
     if (onOpenStart) {
       onOpenStart();
     }
 
-    // Prefers-reduced-motion fallback: plain 0.6s crossfade
-    if (shouldReduceMotion) {
-      animate(scope.current, { opacity: 0 }, { duration: 0.6 }).then(() => {
-        if (onRevealHero) onRevealHero();
-        if (onOpenComplete) onOpenComplete();
-      });
-      return;
-    }
+    // Phase 1: Flap flips open in 3D (0.0s - 0.7s)
+    setPhase('opening');
 
-    // ==========================================
-    // MASTER TIMELINE CHOREOGRAPHY (Total 4.2s)
-    // ==========================================
-
-    // 0.00–0.45s: SEAL & TAP TO OPEN
-    animate(
-      '#tapToOpenText',
-      { opacity: 0 },
-      { duration: ENVELOPE_TIMINGS.tapFadeDuration, ease: 'easeOut' }
-    );
-    animate(
-      '#waxSealGroup',
-      { scale: ENVELOPE_TIMINGS.sealScale, opacity: 0, y: ENVELOPE_TIMINGS.sealDriftY },
-      { duration: ENVELOPE_TIMINGS.sealDuration, ease: 'easeOut' }
-    );
-
-    // 0.30–1.40s: LACE retracts toward the tip (195, 422), scaling to ~0.25 and fading
+    // Phase 2: Card rises up out of envelope pocket (0.65s - 1.6s)
     setTimeout(() => {
-      animate(
-        '#laceWings',
-        { scale: ENVELOPE_TIMINGS.laceEndScale, opacity: 0 },
-        { duration: ENVELOPE_TIMINGS.laceDuration, ease: [0.4, 0, 0.2, 1] }
-      );
-    }, ENVELOPE_TIMINGS.laceStart * 1000);
+      setPhase('rising');
+    }, 650);
 
-    // 1.20–2.10s: ZOOM-IN envelope group 1 -> 2.2 with transform-origin at the tip
+    // Phase 3: Card expands to fill screen & envelope fades out (1.6s - 2.6s)
     setTimeout(() => {
-      animate(
-        '#envelopeZoomGroup',
-        { scale: ENVELOPE_TIMINGS.zoomScale },
-        { duration: ENVELOPE_TIMINGS.zoomDuration, ease: [0.65, 0, 0.35, 1] }
-      );
-      // Tassel ornament fades out during zoom
-      animate(
-        '#tipLeafOrnament',
-        { opacity: 0 },
-        { duration: ENVELOPE_TIMINGS.zoomDuration * 0.7, ease: 'easeOut' }
-      );
-    }, ENVELOPE_TIMINGS.zoomStart * 1000);
-
-    // 1.90–2.60s: Warm white light FLASH overlay & soft bloom
-    setTimeout(() => {
-      // Soft bloom scaling 0.2 -> 3
-      animate(
-        '#flashBloom',
-        { scale: [0.2, 3], opacity: [0, 1] },
-        { duration: ENVELOPE_TIMINGS.flashFadeInDuration, ease: 'easeIn' }
-      );
-      // Radial warm white light fading 0 -> 1
-      animate(
-        '#flashRadial',
-        { opacity: [0, 1] },
-        { duration: ENVELOPE_TIMINGS.flashFadeInDuration, ease: 'easeIn' }
-      );
-    }, ENVELOPE_TIMINGS.flashStart * 1000);
-
-    // 2.30s: REVEAL Hero at flash peak & unmount/hide envelope
-    setTimeout(() => {
-      setEnvelopeHidden(true);
+      setPhase('expanding');
       if (onRevealHero) {
         onRevealHero();
       }
-    }, ENVELOPE_TIMINGS.revealTime * 1000);
+    }, 1650);
 
-    // 2.60–3.50s: Flash overlay fades out 1 -> 0 over 0.9s
+    // Phase 4: Sequence complete & unmount envelope overlay (2.7s)
     setTimeout(() => {
-      animate(
-        '#flashRadial',
-        { opacity: 0 },
-        { duration: ENVELOPE_TIMINGS.flashFadeOutDuration, ease: 'easeOut' }
-      );
-      animate(
-        '#flashBloom',
-        { opacity: 0 },
-        { duration: ENVELOPE_TIMINGS.flashFadeOutDuration, ease: 'easeOut' }
-      );
-    }, ENVELOPE_TIMINGS.flashFadeOutStart * 1000);
-
-    // 4.20s: Complete sequence & unlock scroll
-    setTimeout(() => {
+      setPhase('done');
       if (onOpenComplete) {
         onOpenComplete();
       }
-    }, ENVELOPE_TIMINGS.scrollUnlockTime * 1000);
+    }, 2700);
   };
+
+  if (phase === 'done') return null;
+
+  const isFlapOpen = phase !== 'closed';
+  const isCardRising = phase === 'rising' || phase === 'expanding';
+  const isCardExpanding = phase === 'expanding';
 
   return (
     <div
-      ref={scope}
       id="envelope-intro-overlay"
-      onClick={handleEnvelopeTap}
-      className="fixed inset-0 z-50 w-full h-[100dvh] overflow-hidden select-none touch-none overscroll-none cursor-pointer"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Wedding Invitation Envelope"
+      className={`fixed inset-0 z-50 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none transition-colors duration-1000 ${isCardExpanding ? 'bg-cream' : 'bg-[#181311]'
+        }`}
+      style={{ perspective: '1400px' }}
+      onClick={handleOpen}
+      role="button"
+      tabIndex={0}
+      aria-label="Tap to open wedding invitation envelope"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') handleOpen();
+      }}
     >
-      {/* 1. Main Envelope SVG (Positioned edge-to-edge, hidden at 2.30s reveal) */}
-      {!envelopeHidden && (
-        <div
-          id="envelope-wrapper"
-          className="relative w-full h-full focus:outline-none"
-          role="button"
-          tabIndex={0}
-          aria-label="Tap to open the wedding invitation"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              handleEnvelopeTap();
-            }
-          }}
-        >
-          {/* ONE absolutely-positioned inline <svg> filling 100vw x 100dvh with viewBox="0 0 390 844" and preserveAspectRatio="xMidYMax slice" */}
-          <svg
-            id="envelope-svg"
-            viewBox="0 0 390 844"
-            preserveAspectRatio="xMidYMax slice"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full select-none"
-          >
-            <defs>
-              {/* Paper texture gradient (#F7DED7 top -> #F4D3CB bottom) */}
-              <linearGradient id="blushPaper" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#F7DED7" />
-                <stop offset="100%" stopColor="#F4D3CB" />
-              </linearGradient>
-
-              {/* Metallic Gold Gradients for Wax Seal centered at (195, 422) */}
-              <linearGradient id="goldMelt" x1="140" y1="370" x2="250" y2="475" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#F5DE88" />
-                <stop offset="20%" stopColor="#E2B344" />
-                <stop offset="46%" stopColor="#FAF0B4" />
-                <stop offset="74%" stopColor="#BA882A" />
-                <stop offset="100%" stopColor="#6E4407" />
-              </linearGradient>
-
-              <linearGradient id="goldRim" x1="160" y1="385" x2="230" y2="455" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#FFF9D6" />
-                <stop offset="35%" stopColor="#DFAC37" />
-                <stop offset="70%" stopColor="#FFECA1" />
-                <stop offset="100%" stopColor="#7A4C07" />
-              </linearGradient>
-
-              <radialGradient id="sealMatrix" cx="190" cy="416" r="44" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#D4A73B" />
-                <stop offset="65%" stopColor="#B88624" />
-                <stop offset="88%" stopColor="#8F6212" />
-                <stop offset="100%" stopColor="#5E3C05" />
-              </radialGradient>
-
-              <linearGradient id="calligraphyGold" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#FFF6C2" />
-                <stop offset="100%" stopColor="#D4A028" />
-              </linearGradient>
-
-              {/* Soft pink drop shadow for 3D embossed lace */}
-              <filter id="laceShadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#B4786E" floodOpacity="0.35" />
-              </filter>
-
-              {/* Wax Seal 3D Shadow */}
-              <filter id="sealShadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="8" stdDeviation="8" floodColor="#461E08" floodOpacity="0.4" />
-                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#260D04" floodOpacity="0.3" />
-              </filter>
-
-              {/* Paper Grain & Emboss Texture Filter */}
-              <filter id="paperGrain" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" result="noise" />
-                <feColorMatrix
-                  type="matrix"
-                  values="0 0 0 0 0.95   0 0 0 0 0.86   0 0 0 0 0.83  0 0 0 0.08 0"
-                  result="coloredNoise"
-                />
-                <feBlend mode="multiply" in="SourceGraphic" in2="coloredNoise" />
-              </filter>
-
-              {/* Gold Filigree Border Patterns */}
-              <pattern id="goldFiligreeV" width="14" height="28" patternUnits="userSpaceOnUse">
-                <path d="M 7,0 Q 1,7 7,14 Q 13,21 7,28" fill="none" stroke="#D4AE6A" strokeWidth="1.2" strokeOpacity="0.8" />
-                <circle cx="7" cy="7" r="1.4" fill="#D4AE6A" fillOpacity="0.85" />
-                <circle cx="7" cy="21" r="1.4" fill="#D4AE6A" fillOpacity="0.85" />
-                <path d="M 2,0 L 2,28" stroke="#D4AE6A" strokeWidth="0.8" strokeOpacity="0.7" strokeDasharray="2 3" />
-                <path d="M 12,0 L 12,28" stroke="#D4AE6A" strokeWidth="0.8" strokeOpacity="0.7" />
-              </pattern>
-
-              <pattern id="goldFiligreeH" width="28" height="14" patternUnits="userSpaceOnUse">
-                <path d="M 0,7 Q 7,1 14,7 Q 21,13 28,7" fill="none" stroke="#D4AE6A" strokeWidth="1.2" strokeOpacity="0.8" />
-                <circle cx="7" cy="7" r="1.4" fill="#D4AE6A" fillOpacity="0.85" />
-                <circle cx="21" cy="7" r="1.4" fill="#D4AE6A" fillOpacity="0.85" />
-                <path d="M 0,2 L 28,2" stroke="#D4AE6A" strokeWidth="0.8" strokeOpacity="0.7" />
-                <path d="M 0,12 L 28,12" stroke="#D4AE6A" strokeWidth="0.8" strokeOpacity="0.7" strokeDasharray="2 3" />
-              </pattern>
-            </defs>
-
-            {/* A. ENVELOPE ZOOM GROUP: scales 1 -> 2.2 with transform-origin at the tip (195, 422) */}
-            <g
-              id="envelopeZoomGroup"
-              style={{
-                transformOrigin: '195px 422px',
-                willChange: 'transform',
-              }}
-            >
-              {/* 1. Base Paper Rect */}
-              <rect x="0" y="0" width="390" height="844" fill="url(#blushPaper)" filter="url(#paperGrain)" />
-
-              {/* 2. Plain pink paper inside V */}
-              <polygon points="-20,-20 410,-20 195,422" fill="#F7E4E1" />
-
-              {/* 3. Lower flap fold lines meeting at (195, 422) */}
-              <g id="foldLinesGroup">
-                <line x1="0" y1="844" x2="195" y2="422" stroke="#E3B9B0" strokeWidth="1.2" />
-                <line x1="0" y1="843" x2="195" y2="421" stroke="#FFFFFF" strokeWidth="0.8" strokeOpacity="0.6" />
-                <line x1="390" y1="844" x2="195" y2="422" stroke="#E3B9B0" strokeWidth="1.2" />
-                <line x1="390" y1="843" x2="195" y2="421" stroke="#FFFFFF" strokeWidth="0.8" strokeOpacity="0.6" />
-              </g>
-
-              {/* 4. Gold Lace Border along left, right, bottom */}
-              <g id="goldBorderGroup">
-                <rect x="4" y="0" width="14" height="844" fill="url(#goldFiligreeV)" />
-                <rect x="372" y="0" width="14" height="844" fill="url(#goldFiligreeV)" />
-                <rect x="4" y="826" width="382" height="14" fill="url(#goldFiligreeH)" />
-              </g>
-
-              {/* 5. Tassel Leaf Ornament at the tip (stays while wings retract, fades during zoom) */}
-              <g
-                id="tipLeafOrnament"
-                transform="translate(195, 354)"
-                style={{ willChange: 'opacity' }}
-              >
-                <path
-                  d="M 0,-30 
-                     C 24,-24 35,-10 35,12
-                     C 35,32 22,50 12,58
-                     C 6,63 2,66 0,70
-                     C -2,66 -6,63 -12,58
-                     C -22,50 -35,32 -35,12
-                     C -35,-10 -24,-24 0,-30 Z"
-                  fill="#FFFFFF"
-                  stroke="#E6D3CB"
-                  strokeWidth="2.0"
-                />
-                <path
-                  d="M 0,-16 
-                     C 16,-10 24,-2 24,14
-                     C 24,28 15,40 8,48
-                     C 4,52 1,55 0,58
-                     C -1,55 -4,52 -8,48
-                     C -15,40 -24,28 -24,14
-                     C -24,-2 -16,-10 0,-16 Z"
-                  fill="#FDFBFA"
-                  stroke="#DBBEB2"
-                  strokeWidth="1.4"
-                />
-                <circle cx="0" cy="14" r="10" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="1.6" />
-                <circle cx="0" cy="14" r="6" fill="#F8EFEA" stroke="#B89486" strokeWidth="1.2" />
-                <circle cx="0" cy="14" r="2.5" fill="#FFFFFF" />
-
-                <circle cx="0" cy="73" r="2.4" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="1.0" />
-                <circle cx="0" cy="78" r="1.8" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="0.8" />
-                <circle cx="-28" cy="18" r="2.4" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="0.9" />
-                <circle cx="28" cy="18" r="2.4" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="0.9" />
-                <circle cx="-18" cy="42" r="2.0" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="0.8" />
-                <circle cx="18" cy="42" r="2.0" fill="#FFFFFF" stroke="#D1B2A3" strokeWidth="0.8" />
-              </g>
-            </g>
-
-            {/* B. LACE WINGS: retract toward the tip (195, 422), scale 1 -> 0.25 and fade */}
-            <g
-              id="laceWings"
-              filter="url(#laceShadow)"
-              style={{
-                transformOrigin: '195px 422px',
-                willChange: 'transform, opacity',
-              }}
-            >
-              {/* Left Lace Band (Centerline: (32, -10) to (195, 414), angle = 68.97 deg, length ~454.2) */}
-              <g id="singleLaceBand" transform="translate(32, -10) rotate(68.97)">
-                <path d="M 0,31 L 455,31" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" />
-                <path d="M 0,16 L 455,16" stroke="#F4EAE5" strokeWidth="1.3" strokeDasharray="3 2.5" />
-                <path d="M 0,-16 L 455,-16" stroke="#F4EAE5" strokeWidth="1.3" strokeDasharray="3 2.5" />
-                <path d="M 0,-31 L 455,-31" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" />
-
-                {/* 8 Dense Baroque Floral Lace Motifs */}
-                {[45, 102, 159, 216, 273, 330, 387, 430].map((x, idx) => (
-                  <g key={idx} transform={`translate(${x}, 0)`}>
-                    {/* Outer Scalloped Lace Arch (curves to y = +38) */}
-                    <path
-                      d="M -28,15 C -25,32 -14,38 0,38 C 14,38 25,32 28,15"
-                      fill="#FFFFFF"
-                      fillOpacity="0.98"
-                      stroke="#EFE5E0"
-                      strokeWidth="1.8"
-                    />
-                    {/* Picot Pearl Rim */}
-                    <circle cx="-22" cy="27" r="2.2" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-                    <circle cx="-12" cy="35" r="2.6" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-                    <circle cx="0" cy="38" r="3.2" fill="#FFFFFF" stroke="#CFB6AC" strokeWidth="1.2" />
-                    <circle cx="12" cy="35" r="2.6" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-                    <circle cx="22" cy="27" r="2.2" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-
-                    {/* Outer delicate dots */}
-                    <circle cx="-26" cy="20" r="1.3" fill="#EAD9D2" />
-                    <circle cx="-17" cy="32" r="1.4" fill="#EAD9D2" />
-                    <circle cx="-6" cy="37" r="1.4" fill="#EAD9D2" />
-                    <circle cx="6" cy="37" r="1.4" fill="#EAD9D2" />
-                    <circle cx="17" cy="32" r="1.4" fill="#EAD9D2" />
-                    <circle cx="26" cy="20" r="1.3" fill="#EAD9D2" />
-
-                    {/* Inward Scalloped Embroidery */}
-                    <path
-                      d="M -26,-15 C -22,-28 -12,-33 0,-33 C 12,-33 22,-28 26,-15"
-                      fill="#FFFFFF"
-                      fillOpacity="0.95"
-                      stroke="#EFE5E0"
-                      strokeWidth="1.4"
-                    />
-                    <circle cx="-15" cy="-28" r="1.6" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="0.8" />
-                    <circle cx="0" cy="-32" r="2.0" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="0.8" />
-                    <circle cx="15" cy="-28" r="1.6" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="0.8" />
-
-                    {/* Central Blooming Baroque Flower Rosette */}
-                    <path d="M 0,16 C -8,10 -10,2 0,-4 C 10,2 8,10 0,16 Z" fill="#FDFBF9" stroke="#DBBEB2" strokeWidth="1.2" />
-                    <path d="M -16,6 C -10,0 -4,5 0,-4 C -6,-10 -12,-6 -16,6 Z" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-                    <path d="M 16,6 C 10,0 4,5 0,-4 C 6,-10 12,-6 16,6 Z" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-                    <path d="M -12,-14 C -6,-9 -3,-4 0,-4 C -4,2 -9,1 -12,-14 Z" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-                    <path d="M 12,-14 C 6,-9 3,-4 0,-4 C 4,2 9,1 12,-14 Z" fill="#FFFFFF" stroke="#DECBC3" strokeWidth="1.0" />
-
-                    {/* Central pearl */}
-                    <circle cx="0" cy="0" r="5.0" fill="#FFFFFF" stroke="#C9A89A" strokeWidth="1.4" />
-                    <circle cx="0" cy="0" r="2.8" fill="#F8EFEA" stroke="#B89486" strokeWidth="1.0" />
-                    <circle cx="-1.0" cy="-1.0" r="1.2" fill="#FFFFFF" />
-
-                    {/* Acanthus scrolls & volutes */}
-                    <path
-                      d="M -26,-2 C -32,16 -16,24 -8,14 C 0,4 -14,-2 -26,-2 Z"
-                      fill="#FFFFFF"
-                      fillOpacity="0.9"
-                      stroke="#E5D1C9"
-                      strokeWidth="1.2"
-                    />
-                    <path
-                      d="M 26,-2 C 32,16 16,24 8,14 C 0,4 14,-2 26,-2 Z"
-                      fill="#FFFFFF"
-                      fillOpacity="0.9"
-                      stroke="#E5D1C9"
-                      strokeWidth="1.2"
-                    />
-
-                    {/* Tulle mesh eyelets */}
-                    <circle cx="-12" cy="18" r="1.4" fill="#DEC7BD" />
-                    <circle cx="12" cy="18" r="1.4" fill="#DEC7BD" />
-                    <circle cx="-6" cy="26" r="1.4" fill="#DEC7BD" />
-                    <circle cx="6" cy="26" r="1.4" fill="#DEC7BD" />
-
-                    {/* Connecting stitch lines */}
-                    <path d="M -28,12 Q 0,8 28,12" fill="none" stroke="#FFFFFF" strokeWidth="2.2" />
-                    <path d="M -28,-6 Q 0,-10 28,-6" fill="none" stroke="#FFFFFF" strokeWidth="2.0" />
-                    <path d="M -28,-22 Q 0,-26 28,-22" fill="none" stroke="#F4EAE4" strokeWidth="1.4" strokeDasharray="2.5 2" />
-                  </g>
-                ))}
-              </g>
-
-              {/* Right Lace Band: Symmetric reflection across x = 195 */}
-              <use href="#singleLaceBand" transform="translate(390, 0) scale(-1, 1)" />
-            </g>
-
-            {/* C. WAX SEAL: Scales 1 -> 1.12 then fades with y: -8 drift in 0.45s */}
-            <g
-              id="waxSealGroup"
-              filter="url(#sealShadow)"
-              style={{
-                transformOrigin: '195px 422px',
-                willChange: 'transform, opacity',
-              }}
-            >
-              {/* Organic melted gold wax puddle centered at (195, 422) */}
-              <path
-                d="M 246.6,426.9 Q 246.4,431.5 243.6,435.9 Q 240.7,440.4 237.4,444.4 Q 234.0,448.3 229.4,451.6 Q 224.8,455.0 219.8,457.7 Q 214.8,460.5 209.1,462.5 Q 203.4,464.4 198.8,467.7 Q 194.2,470.9 190.1,467.5 Q 186.0,464.0 180.8,461.4 Q 175.7,458.8 170.8,455.6 Q 165.9,452.5 161.4,448.6 Q 156.8,444.6 153.6,440.2 Q 150.3,435.8 147.5,431.3 Q 144.7,426.7 144.4,422.1 Q 144.0,417.5 144.6,412.9 Q 145.2,408.4 148.0,403.9 Q 150.8,399.4 153.9,395.4 Q 157.0,391.3 161.6,388.0 Q 166.2,384.6 171.0,382.0 Q 175.9,379.4 181.7,377.2 Q 187.5,375.0 193.0,373.9 Q 198.5,372.9 203.7,374.6 Q 208.9,376.4 213.9,378.5 Q 218.8,380.7 223.7,383.8 Q 228.6,387.0 232.8,390.8 Q 237.1,394.7 240.1,399.1 Q 243.1,403.6 245.2,408.1 Q 247.3,412.7 246.9,417.3 Q 246.5,421.9 246.6,426.9 Z"
-                fill="url(#goldMelt)"
-              />
-
-              {/* Outer lip highlight ridge */}
-              <path
-                d="M 246.6,426.9 Q 246.4,431.5 243.6,435.9 Q 240.7,440.4 237.4,444.4 Q 234.0,448.3 229.4,451.6 Q 224.8,455.0 219.8,457.7 Q 214.8,460.5 209.1,462.5 Q 203.4,464.4 198.8,467.7 Q 194.2,470.9 190.1,467.5 Q 186.0,464.0 180.8,461.4 Q 175.7,458.8 170.8,455.6 Q 165.9,452.5 161.4,448.6 Q 156.8,444.6 153.6,440.2 Q 150.3,435.8 147.5,431.3 Q 144.7,426.7 144.4,422.1 Q 144.0,417.5 144.6,412.9 Q 145.2,408.4 148.0,403.9 Q 150.8,399.4 153.9,395.4 Q 157.0,391.3 161.6,388.0 Q 166.2,384.6 171.0,382.0 Q 175.9,379.4 181.7,377.2 Q 187.5,375.0 193.0,373.9 Q 198.5,372.9 203.7,374.6 Q 208.9,376.4 213.9,378.5 Q 218.8,380.7 223.7,383.8 Q 228.6,387.0 232.8,390.8 Q 237.1,394.7 240.1,399.1 Q 243.1,403.6 245.2,408.1 Q 247.3,412.7 246.9,417.3 Q 246.5,421.9 246.6,426.9 Z"
-                fill="none"
-                stroke="url(#goldRim)"
-                strokeWidth="3"
-                opacity="0.9"
-              />
-
-              {/* Recessed circular moat cavity (r ≈ 43) */}
-              <circle cx="195" cy="422" r="43" fill="url(#sealMatrix)" />
-              <circle cx="195" cy="422" r="43" fill="none" stroke="#523204" strokeWidth="2.2" opacity="0.8" />
-              <circle cx="195" cy="422" r="41.5" fill="none" stroke="#FFEAA1" strokeWidth="1.2" opacity="0.5" />
-
-              {/* Raised inner circular rim (r ≈ 37.5) */}
-              <circle cx="195" cy="422" r="37.5" fill="none" stroke="url(#goldRim)" strokeWidth="3.2" />
-              <circle cx="195" cy="422" r="34" fill="none" stroke="#5C3805" strokeWidth="1.4" opacity="0.9" />
-              <circle cx="195" cy="422" r="32" fill="none" stroke="#FFF2B8" strokeWidth="1.0" opacity="0.9" />
-
-              {/* Beaded inner perimeter ring (r ≈ 30) */}
-              <circle cx="195" cy="422" r="30" fill="none" stroke="#FFEDB8" strokeWidth="1.8" strokeDasharray="2 3.5" opacity="0.8" />
-
-              {/* Arabic Calligraphy: "بسم الله الرحمن الرحيم" */}
-              <g
-                transform="translate(0, 1.2)"
-                fill="#4A2903"
-                opacity="0.95"
-                textAnchor="middle"
-                fontFamily="'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Noto Naskh Arabic', serif"
-                fontWeight="bold"
-              >
-                <text x="195" y="410" fontSize="12">
-                  بِسْمِ اللَّهِ
-                </text>
-                <text x="195" y="425" fontSize="13">
-                  الرَّحْمَٰنِ
-                </text>
-                <text x="195" y="440" fontSize="13">
-                  الرَّحِيمِ
-                </text>
-              </g>
-
-              <g
-                fill="url(#calligraphyGold)"
-                textAnchor="middle"
-                fontFamily="'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Noto Naskh Arabic', serif"
-                fontWeight="bold"
-              >
-                <text x="195" y="409" fontSize="12">
-                  بِسْمِ اللَّهِ
-                </text>
-                <text x="195" y="424" fontSize="13">
-                  الرَّحْمَٰنِ
-                </text>
-                <text x="195" y="439" fontSize="13">
-                  الرَّحِيمِ
-                </text>
-              </g>
-
-              {/* Glossy reflection sheen arc */}
-              <path d="M 166,394 C 182,382 208,382 224,394 C 210,386 180,386 166,394 Z" fill="#FFFFFF" opacity="0.45" />
-            </g>
-
-            {/* D. "TAP TO OPEN": Center x = 195, baseline y = 510 */}
-            <text
-              id="tapToOpenText"
-              x="195"
-              y="510"
-              textAnchor="middle"
-              fontFamily="'Cinzel', 'Cormorant Garamond', serif"
-              fontSize="11"
-              fontWeight="500"
-              letterSpacing="0.4em"
-              fill="#B9A38F"
-              style={{ willChange: 'opacity' }}
-            >
-              TAP TO OPEN
-            </text>
-          </svg>
-        </div>
-      )}
-
-      {/* 2. WARM WHITE LIGHT FLASH OVERLAY (Fixed, pointer-events none, z-[60]) */}
+      {/* Ambient Dreamy Background Glow */}
       <div
-        id="flashContainer"
-        className="fixed inset-0 pointer-events-none z-[60] flex items-center justify-center overflow-hidden"
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${isCardExpanding ? 'opacity-0' : 'opacity-100'
+          }`}
       >
-        {/* Soft bloom: a blurred white circle scaling from 0.2 to 3 */}
-        <div
-          id="flashBloom"
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: '500px',
-            height: '500px',
-            background: '#FFFFFF',
-            filter: 'blur(60px)',
-            transformOrigin: '50% 50%',
-            willChange: 'transform, opacity',
-            opacity: 0,
-            transform: 'scale(0.2)',
-          }}
-        />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-rose/20 blur-[130px]" />
+        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-gold/15 blur-[120px]" />
+      </div>
 
-        {/* Full-screen warm white light radial-gradient centered at the tip: #FFFFFF -> #FFF3DC -> rgba(255,232,190,0) */}
-        <div
-          id="flashRadial"
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(circle at 50% 50%, #FFFFFF 0%, #FFF3DC 45%, rgba(255, 232, 190, 0) 80%)',
-            willChange: 'opacity',
-            opacity: 0,
-          }}
-        />
+      {/* Main Container */}
+      <div className="relative w-full max-w-[420px] px-4 flex flex-col items-center justify-center">
+
+        {/* Envelope Stage */}
+        <motion.div
+          animate={
+            isCardExpanding
+              ? { scale: 0.95, y: 120, opacity: 0 }
+              : { scale: 1, y: isCardRising ? 40 : 0, opacity: 1 }
+          }
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="relative w-[330px] sm:w-[370px] h-[230px] sm:h-[250px] flex items-center justify-center"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {/* 1. Envelope Back Base (Layer 1 - deepest) */}
+          <div className="absolute inset-0 rounded-2xl bg-[#E8C7C0] border border-gold/40 shadow-2xl overflow-hidden z-10">
+            {/* Satin Lining Pattern inside the envelope */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#F5E2BE]/50 via-[#E8C7C0] to-[#DFB3A8] opacity-90">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="opacity-20">
+                <defs>
+                  <pattern id="satinGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 0 10 L 10 0 L 20 10 L 10 20 Z" fill="none" stroke="#C9A24B" strokeWidth="0.8" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#satinGrid)" />
+              </svg>
+            </div>
+          </div>
+
+          {/* 2. THE WEDDING INVITATION CARD (Layer 2 - slides out of envelope!) */}
+          <motion.div
+            initial={{ y: 25, scale: 0.96 }}
+            animate={
+              isCardExpanding
+                ? {
+                  y: -110,
+                  scale: 1.15,
+                  opacity: 0,
+                  transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+                }
+                : isCardRising
+                  ? {
+                    y: -190,
+                    scale: 1.02,
+                    opacity: 1,
+                    transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
+                  }
+                  : { y: 25, scale: 0.96, opacity: 1 }
+            }
+            className={`absolute left-3 right-3 top-2 h-[340px] sm:h-[360px] rounded-2xl bg-cream border-2 border-gold/60 shadow-2xl p-5 flex flex-col items-center justify-between overflow-hidden cursor-pointer ${isCardRising ? 'z-35' : 'z-15'
+              }`}
+            style={{
+              backgroundImage: 'radial-gradient(circle at 50% 30%, #FFFFFF 0%, #FFF8F3 60%, #FAECE1 100%)',
+            }}
+          >
+            {/* Fine Inner Gold Border */}
+            <div className="absolute inset-2 rounded-xl border border-gold/30 pointer-events-none" />
+
+            {/* Top: Quranic Verse Preview */}
+            <div className="text-center pt-2 z-10">
+              <span className="font-amiri text-xs text-taupe-dark tracking-wide block">
+                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+              </span>
+              <p className="font-serif italic text-[10px] text-taupe/80 mt-1 max-w-[240px] mx-auto leading-tight">
+                "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا"
+              </p>
+            </div>
+
+            {/* Center: Grand Couple Names */}
+            <div className="text-center my-auto z-10 flex flex-col items-center">
+              <span className="font-cinzel text-[9px] tracking-loose-tracked text-gold uppercase block mb-1">
+                TOGETHER WITH THEIR FAMILIES
+              </span>
+              <h2 className="font-script text-4xl sm:text-5xl text-gold-gradient py-1">
+                {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
+              </h2>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cream/80 border border-gold/40 shadow-2xs mt-2">
+                <Sparkles className="w-3 h-3 text-gold" />
+                <span className="font-cinzel text-[9px] tracking-wider text-taupe-dark uppercase font-semibold">
+                  MONDAY, 12TH OF OCTOBER 2026
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom: Couple Illustration Thumbnail & Venue */}
+            <div className="w-full text-center pb-2 z-10 flex flex-col items-center">
+              <p className="font-cinzel text-[9px] tracking-wider text-taupe/80 uppercase">
+                {INVITATION_DATA.venue.address}
+              </p>
+              <div className="w-12 h-[1px] bg-gold/40 mt-1 mb-1.5" />
+              <span className="font-serif italic text-[10px] text-gold-dark">
+                Tap to enter the celebration ✦
+              </span>
+            </div>
+
+            {/* Background subtle watermark couple cartoon */}
+            <div className="absolute bottom-0 right-0 w-32 h-32 opacity-15 pointer-events-none">
+              <img
+                src={ASSETS.coupleCartoon}
+                alt=""
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </motion.div>
+
+          {/* 3. Envelope Pocket (Layer 3 - Front flaps covering bottom & sides of card) */}
+          <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden rounded-2xl">
+            {/* SVG Pocket Flaps: Left, Right & Bottom */}
+            <svg
+              viewBox="0 0 370 250"
+              className="w-full h-full drop-shadow-md"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="pocketLeft" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#F9E2DC" />
+                  <stop offset="100%" stopColor="#ECD0C8" />
+                </linearGradient>
+                <linearGradient id="pocketRight" x1="1" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#F9E2DC" />
+                  <stop offset="100%" stopColor="#ECD0C8" />
+                </linearGradient>
+                <linearGradient id="pocketBottom" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stopColor="#E5C1B8" />
+                  <stop offset="100%" stopColor="#F5D9D2" />
+                </linearGradient>
+                <filter id="pocketShadow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="-3" stdDeviation="4" floodColor="#8B5B52" floodOpacity="0.25" />
+                </filter>
+              </defs>
+
+              {/* Left Triangular Flap */}
+              <polygon
+                points="0,0 185,130 0,250"
+                fill="url(#pocketLeft)"
+                stroke="#E5C1B8"
+                strokeWidth="1"
+              />
+
+              {/* Right Triangular Flap */}
+              <polygon
+                points="370,0 185,130 370,250"
+                fill="url(#pocketRight)"
+                stroke="#E5C1B8"
+                strokeWidth="1"
+              />
+
+              {/* Bottom Triangular Flap overlapping left & right */}
+              <polygon
+                points="0,250 185,115 370,250"
+                fill="url(#pocketBottom)"
+                stroke="#DBAF9C"
+                strokeWidth="1.2"
+                filter="url(#pocketShadow)"
+              />
+
+              {/* Subtle Gold Outline on the bottom flap edge */}
+              <polyline
+                points="0,250 185,115 370,250"
+                fill="none"
+                stroke="#C9A24B"
+                strokeWidth="1"
+                strokeOpacity="0.45"
+              />
+            </svg>
+          </div>
+
+          {/* 4. Top Triangular Flap with 3D Flip (Layer 4 in closed state, flips up to -180deg) */}
+          <motion.div
+            initial={{ rotateX: 0 }}
+            animate={isFlapOpen ? { rotateX: -180 } : { rotateX: 0 }}
+            transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
+            className={`absolute top-0 left-0 right-0 h-[135px] pointer-events-none origin-top ${isFlapOpen ? 'z-5' : 'z-40'
+              }`}
+            style={{
+              transformStyle: 'preserve-3d',
+              willChange: 'transform',
+            }}
+          >
+            {/* Front of Flap (pointing down when closed) */}
+            <div className="absolute inset-0 backface-hidden">
+              <svg
+                viewBox="0 0 370 135"
+                className="w-full h-full drop-shadow-lg"
+                preserveAspectRatio="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="flapFront" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#FDEAE5" />
+                    <stop offset="100%" stopColor="#F1D3CB" />
+                  </linearGradient>
+                  <filter id="flapEdgeShadow">
+                    <feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="#663328" floodOpacity="0.3" />
+                  </filter>
+                </defs>
+
+                {/* Triangle pointing downwards */}
+                <polygon
+                  points="0,0 370,0 185,130"
+                  fill="url(#flapFront)"
+                  stroke="#E2B7AE"
+                  strokeWidth="1"
+                  filter="url(#flapEdgeShadow)"
+                />
+
+                {/* Gold Lace/Filigree V-line */}
+                <polyline
+                  points="15,4 185,124 355,4"
+                  fill="none"
+                  stroke="#C9A24B"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 3"
+                  strokeOpacity="0.7"
+                />
+              </svg>
+            </div>
+
+            {/* Back / Inside of Flap (revealed when flipped 180deg upwards) */}
+            <div
+              className="absolute inset-0 rounded-t-2xl backface-hidden"
+              style={{ transform: 'rotateX(180deg)' }}
+            >
+              <svg
+                viewBox="0 0 370 135"
+                className="w-full h-full"
+                preserveAspectRatio="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <polygon
+                  points="0,135 370,135 185,5"
+                  fill="#E6C4BC"
+                  stroke="#D9ACA1"
+                  strokeWidth="1"
+                />
+                {/* Inside gold sheen */}
+                <polygon
+                  points="10,130 360,130 185,15"
+                  fill="none"
+                  stroke="#C9A24B"
+                  strokeWidth="1"
+                  strokeOpacity="0.4"
+                />
+              </svg>
+            </div>
+          </motion.div>
+
+          {/* 5. GOLDEN WAX SEAL (Centered at flap tip, pops/fades when opened) */}
+          <AnimatePresence>
+            {!isFlapOpen && (
+              <motion.div
+                initial={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.25, opacity: 0, y: -10 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                className="absolute z-50 pointer-events-auto cursor-pointer"
+                style={{
+                  top: '125px',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
+                {/* 3D Wax Seal with Arabic Bismillah */}
+                <div className="relative w-20 h-20 flex items-center justify-center filter drop-shadow-[0_8px_16px_rgba(70,30,8,0.45)] group">
+                  {/* Organic Gold Seal SVG */}
+                  <svg
+                    viewBox="0 0 80 80"
+                    className="w-full h-full transition-transform duration-300 group-hover:scale-105"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <radialGradient id="sealGoldGrad" cx="45%" cy="40%" r="55%">
+                        <stop offset="0%" stopColor="#FFF2B8" />
+                        <stop offset="35%" stopColor="#E2B344" />
+                        <stop offset="70%" stopColor="#B88624" />
+                        <stop offset="100%" stopColor="#6E4407" />
+                      </radialGradient>
+                      <linearGradient id="rimGoldGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#FFEAA1" />
+                        <stop offset="50%" stopColor="#C99424" />
+                        <stop offset="100%" stopColor="#5E3C05" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Outer wavy wax pool */}
+                    <circle cx="40" cy="40" r="37" fill="url(#sealGoldGrad)" />
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="url(#rimGoldGrad)" strokeWidth="2.5" />
+                    <circle cx="40" cy="40" r="30" fill="none" stroke="#FFEBA1" strokeWidth="1" strokeDasharray="2 3" opacity="0.8" />
+                    <circle cx="40" cy="40" r="28" fill="#B38022" />
+
+                    {/* Center Arabic Calligraphy */}
+                    <text
+                      x="40"
+                      y="33"
+                      textAnchor="middle"
+                      fill="#FFF5C7"
+                      fontFamily="'Amiri', serif"
+                      fontSize="9"
+                      fontWeight="bold"
+                    >
+                      بِسْمِ اللَّهِ
+                    </text>
+                    <text
+                      x="40"
+                      y="44"
+                      textAnchor="middle"
+                      fill="#FFF5C7"
+                      fontFamily="'Amiri', serif"
+                      fontSize="9"
+                      fontWeight="bold"
+                    >
+                      الرَّحْمَٰنِ
+                    </text>
+                    <text
+                      x="40"
+                      y="54"
+                      textAnchor="middle"
+                      fill="#FFF5C7"
+                      fontFamily="'Amiri', serif"
+                      fontSize="9"
+                      fontWeight="bold"
+                    >
+                      الرَّحِيمِ
+                    </text>
+                  </svg>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* 6. "TAP TO OPEN" Call to action */}
+        <AnimatePresence>
+          {!hasInteracted && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="mt-8 text-center flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-[1px] bg-gold/50" />
+                <span className="font-cinzel text-xs tracking-loose-tracked text-gold-shimmer uppercase font-semibold">
+                  TAP TO OPEN
+                </span>
+                <span className="w-6 h-[1px] bg-gold/50" />
+              </div>
+              <p className="font-serif italic text-xs text-taupe-light/90">
+                انقر على الشمع لفتح ظرف الدعوة
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
