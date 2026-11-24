@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Heart, Send, Check } from 'lucide-react';
+import { Heart, Send, Check } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
+import { CustomSelect } from '../common/CustomSelect';
 import { submitRsvp } from '../../utils/rsvp';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -91,10 +92,8 @@ export const SectionRSVP: React.FC = () => {
           <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
             {t.rsvp.title}
           </h2>
-          <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="h-[1px] w-10 bg-gold/40" />
-            <Sparkles className="w-4 h-4 text-gold" />
-            <span className="h-[1px] w-10 bg-gold/40" />
+          <div className="flex items-center justify-center mt-2">
+            <span className="h-[1px] w-16 bg-gold/40" />
           </div>
           <p className="font-serif italic text-sm text-taupe-dark/85 mt-2 leading-relaxed">
             {t.rsvp.subtitle}
@@ -193,24 +192,13 @@ export const SectionRSVP: React.FC = () => {
 
                   {/* 3. Number of companions */}
                   {formData.attending === 'yes' && (
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-[#78550E] mb-1">
-                        {t.rsvp.guestsLabel}
-                      </label>
-                      <select
-                        value={formData.guests}
-                        onChange={(e) =>
-                          setFormData({ ...formData, guests: Number(e.target.value) })
-                        }
-                        className="w-full bg-cream/90 border border-gold/45 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-taupe-dark focus:border-gold focus:outline-none min-h-[44px]"
-                      >
-                        {t.rsvp.guestOptions.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <CustomSelect
+                      label={t.rsvp.guestsLabel}
+                      value={formData.guests}
+                      onChange={(val) => setFormData({ ...formData, guests: val })}
+                      options={t.rsvp.guestOptions}
+                      dir={dir}
+                    />
                   )}
 
                   {/* 4. Message */}
