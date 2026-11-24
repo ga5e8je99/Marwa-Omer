@@ -46,10 +46,10 @@ export const INVITATION_DATA = {
   },
 
   // Primary Wedding Date
-  weddingDate: '12 أكتوبر 2026',
-  weddingDateFormatted: 'الاثنين، 12 أكتوبر 2026',
+  weddingDate: '1 يناير 2027',
+  weddingDateFormatted: 'الجمعة، 1 يناير 2027',
   // ISO string for live countdown (Cairo Time UTC+2)
-  targetDateISO: '2026-10-12T19:00:00+02:00',
+  targetDateISO: '2027-01-01T19:00:00+02:00',
 
   // Spiritual Inscription
   bismillah: {
@@ -88,7 +88,7 @@ export const INVITATION_DATA = {
       id: 'wedding',
       name: 'حفل الزفاف الميمون',
       subtitle: 'مراسم عقد القران والاحتفال بحضور الأحباب',
-      date: 'الاثنين، 12 أكتوبر 2026',
+      date: 'الجمعة، 1 يناير 2027',
       time: '7:00 مساءً',
       venue: 'قاعة رويال للمناسبات',
       address: 'طريق البلاجات، الإسماعيلية، مصر',

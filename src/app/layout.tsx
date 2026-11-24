@@ -11,8 +11,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://marwa-omer-six.vercel.app'),
-  title: 'دعوة زفاف مروة وعمر | 12 أكتوبر 2026',
-  description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف مروة وعمر. الاثنين 12 أكتوبر 2026 في الإسماعيلية، مصر.',
+  title: 'دعوة زفاف مروة وعمر | 1 يناير 2027',
+  description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف مروة وعمر. الجمعة 1 يناير 2027 في الإسماعيلية، مصر.',
   icons: {
     icon: '/favicon.svg',
     apple: '/favicon.svg',
@@ -20,14 +20,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ar_EG',
-    title: 'دعوة زفاف مروة وعمر | 12 أكتوبر 2026',
-    description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف مروة وعمر. الاثنين 12 أكتوبر 2026 في الإسماعيلية، مصر.',
+    title: 'دعوة زفاف مروة وعمر | 1 يناير 2027',
+    description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف مروة وعمر. الجمعة 1 يناير 2027 في الإسماعيلية، مصر.',
     images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'دعوة زفاف مروة وعمر | 12 أكتوبر 2026',
-    description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف مروة وعمر. الاثنين 12 أكتوبر 2026 في الإسماعيلية، مصر.',
+    title: 'دعوة زفاف مروة وعمر | 1 يناير 2027',
+    description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف مروة وعمر. الجمعة 1 يناير 2027 في الإسماعيلية، مصر.',
     images: ['/og-image.png'],
   },
 };

@@ -90,11 +90,11 @@ export const SectionClosing: React.FC = () => {
           </h1>
         </Reveal>
 
-        {/* Date: 12 · 10 · 2026 */}
+        {/* Date: 1 · 1 · 2027 */}
         <Reveal delay={0.45} className="mb-10">
           <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-cream/90 border border-gold/40 shadow-xs">
             <span className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark">
-              ١٢ · ١٠ · ٢٠٢٦
+              ١ · ١ · ٢٠٢٧
             </span>
           </div>
         </Reveal>
@@ -116,7 +116,7 @@ export const SectionClosing: React.FC = () => {
           </p>
 
           <p className="font-cairo text-[11px] text-taupe/60">
-            جميع الحقوق محفوظة © ٢٠٢٦
+            جميع الحقوق محفوظة © ٢٠٢٧
           </p>
         </Reveal>
       </div>
