@@ -47,7 +47,7 @@ export default function DashboardPage() {
   // Music Settings State
   const previewAudioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlayingPreview, setIsPlayingPreview] = useState<boolean>(false);
-  const [startTimeInput, setStartTimeInput] = useState<number>(60);
+  const [startTimeInput, setStartTimeInput] = useState<number>(MUSIC_CONFIG.startTime);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
   const [showMusicSettings, setShowMusicSettings] = useState<boolean>(false);
 

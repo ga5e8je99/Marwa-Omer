@@ -8,16 +8,16 @@ export interface MusicConfig {
 export const MUSIC_CONFIG: MusicConfig = {
   src: '/music.mp3',
   title: 'زفة موسيقى طلت عروس',
-  startTime: 60, // يبدأ من الدقيقة 1:00 (الثانية 60) حيث بداية الإيقاع واللحن الأساسي
+  startTime: 99, // يبدأ من الدقيقة 1:39 (الثانية 99)
   volume: 0.45,
 };
 
 export const MUSIC_PRESETS = [
-  { label: 'البداية الهادئة', seconds: 0, timeStr: '0:00' },
+  { label: 'الدقيقة 1:39 (المقطع المختار)', seconds: 99, timeStr: '1:39' },
+  { label: 'اللحن الأساسي والإيقاع', seconds: 60, timeStr: '1:00' },
   { label: 'بداية تصاعد اللحن', seconds: 45, timeStr: '0:45' },
-  { label: 'اللحن الأساسي والإيقاع (افتراضي وموصى به)', seconds: 60, timeStr: '1:00' },
   { label: 'قمة الزفة والحماس', seconds: 105, timeStr: '1:45' },
-  { label: 'الدقيقة الثانية', seconds: 120, timeStr: '2:00' },
+  { label: 'البداية الهادئة', seconds: 0, timeStr: '0:00' },
 ];
 
 let cachedStartTime: number = MUSIC_CONFIG.startTime;
