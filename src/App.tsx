@@ -25,6 +25,10 @@ export const App: React.FC = () => {
   const [isIntroDismissed, setIsIntroDismissed] = useState(false);
   const [isHeroRevealed, setIsHeroRevealed] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+
+  const isAutoScrollingRef = useRef(false);
+  isAutoScrollingRef.current = isAutoScrolling;
 
   useEffect(() => {
     // Query param support for instant preview/testing: ?opened=true
@@ -71,6 +75,69 @@ export const App: React.FC = () => {
       document.body.style.overflow = '';
     };
   }, [isIntroDismissed]);
+
+  // Start auto-scroll automatically 2.2s after envelope is opened
+  useEffect(() => {
+    if (!isIntroDismissed) return;
+
+    const timer = setTimeout(() => {
+      setIsAutoScrolling(true);
+    }, 2200);
+
+    return () => clearTimeout(timer);
+  }, [isIntroDismissed]);
+
+  // Smooth Auto-scroll RAF loop (gentle reading pace ~45px/sec)
+  useEffect(() => {
+    if (!isIntroDismissed || !isAutoScrolling) return;
+
+    let rafId: number;
+    let lastTime = performance.now();
+    const speed = 46; // pixels per second
+
+    const step = (time: number) => {
+      const delta = (time - lastTime) / 1000;
+      lastTime = time;
+
+      const lenis = lenisRef.current;
+      if (lenis && isAutoScrollingRef.current) {
+        const maxScroll = lenis.limit || (document.documentElement.scrollHeight - window.innerHeight);
+        if (lenis.scroll >= maxScroll - 4) {
+          // Reached the end of page
+          setIsAutoScrolling(false);
+          return;
+        }
+        lenis.scrollTo(lenis.scroll + speed * delta, { immediate: true });
+      }
+
+      rafId = requestAnimationFrame(step);
+    };
+
+    rafId = requestAnimationFrame(step);
+
+    // Pause auto-scroll on any manual user interaction
+    const handleUserInteraction = () => {
+      if (isAutoScrollingRef.current) {
+        setIsAutoScrolling(false);
+      }
+    };
+
+    window.addEventListener('wheel', handleUserInteraction, { passive: true });
+    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
+    window.addEventListener('keydown', handleUserInteraction, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('wheel', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+      window.removeEventListener('keydown', handleUserInteraction);
+    };
+  }, [isIntroDismissed, isAutoScrolling]);
+
+  // Toggle Auto Scroll
+  const toggleAutoScroll = () => {
+    setIsAutoScrolling((prev) => !prev);
+  };
 
   // Handle Audio Start on Tap
   const handleOpenStart = () => {
@@ -132,10 +199,12 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Floating Mute/Unmute Music Button (Shown after opening) */}
+      {/* Floating Controls: Music Player & Auto-Scroll (Shown after opening) */}
       <AudioPlayer
         isPlaying={isAudioPlaying}
         onToggle={toggleAudio}
+        isAutoScrolling={isAutoScrolling}
+        onToggleAutoScroll={toggleAutoScroll}
         visible={isIntroDismissed}
       />
 
