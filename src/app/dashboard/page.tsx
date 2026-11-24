@@ -27,7 +27,7 @@ import {
   Volume2,
 } from 'lucide-react';
 import { fetchRsvps, deleteRsvpApi, StoredRsvpItem } from '../../utils/rsvp';
-import { MUSIC_CONFIG, MUSIC_PRESETS, getEffectiveMusicStartTime } from '../../config/audio';
+import { MUSIC_CONFIG, MUSIC_PRESETS, getEffectiveMusicStartTime, updateMusicStartTime } from '../../config/audio';
 
 const DASHBOARD_PIN = '2027'; // رمز الدخول السريع للعروسين
 
@@ -177,9 +177,10 @@ export default function DashboardPage() {
     }
   };
 
-  const handleSaveMusicStart = () => {
+  const handleSaveMusicStart = async () => {
     try {
       localStorage.setItem('wedding_music_start_time', String(startTimeInput));
+      await updateMusicStartTime(startTimeInput);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2500);
     } catch {}

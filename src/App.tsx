@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Lenis from 'lenis';
 
 // Audio asset and configuration
-import { MUSIC_CONFIG, getEffectiveMusicStartTime } from './config/audio';
+import { MUSIC_CONFIG, getEffectiveMusicStartTime, fetchServerMusicConfig } from './config/audio';
 const bgMusic = MUSIC_CONFIG.src;
 
 // Context & Reusable components
@@ -33,6 +33,7 @@ const MainAppContent: React.FC = () => {
   isAutoScrollingRef.current = isAutoScrolling;
 
   useEffect(() => {
+    fetchServerMusicConfig();
     // Query param support for instant preview/testing: ?opened=true
     if (typeof window !== 'undefined' && window.location.search.includes('opened')) {
       setIsIntroDismissed(true);
