@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
+import { motion, useReducedMotion } from 'framer-motion';
+import { INVITATION_DATA } from '../../data/invitation';
 import { ASSETS } from '../../config/assets';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -12,54 +12,169 @@ interface SectionEnvelopeIntroProps {
   onOpenComplete?: () => void;
 }
 
+/* ------------------------------------------------------------------ */
+/* Botanical artwork (inline SVG, no external assets)                  */
+/* ------------------------------------------------------------------ */
+
+// Cubic bezier stem for the eucalyptus branch: (20,290) -> (150,20)
+const P = [
+  [20, 290],
+  [40, 200],
+  [70, 120],
+  [150, 20],
+];
+
+const stemPoint = (t: number) => {
+  const u = 1 - t;
+  const x = u * u * u * P[0][0] + 3 * u * u * t * P[1][0] + 3 * u * t * t * P[2][0] + t * t * t * P[3][0];
+  const y = u * u * u * P[0][1] + 3 * u * u * t * P[1][1] + 3 * u * t * t * P[2][1] + t * t * t * P[3][1];
+  const dx = 3 * u * u * (P[1][0] - P[0][0]) + 6 * u * t * (P[2][0] - P[1][0]) + 3 * t * t * (P[3][0] - P[2][0]);
+  const dy = 3 * u * u * (P[1][1] - P[0][1]) + 6 * u * t * (P[2][1] - P[1][1]) + 3 * t * t * (P[3][1] - P[2][1]);
+  // rotation (clockwise from "up") of the stem tangent
+  const a = (Math.atan2(dx, -dy) * 180) / Math.PI;
+  return { x, y, a };
+};
+
+const LEAF_COLORS = ['#9DB8A0', '#B7CDB4', '#86A58C'];
+const LEAF_PATH = 'M0 0 C 9 -10 9 -28 0 -40 C -9 -28 -9 -10 0 0 Z';
+
+const LEAVES = [
+  ...Array.from({ length: 13 }, (_, i) => {
+    const t = 0.1 + i * 0.07;
+    const { x, y, a } = stemPoint(t);
+    const side = i % 2 === 0 ? 1 : -1;
+    return {
+      x,
+      y,
+      rot: a + side * 52,
+      scale: 1.05 - t * 0.55,
+      fill: LEAF_COLORS[i % 3],
+    };
+  }),
+  (() => {
+    const { x, y, a } = stemPoint(1);
+    return { x, y, rot: a, scale: 0.5, fill: LEAF_COLORS[1] };
+  })(),
+];
+
+const Branch: React.FC = () => (
+  <g>
+    <path d="M20 290 C 40 200 70 120 150 20" stroke="#7E9B84" strokeWidth="2" fill="none" strokeLinecap="round" />
+    {LEAVES.map((l, i) => (
+      <path
+        key={i}
+        d={LEAF_PATH}
+        fill={l.fill}
+        fillOpacity={0.92}
+        transform={`translate(${l.x.toFixed(1)} ${l.y.toFixed(1)}) rotate(${l.rot.toFixed(1)}) scale(${l.scale.toFixed(2)})`}
+      />
+    ))}
+  </g>
+);
+
+const Rose: React.FC<{ x: number; y: number; s: number; r?: number }> = ({ x, y, s, r = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+    {[0, 1, 2, 3, 4].map((i) => (
+      <ellipse key={`o${i}`} cx="0" cy="-14" rx="11" ry="14" fill="#F8DDE0" stroke="#E3A9AE" strokeWidth="0.8" transform={`rotate(${i * 72})`} />
+    ))}
+    {[0, 1, 2, 3, 4].map((i) => (
+      <ellipse key={`m${i}`} cx="0" cy="-9" rx="7.5" ry="10" fill="#F0C4C8" stroke="#DB9EA4" strokeWidth="0.6" transform={`rotate(${i * 72 + 36})`} />
+    ))}
+    <circle r="6.5" fill="#E8B4B8" />
+    <path d="M-4 1 C -4 -5 4 -5 4 0 C 4 4 -2 5 -2 1" fill="none" stroke="#CF8E94" strokeWidth="1" strokeLinecap="round" />
+    <circle cx="0" cy="-1" r="1.2" fill="#C9A24B" />
+  </g>
+);
+
+const Bud: React.FC<{ x: number; y: number; r: number }> = ({ x, y, r }) => (
+  <g transform={`translate(${x} ${y}) rotate(${r})`}>
+    <ellipse cx="0" cy="-7" rx="4.5" ry="8" fill="#F4D4D7" stroke="#E3A9AE" strokeWidth="0.6" />
+    <path d="M-4 0 Q 0 -4 4 0 Q 0 6 -4 0 Z" fill="#A9BFA8" />
+  </g>
+);
+
+const BotanicalCorner: React.FC<{ flip?: boolean }> = ({ flip }) => (
+  <svg
+    viewBox="0 0 200 300"
+    className="w-[116px] sm:w-[190px] h-auto"
+    style={flip ? { transform: 'rotate(180deg)' } : undefined}
+    aria-hidden="true"
+    focusable="false"
+  >
+    {/* long branch, flipped so it grows from the top-left corner */}
+    <g transform="translate(0 300) scale(1 -1)">
+      <Branch />
+    </g>
+    {/* shorter parallel branch */}
+    <g transform="translate(70 180) scale(0.6 -0.6)" opacity="0.9">
+      <Branch />
+    </g>
+    <Bud x={96} y={62} r={40} />
+    <Bud x={50} y={132} r={-30} />
+    <Rose x={30} y={46} s={1.25} r={10} />
+    <Rose x={76} y={30} s={0.8} r={-20} />
+    <Rose x={26} y={102} s={0.8} r={30} />
+    {[
+      [58, 76],
+      [102, 24],
+      [14, 140],
+      [118, 96],
+    ].map(([cx, cy], i) => (
+      <circle key={i} cx={cx} cy={cy} r="1.8" fill="#C9A24B" opacity="0.8" />
+    ))}
+  </svg>
+);
+
+/* Falling petals ---------------------------------------------------- */
+const PETALS = [
+  { left: '8%', size: 11, delay: 0, dur: 11, drift: 30 },
+  { left: '22%', size: 9, delay: 3, dur: 13, drift: -24 },
+  { left: '37%', size: 12, delay: 6, dur: 12, drift: 36 },
+  { left: '51%', size: 8, delay: 1.5, dur: 14, drift: -30 },
+  { left: '64%', size: 11, delay: 8, dur: 11.5, drift: 26 },
+  { left: '78%', size: 9, delay: 4.5, dur: 13.5, drift: -34 },
+  { left: '90%', size: 12, delay: 7, dur: 12.5, drift: 22 },
+];
+
+/* ------------------------------------------------------------------ */
+/* Component                                                           */
+/* ------------------------------------------------------------------ */
+
 export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
   onOpenStart,
   onRevealHero,
   onOpenComplete,
 }) => {
-  const { t, isArabic, dir } = useLanguage();
+  const { t, isArabic } = useLanguage();
+  // closed -> opening (flap lifts) -> rising (card slides out) -> expanding (fade to page) -> done
   const [phase, setPhase] = useState<'closed' | 'opening' | 'rising' | 'expanding' | 'done'>('closed');
-  const [hasInteracted, setHasInteracted] = useState(false);
   const interactionLockRef = useRef(false);
+  const reduceMotion = useReducedMotion();
 
-  // Prevent scroll during envelope phase
+  // Keep the page from scrolling while the envelope is on screen
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (e.cancelable) e.preventDefault();
     };
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    return () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-    };
+    return () => document.removeEventListener('touchmove', handleTouchMove);
   }, []);
 
   const handleOpen = () => {
     if (interactionLockRef.current) return;
     interactionLockRef.current = true;
-    setHasInteracted(true);
 
-    if (onOpenStart) {
-      onOpenStart();
-    }
+    onOpenStart?.(); // prime/start music inside the user gesture
 
     setPhase('opening');
-
-    setTimeout(() => {
-      setPhase('rising');
-    }, 650);
-
+    setTimeout(() => setPhase('rising'), 650);
     setTimeout(() => {
       setPhase('expanding');
-      if (onRevealHero) {
-        onRevealHero();
-      }
+      onRevealHero?.();
     }, 1650);
-
     setTimeout(() => {
       setPhase('done');
-      if (onOpenComplete) {
-        onOpenComplete();
-      }
+      onOpenComplete?.();
     }, 2700);
   };
 
@@ -69,369 +184,255 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
   const isCardRising = phase === 'rising' || phase === 'expanding';
   const isCardExpanding = phase === 'expanding';
 
+  const { bride, groom } = INVITATION_DATA.couple;
+  const weddingDateAr = new Date(INVITATION_DATA.targetDateISO).toLocaleDateString('ar-EG', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const ease = [0.22, 1, 0.36, 1] as const;
+
+  const brideDisplayName = isArabic ? bride.arabicName : bride.name;
+  const groomDisplayName = isArabic ? groom.arabicName : groom.name;
+  const weddingDateDisplay = isArabic ? weddingDateAr : INVITATION_DATA.weddingDateFormatted;
+
   return (
     <div
       id="envelope-intro-overlay"
-      className={`fixed inset-0 z-40 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none transition-colors duration-1000 ${
-        isCardExpanding ? 'bg-cream' : 'bg-[#181311]'
-      }`}
-      style={{ perspective: '1400px' }}
+      className="fixed inset-0 z-50 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none bg-cream"
       onClick={handleOpen}
-      role="button"
-      tabIndex={0}
-      aria-label={t.intro.tapPrompt}
-      dir={dir}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') handleOpen();
-      }}
     >
-      {/* Ambient Dreamy Background Glow */}
+      {/* Soft morning-light backdrop (fades out as the page appears) */}
       <div
-        className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${
-          isCardExpanding ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${isCardExpanding ? 'opacity-0' : 'opacity-100'}`}
+        style={{ background: 'radial-gradient(ellipse at 50% 38%, #FFFFFF 0%, #FFF8F3 52%, #F9E9E5 100%)' }}
       >
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-rose/20 blur-[130px]" />
-        <div className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-gold/15 blur-[120px]" />
+        <div className="absolute -top-20 right-[-60px] w-72 h-72 rounded-full bg-rose/20 blur-[90px]" />
+        <div className="absolute bottom-10 -left-16 w-72 h-72 rounded-full bg-[#CFE0D2]/50 blur-[90px]" />
       </div>
 
-      {/* Main Container */}
-      <div className="relative w-full max-w-[420px] px-4 flex flex-col items-center justify-center">
+      {/* Botanical corners */}
+      <motion.div
+        className={`absolute top-0 left-0 pointer-events-none transition-opacity duration-700 ${isCardExpanding ? 'opacity-0' : 'opacity-100'}`}
+        style={{ transformOrigin: '0% 0%' }}
+        animate={reduceMotion ? undefined : { rotate: [0, 1.6, 0, -1.2, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <BotanicalCorner />
+      </motion.div>
+      <motion.div
+        className={`absolute bottom-0 right-0 pointer-events-none transition-opacity duration-700 ${isCardExpanding ? 'opacity-0' : 'opacity-100'}`}
+        style={{ transformOrigin: '100% 100%' }}
+        animate={reduceMotion ? undefined : { rotate: [0, -1.6, 0, 1.2, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <BotanicalCorner flip />
+      </motion.div>
 
-        {/* Envelope Stage */}
+      {/* Drifting petals */}
+      {!reduceMotion &&
+        !isCardExpanding &&
+        PETALS.map((p, i) => (
+          <motion.span
+            key={i}
+            aria-hidden="true"
+            className="absolute -top-6 pointer-events-none rounded-[60%_40%_60%_40%] bg-rose-light/80"
+            style={{ left: p.left, width: p.size, height: p.size * 1.3 }}
+            initial={{ y: -30, rotate: 0, opacity: 0 }}
+            animate={{
+              y: '105vh',
+              x: [0, p.drift, -p.drift / 2, p.drift],
+              rotate: [0, 160, 320],
+              opacity: [0, 0.9, 0.9, 0],
+            }}
+            transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'linear' }}
+          />
+        ))}
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-[420px] px-4 flex flex-col items-center">
+        {/* Names */}
+        <motion.div
+          lang={isArabic ? 'ar' : 'en'}
+          dir={isArabic ? 'rtl' : 'ltr'}
+          className="text-center mb-7"
+          animate={{ opacity: isFlapOpen ? 0 : 1, y: isFlapOpen ? -16 : 0 }}
+          transition={{ duration: 0.7, ease }}
+        >
+          <p className="font-amiri text-[15px] text-[#6F5B50]">{t?.intro?.badge || 'ندعوكم لحضور حفل زفاف'}</p>
+          <h1 className="font-amiri text-[40px] leading-tight text-taupe-dark mt-1">
+            {brideDisplayName}
+            <span className="font-script text-gold text-[34px] mx-3" aria-hidden="true">&amp;</span>
+            <span className="sr-only">و</span>
+            {groomDisplayName}
+          </h1>
+          <p className="font-amiri text-[15px] text-gold-dark mt-1">{weddingDateDisplay}</p>
+        </motion.div>
+
+        {/* Envelope stage */}
         <motion.div
           animate={
             isCardExpanding
               ? { scale: 0.95, y: 120, opacity: 0 }
               : { scale: 1, y: isCardRising ? 40 : 0, opacity: 1 }
           }
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-[330px] sm:w-[370px] h-[230px] sm:h-[250px] flex items-center justify-center"
-          style={{ transformStyle: 'preserve-3d' }}
+          transition={{ duration: 0.9, ease }}
+          className="relative w-[min(340px,84vw)] aspect-[17/12]"
+          style={{ filter: 'drop-shadow(0 18px 24px rgba(138,116,104,0.22))' }}
         >
-          {/* 1. Envelope Back Base (Layer 1 - deepest) */}
-          <div className="absolute inset-0 rounded-2xl bg-[#E8C7C0] border border-gold/40 shadow-2xl overflow-hidden z-10">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#F5E2BE]/50 via-[#E8C7C0] to-[#DFB3A8] opacity-90">
-              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="opacity-20">
-                <defs>
-                  <pattern id="satinGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M 0 10 L 10 0 L 20 10 L 10 20 Z" fill="none" stroke="#C9A24B" strokeWidth="0.8" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#satinGrid)" />
-              </svg>
-            </div>
+          {/* 1. Inside / back of the envelope */}
+          <div className="absolute inset-0 rounded-2xl bg-[#F3DAD4] border border-gold/40 overflow-hidden z-10">
+            <div className="absolute inset-0 bg-gradient-to-b from-[#F8E6DF] to-[#EBC9C1]" />
           </div>
 
-          {/* 2. THE WEDDING INVITATION CARD (Layer 2) */}
+          {/* 2. The card (slides up out of the pocket) */}
           <motion.div
-            initial={{ y: 0, scale: 0.98 }}
+            className="absolute z-20 left-[6%] right-[6%] top-[7%] bottom-[9%]"
+            initial={{ y: 0 }}
             animate={
               isCardExpanding
-                ? {
-                    y: -100,
-                    scale: 1.15,
-                    opacity: 0,
-                    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
-                  }
+                ? { y: '-70%', scale: 1.12, opacity: 0, transition: { duration: 0.85, ease } }
                 : isCardRising
-                ? {
-                    y: -120,
-                    scale: 1.02,
-                    opacity: 1,
-                    transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
-                  }
-                : { y: 0, scale: 0.98, opacity: 1 }
+                  ? { y: '-58%', transition: { duration: 0.95, ease } }
+                  : { y: 0 }
             }
-            className="absolute left-3.5 right-3.5 top-3.5 h-[215px] sm:h-[230px] rounded-xl bg-cream border border-gold/60 shadow-xl p-4 flex flex-col items-center justify-between overflow-hidden cursor-pointer"
-            style={{
-              backgroundImage: 'radial-gradient(circle at 50% 30%, #FFFFFF 0%, #FFF8F3 60%, #FAECE1 100%)',
-              zIndex: isCardExpanding ? 50 : 20,
-            }}
           >
-            {/* Fine Inner Gold Border */}
-            <div className="absolute inset-1.5 rounded-lg border border-gold/30 pointer-events-none" />
-
-            {/* Top: Spiritual Inscription Preview */}
-            <div className="text-center pt-1 z-10">
-              <span className="font-amiri text-xs text-taupe-dark tracking-wide block font-bold">
-                {t.bismillah.arabic}
-              </span>
-              <p className="font-serif italic text-[11px] text-taupe-dark/85 mt-0.5 max-w-[270px] mx-auto leading-tight font-medium">
-                {isArabic ? t.bismillah.verse : t.bismillah.translation || t.bismillah.verse}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-white to-[#FFF8F3] border border-gold/55 shadow-paper flex flex-col items-center justify-start pt-[9%] text-center px-3">
+              <div className="absolute inset-1.5 rounded-lg border border-gold/30 pointer-events-none" />
+              <p lang="ar" dir="rtl" className="font-amiri text-[15px] sm:text-base text-gold-dark leading-snug">
+                {INVITATION_DATA.bismillah.arabic}
               </p>
-            </div>
-
-            {/* Center: Grand Couple Names */}
-            <div className="text-center my-auto z-10 flex flex-col items-center">
-              <span className="text-[11px] font-semibold text-[#78550E] block mb-0.5">
-                {t.couple.parentsTitle}
-              </span>
-              <h2 className="font-script text-3xl sm:text-4xl text-gold-gradient py-0.5">
-                {t.couple.bride} &amp; {t.couple.groom}
-              </h2>
-              <div className="inline-flex items-center px-3.5 py-0.5 rounded-full bg-cream/90 border border-gold/40 shadow-2xs mt-1">
-                <span className="text-[11px] text-taupe-dark font-bold">
-                  {t.weddingDateFormatted}
-                </span>
-              </div>
-            </div>
-
-            {/* Bottom: Venue & Invitation prompt */}
-            <div className="w-full text-center pb-1 z-10 flex flex-col items-center">
-              <p className="text-[11px] text-taupe-dark font-medium">
-                {t.location.venueSubtitle}
+              <p lang={isArabic ? 'ar' : 'en'} dir={isArabic ? 'rtl' : 'ltr'} className="font-amiri text-[14px] text-[#6F5B50] mt-2">
+                {isArabic ? 'يتشرفان بدعوتكم' : 'Cordially Invite You'}
               </p>
-              <div className="w-12 h-[1px] bg-gold/40 mt-1 mb-1" />
-              <span className="text-xs text-[#78550E] font-bold">
-                {t.intro.cardTag}
-              </span>
-            </div>
-
-            {/* Background subtle watermark couple cartoon */}
-            <div className="absolute -bottom-2 -right-2 w-24 h-24 opacity-15 pointer-events-none">
-              <img
-                src={ASSETS.coupleCartoon}
-                alt=""
-                className="w-full h-full object-contain"
-              />
+              <p lang={isArabic ? 'ar' : 'en'} dir={isArabic ? 'rtl' : 'ltr'} className="font-amiri text-2xl text-taupe-dark mt-1">
+                {brideDisplayName} <span className="font-script text-gold">&amp;</span> {groomDisplayName}
+              </p>
             </div>
           </motion.div>
 
-          {/* 3. Envelope Pocket */}
-          <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden rounded-2xl">
-            <svg
-              viewBox="0 0 370 250"
-              className="w-full h-full drop-shadow-md"
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+          {/* 3. Front pocket (the V-cut front of the envelope) */}
+          <div className="absolute inset-0 z-30 rounded-2xl overflow-hidden pointer-events-none">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" aria-hidden="true">
               <defs>
-                <linearGradient id="pocketLeft" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#F9E2DC" />
-                  <stop offset="100%" stopColor="#ECD0C8" />
+                <linearGradient id="pocketFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FFFFFF" />
+                  <stop offset="100%" stopColor="#FBEDE8" />
                 </linearGradient>
-                <linearGradient id="pocketRight" x1="1" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#F9E2DC" />
-                  <stop offset="100%" stopColor="#ECD0C8" />
-                </linearGradient>
-                <linearGradient id="pocketBottom" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stopColor="#E5C1B8" />
-                  <stop offset="100%" stopColor="#F5D9D2" />
-                </linearGradient>
-                <filter id="pocketShadow" x="-10%" y="-10%" width="120%" height="120%">
-                  <feDropShadow dx="0" dy="-3" stdDeviation="4" floodColor="#8B5B52" floodOpacity="0.25" />
-                </filter>
               </defs>
-
               <polygon
-                points="0,0 185,130 0,250"
-                fill="url(#pocketLeft)"
-                stroke="#E5C1B8"
-                strokeWidth="1"
-              />
-
-              <polygon
-                points="370,0 185,130 370,250"
-                fill="url(#pocketRight)"
-                stroke="#E5C1B8"
-                strokeWidth="1"
-              />
-
-              <polygon
-                points="0,250 185,115 370,250"
-                fill="url(#pocketBottom)"
-                stroke="#DBAF9C"
-                strokeWidth="1.2"
-                filter="url(#pocketShadow)"
-              />
-
-              <polyline
-                points="0,250 185,115 370,250"
-                fill="none"
+                points="0,0 50,56 100,0 100,100 0,100"
+                fill="url(#pocketFill)"
                 stroke="#C9A24B"
+                strokeOpacity="0.55"
                 strokeWidth="1"
-                strokeOpacity="0.45"
+                vectorEffect="non-scaling-stroke"
               />
             </svg>
           </div>
 
-          {/* 4. Top Triangular Flap with 3D Flip */}
+          {/* 4. Flap (lifts in 3D, then tucks behind the card) */}
           <motion.div
-            initial={{ rotateX: 0 }}
-            animate={isFlapOpen ? { rotateX: -180 } : { rotateX: 0 }}
-            transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute top-0 left-0 right-0 h-[135px] pointer-events-none origin-top"
+            className="absolute top-0 left-0 w-full h-[56%] pointer-events-none"
             style={{
+              transformOrigin: 'top',
               transformStyle: 'preserve-3d',
-              willChange: 'transform',
-              zIndex: isFlapOpen ? 5 : 40,
+              transformPerspective: 1200,
+              zIndex: isCardRising ? 15 : 40,
             }}
+            animate={{ rotateX: isFlapOpen ? 180 : 0 }}
+            transition={{ duration: 0.7, ease }}
           >
-            <div className="absolute inset-0 backface-hidden">
-              <svg
-                viewBox="0 0 370 135"
-                className="w-full h-full drop-shadow-lg"
-                preserveAspectRatio="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+            {/* outside face */}
+            <div className="absolute inset-0 rounded-t-2xl overflow-hidden" style={{ backfaceVisibility: 'hidden' }}>
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" aria-hidden="true">
                 <defs>
                   <linearGradient id="flapFront" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FDEAE5" />
-                    <stop offset="100%" stopColor="#F1D3CB" />
+                    <stop offset="0%" stopColor="#FFFDFB" />
+                    <stop offset="100%" stopColor="#F7E2DC" />
                   </linearGradient>
-                  <filter id="flapEdgeShadow">
-                    <feDropShadow dx="0" dy="5" stdDeviation="5" floodColor="#663328" floodOpacity="0.3" />
-                  </filter>
                 </defs>
-
                 <polygon
-                  points="0,0 370,0 185,130"
+                  points="0,0 100,0 50,100"
                   fill="url(#flapFront)"
-                  stroke="#E2B7AE"
-                  strokeWidth="1"
-                  filter="url(#flapEdgeShadow)"
-                />
-
-                <polyline
-                  points="15,4 185,124 355,4"
-                  fill="none"
                   stroke="#C9A24B"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 3"
-                  strokeOpacity="0.7"
+                  strokeOpacity="0.55"
+                  strokeWidth="1"
+                  vectorEffect="non-scaling-stroke"
                 />
               </svg>
             </div>
-
+            {/* inside face */}
             <div
-              className="absolute inset-0 rounded-t-2xl backface-hidden"
-              style={{ transform: 'rotateX(180deg)' }}
+              className="absolute inset-0 rounded-t-2xl overflow-hidden"
+              style={{ backfaceVisibility: 'hidden', transform: 'rotateX(180deg)' }}
             >
-              <svg
-                viewBox="0 0 370 135"
-                className="w-full h-full"
-                preserveAspectRatio="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <polygon
-                  points="0,135 370,135 185,5"
-                  fill="#E6C4BC"
-                  stroke="#D9ACA1"
-                  strokeWidth="1"
-                />
-                <polygon
-                  points="10,130 360,130 185,15"
-                  fill="none"
-                  stroke="#C9A24B"
-                  strokeWidth="1"
-                  strokeOpacity="0.4"
-                />
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full" aria-hidden="true">
+                <polygon points="0,0 100,0 50,100" fill="#EFCFC7" stroke="#C9A24B" strokeOpacity="0.4" strokeWidth="1" vectorEffect="non-scaling-stroke" />
               </svg>
             </div>
           </motion.div>
 
-          {/* 5. GOLDEN WAX SEAL */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2 z-50 pointer-events-auto cursor-pointer"
-            style={{ top: '90px', width: '80px', height: '80px' }}
-            onClick={handleOpen}
-          >
-            <AnimatePresence>
-              {!isFlapOpen && (
-                <motion.div
-                  initial={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 1.25, opacity: 0, y: -10 }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className="w-full h-full flex items-center justify-center filter drop-shadow-[0_8px_16px_rgba(70,30,8,0.45)] group"
-                >
-                  <svg
-                    viewBox="0 0 80 80"
-                    className="w-full h-full transition-transform duration-300 group-hover:scale-105"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <defs>
-                      <radialGradient id="sealGoldGrad" cx="45%" cy="40%" r="55%">
-                        <stop offset="0%" stopColor="#FFF2B8" />
-                        <stop offset="35%" stopColor="#E2B344" />
-                        <stop offset="70%" stopColor="#B88624" />
-                        <stop offset="100%" stopColor="#6E4407" />
-                      </radialGradient>
-                      <linearGradient id="rimGoldGrad" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor="#FFEAA1" />
-                        <stop offset="50%" stopColor="#C99424" />
-                        <stop offset="100%" stopColor="#5E3C05" />
-                      </linearGradient>
-                    </defs>
-
-                    <circle cx="40" cy="40" r="37" fill="url(#sealGoldGrad)" />
-                    <circle cx="40" cy="40" r="34" fill="none" stroke="url(#rimGoldGrad)" strokeWidth="2.5" />
-                    <circle cx="40" cy="40" r="30" fill="none" stroke="#FFEBA1" strokeWidth="1" strokeDasharray="2 3" opacity="0.8" />
-                    <circle cx="40" cy="40" r="28" fill="#B38022" />
-
-                    <text
-                      x="40"
-                      y="33"
-                      textAnchor="middle"
-                      fill="#FFF5C7"
-                      fontFamily="'Amiri', serif"
-                      fontSize="9"
-                      fontWeight="bold"
-                    >
-                      بِسْمِ اللَّهِ
-                    </text>
-                    <text
-                      x="40"
-                      y="44"
-                      textAnchor="middle"
-                      fill="#FFF5C7"
-                      fontFamily="'Amiri', serif"
-                      fontSize="9"
-                      fontWeight="bold"
-                    >
-                      الرَّحْمَٰنِ
-                    </text>
-                    <text
-                      x="40"
-                      y="54"
-                      textAnchor="middle"
-                      fill="#FFF5C7"
-                      fontFamily="'Amiri', serif"
-                      fontSize="9"
-                      fontWeight="bold"
-                    >
-                      الرَّحِيمِ
-                    </text>
-                  </svg>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* 5. Wax seal (the only control) */}
+          <div className="absolute z-50 left-1/2 top-[56%] -translate-x-1/2 -translate-y-1/2">
+            {!reduceMotion && !isFlapOpen && (
+              <motion.span
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full border border-gold"
+                initial={{ scale: 1, opacity: 0.7 }}
+                animate={{ scale: 1.9, opacity: 0 }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
+              />
+            )}
+            <motion.button
+              type="button"
+              aria-label="افتح الدعوة"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpen();
+              }}
+              className="relative block w-[68px] h-[68px] rounded-full cursor-pointer focus-visible:outline-gold"
+              animate={
+                isFlapOpen
+                  ? { scale: 0.2, opacity: 0, transition: { duration: 0.35 } }
+                  : reduceMotion
+                    ? { scale: 1 }
+                    : { scale: [1, 1.06, 1] }
+              }
+              transition={{ duration: 2.2, repeat: isFlapOpen || reduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
+              whileTap={{ scale: 0.92 }}
+            >
+              <img
+                src={ASSETS.waxSeal}
+                alt=""
+                draggable={false}
+                className="w-full h-full object-contain"
+                style={{ filter: 'drop-shadow(0 4px 8px rgba(88,70,61,0.35))' }}
+              />
+            </motion.button>
           </div>
         </motion.div>
 
-        {/* 6. Tap to open Call to action */}
-        <AnimatePresence>
-          {!hasInteracted && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 15 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="mt-8 text-center flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-[1px] bg-gold/50" />
-                <span className="text-sm tracking-wider text-gold-shimmer font-bold">
-                  {t.intro.badge}
-                </span>
-                <span className="w-6 h-[1px] bg-gold/50" />
-              </div>
-              <p className="text-xs text-taupe-light/90 font-medium">
-                {t.intro.tapSubtitle}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Hint */}
+        <motion.div
+          lang={isArabic ? 'ar' : 'en'}
+          dir={isArabic ? 'rtl' : 'ltr'}
+          className="text-center mt-9"
+          animate={{ opacity: isFlapOpen ? 0 : 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="flex items-center justify-center gap-3">
+            <span className="h-px w-10 bg-gold/50" />
+            <p className="font-amiri text-lg font-bold text-taupe-dark">
+              {t?.intro?.badge || 'دعوة فرح خاصة للغالين'}
+            </p>
+            <span className="h-px w-10 bg-gold/50" />
+          </div>
+          <p className="font-amiri text-[15px] text-[#6F5B50] mt-1.5">
+            {t?.intro?.tapSubtitle || 'اضغط على الشمعة الذهبية عشان تفتح الدعوة'}
+          </p>
+        </motion.div>
       </div>
     </div>
   );
