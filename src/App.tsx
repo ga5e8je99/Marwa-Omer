@@ -10,7 +10,6 @@ const bgMusic = '/music.mp3';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { LaceDivider } from './components/common/LaceDivider';
 import { AudioPlayer } from './components/common/AudioPlayer';
-import { LanguageToggle } from './components/common/LanguageToggle';
 
 // Sections in order
 import { SectionEnvelopeIntro } from './components/sections/SectionEnvelopeIntro';
@@ -190,10 +189,7 @@ const MainAppContent: React.FC = () => {
         preload="metadata"
       />
 
-      {/* Top Floating Language Switcher Pill (Always accessible on all devices) */}
-      <div className="fixed top-4 start-4 z-50 pointer-events-auto">
-        <LanguageToggle />
-      </div>
+
 
       {/* 1. Full Viewport Envelope Intro Screen */}
       {!isIntroDismissed && (

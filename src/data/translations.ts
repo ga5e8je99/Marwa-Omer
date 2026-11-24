@@ -161,7 +161,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     intro: {
       badge: 'دعوة فرح خاصة للغاليين',
       tapPrompt: 'افتح ظرف الفرح',
-      tapSubtitle: 'اضغط على الشمعة الذهبية عشان تفتح الدعوة ✉️',
+      tapSubtitle: 'اضغط على الشمعة الذهبية عشان تفتح الدعوة',
       welcomeMsg: 'مستنيينكم تنورونا وتشاركونا أحلى ليلة',
       cardTag: 'دعوة فرح خاصة ✦ مرحباً بكم',
     },
@@ -221,7 +221,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       nameLabel: 'اسمك الكريم *',
       namePlaceholder: 'اكتب اسمك هنا عشان نعرف مين منورنا...',
       attendingLabel: 'هتنورونا إن شاء الله؟',
-      attendYes: 'جايين ونفرح معاكم أكيد ❤️',
+      attendYes: 'جايين ونفرح معاكم أكيد',
       attendNo: 'هنعتذر بمحبة ودعواتنا ليكم',
       guestsLabel: 'عدد المرافقين',
       guestOptions: [
@@ -234,7 +234,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       messagePlaceholder: 'اكتب دعوة مباركة أو كلمة من قلبك لمروة وعمر...',
       submitButton: 'سجل تهنئتك في دفتر الفرح',
       submitting: 'جارٍ التسجيل...',
-      whatsappButton: 'ابعت التهنئة على واتساب للعروسين علطول 💬',
+      whatsappButton: 'ابعت التهنئة على واتساب للعروسين علطول',
       thankYouTitle: 'تسلم وتعيش يا {name}',
       thankYouDesc: 'كلامكم الحلو ودعواتكم الصادقة خلت فرحتنا أحلى وأكبر. تهنئتكم اتسجلت في الدفتر!',
       sendAnother: 'إرسال تهنئة تانية',
@@ -365,7 +365,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     intro: {
       badge: 'Wedding Invitation',
       tapPrompt: 'Open Invitation Envelope',
-      tapSubtitle: 'Tap the gold wax seal to open ✉️',
+      tapSubtitle: 'Tap the gold wax seal to open',
       welcomeMsg: 'We look forward to celebrating together',
       cardTag: 'Wedding Invitation ✦ Welcome',
     },
@@ -425,7 +425,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       nameLabel: 'Your Name *',
       namePlaceholder: 'Please enter your full name...',
       attendingLabel: 'Will you attend?',
-      attendYes: 'Joyfully Attending ❤️',
+      attendYes: 'Joyfully Attending',
       attendNo: 'Regretfully Declining',
       guestsLabel: 'Number of Guests',
       guestOptions: [
@@ -438,7 +438,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       messagePlaceholder: 'Write a warm dua or congratulatory wish for the couple...',
       submitButton: 'Sign Wedding Guestbook',
       submitting: 'Saving...',
-      whatsappButton: 'Send Wish to Couple via WhatsApp 💬',
+      whatsappButton: 'Send Wish to Couple via WhatsApp',
       thankYouTitle: 'Thank You, {name}',
       thankYouDesc: 'Your beautiful words and prayers mean the world to us. Your blessing is saved in our guestbook!',
       sendAnother: 'Send another wish',

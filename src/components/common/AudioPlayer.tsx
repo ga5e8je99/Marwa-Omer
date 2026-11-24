@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Volume2, VolumeX, Play, Pause, Globe } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -37,11 +37,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <button
             onClick={toggleLang}
             type="button"
-            className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-full bg-cream/95 backdrop-blur-md border border-gold/50 shadow-soft-float hover:border-gold hover:shadow-gold-glow text-[#78550E] transition-all cursor-pointer select-none"
+            className="flex items-center justify-center px-3.5 py-2 min-h-[44px] rounded-full bg-cream/95 backdrop-blur-md border border-gold/50 shadow-soft-float hover:border-gold hover:shadow-gold-glow text-[#78550E] transition-all cursor-pointer select-none"
             title={t.controls.switchLangPrompt}
             aria-label={t.controls.switchLangPrompt}
           >
-            <Globe className="w-3.5 h-3.5 text-gold-dark" />
             <span className="text-xs font-bold font-cairo">
               {t.controls.langName}
             </span>

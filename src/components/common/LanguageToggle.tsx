@@ -17,7 +17,7 @@ export const LanguageToggle: React.FC<{ className?: string }> = ({ className = '
     >
       <Globe className="w-3.5 h-3.5 text-gold-dark group-hover:rotate-45 transition-transform duration-300" />
       <span className="font-semibold tracking-wide">
-        {lang === 'ar' ? 'English' : 'عربي (مصري)'}
+        {lang === 'ar' ? 'English' : 'عربي '}
       </span>
     </button>
   );
