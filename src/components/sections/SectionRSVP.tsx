@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, MessageCircle, Heart, Send, Check } from 'lucide-react';
+import { Sparkles, Heart, Send, Check } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { submitRsvp } from '../../utils/rsvp';
 import { useLanguage } from '../../context/LanguageContext';
@@ -119,16 +119,7 @@ export const SectionRSVP: React.FC = () => {
     }
   };
 
-  const whatsappText = encodeURIComponent(
-    isArabic
-      ? `تهنئة ومباركة من: ${formData.name || 'أحد المهنئين'}\n` +
-          `الحضور: ${formData.attending === 'yes' ? 'سأحضر بكل سرور إن شاء الله' : 'أعتذر بكل محبة ودعواتي لكما'}\n` +
-          `الرسالة: ${formData.message || 'ألف مليون مبروك الزفاف المبارك لمروة وعمر، ربنا يتمملكم على خير وسعادة'}`
-      : `Wedding Blessing from: ${formData.name || 'A Well-Wisher'}\n` +
-          `Attendance: ${formData.attending === 'yes' ? 'Joyfully Attending' : 'Regretfully Declining'}\n` +
-          `Message: ${formData.message || 'Warmest congratulations to Marwa & Omer! May Allah bless your union with eternal happiness'}`
-  );
-  const whatsappUrl = `https://wa.me/?text=${whatsappText}`;
+
 
   return (
     <section
@@ -180,16 +171,6 @@ export const SectionRSVP: React.FC = () => {
                   <p className="text-sm sm:text-base text-taupe-dark leading-relaxed max-w-[280px]">
                     {t.rsvp.thankYouDesc}
                   </p>
-
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[44px] rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 cursor-pointer mt-2"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>{t.rsvp.whatsappButton}</span>
-                  </a>
 
                   <button
                     onClick={() => {
@@ -300,8 +281,8 @@ export const SectionRSVP: React.FC = () => {
                     )}
                   </div>
 
-                  {/* 5. Submit Buttons */}
-                  <div className="pt-2 flex flex-col gap-2.5">
+                  {/* 5. Submit Button */}
+                  <div className="pt-2">
                     <button
                       type="submit"
                       disabled={isSubmitting}
@@ -310,16 +291,6 @@ export const SectionRSVP: React.FC = () => {
                       <Send className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                       <span>{isSubmitting ? t.rsvp.submitting : t.rsvp.submitButton}</span>
                     </button>
-
-                    <a
-                      href={whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-2.5 px-4 min-h-[44px] rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>{t.rsvp.whatsappButton}</span>
-                    </a>
                   </div>
                 </form>
               )}
