@@ -8,7 +8,6 @@ const bgMusic = '/music.mp3';
 
 // Reusable components
 import { LaceDivider } from './components/common/LaceDivider';
-import { AudioPlayer } from './components/common/AudioPlayer';
 
 // Sections in order
 import { SectionEnvelopeIntro } from './components/sections/SectionEnvelopeIntro';
@@ -134,11 +133,6 @@ export const App: React.FC = () => {
     };
   }, [isIntroDismissed, isAutoScrolling]);
 
-  // Toggle Auto Scroll
-  const toggleAutoScroll = () => {
-    setIsAutoScrolling((prev) => !prev);
-  };
-
   // Handle Audio Start on Tap
   const handleOpenStart = () => {
     if (audioRef.current) {
@@ -166,20 +160,6 @@ export const App: React.FC = () => {
     document.body.style.overflow = '';
   };
 
-  // Toggle audio play/mute
-  const toggleAudio = () => {
-    if (!audioRef.current) return;
-    if (isAudioPlaying) {
-      audioRef.current.pause();
-      setIsAudioPlaying(false);
-    } else {
-      audioRef.current
-        .play()
-        .then(() => setIsAudioPlaying(true))
-        .catch((err) => console.warn('Could not resume audio:', err));
-    }
-  };
-
   return (
     <div className="min-h-screen w-full relative bg-[#1E1815] flex justify-center selection:bg-rose/40 selection:text-taupe-dark">
       {/* Hidden Audio Element */}
@@ -198,15 +178,6 @@ export const App: React.FC = () => {
           onOpenComplete={handleOpenComplete}
         />
       )}
-
-      {/* Floating Controls: Music Player & Auto-Scroll (Shown after opening) */}
-      <AudioPlayer
-        isPlaying={isAudioPlaying}
-        onToggle={toggleAudio}
-        isAutoScrolling={isAutoScrolling}
-        onToggleAutoScroll={toggleAutoScroll}
-        visible={isIntroDismissed}
-      />
 
       {/* Desktop Ambient Dreamy Blurred Background */}
       <div className="fixed inset-0 pointer-events-none hidden md:block overflow-hidden">
