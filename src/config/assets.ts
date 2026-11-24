@@ -30,6 +30,9 @@ export const ASSETS = {
   waxSeal: '/assets/wax-seal.webp',
   waxSealSvg: '/assets/wax-seal.svg',
   paperTexture: '/assets/paper-texture.webp',
+  coupleMonogramGold: '/assets/couple-monogram-gold.png',
+  coupleMonogramWhite: '/assets/couple-monogram-white.png',
+  coupleMonogramSvg: '/assets/couple-monogram.svg',
 } as const;
 
 export type AssetKey = keyof typeof ASSETS;
