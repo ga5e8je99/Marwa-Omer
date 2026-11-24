@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useEffect, useState, useRef } from 'react';
 import Lenis from 'lenis';
 
-// Audio asset
-import bgMusic from './assets/music.mp3';
+// Audio asset served from public/music.mp3
+const bgMusic = '/music.mp3';
 
 // Reusable components
 import { LaceDivider } from './components/common/LaceDivider';
@@ -20,11 +22,17 @@ import { SectionGallery } from './components/sections/SectionGallery';
 import { SectionClosing } from './components/sections/SectionClosing';
 
 export const App: React.FC = () => {
-  // Query param support for instant preview/testing: ?opened=true
-  const isPreviewOpened = typeof window !== 'undefined' && window.location.search.includes('opened');
-  const [isIntroDismissed, setIsIntroDismissed] = useState(isPreviewOpened);
-  const [isHeroRevealed, setIsHeroRevealed] = useState(isPreviewOpened);
+  const [isIntroDismissed, setIsIntroDismissed] = useState(false);
+  const [isHeroRevealed, setIsHeroRevealed] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+
+  useEffect(() => {
+    // Query param support for instant preview/testing: ?opened=true
+    if (typeof window !== 'undefined' && window.location.search.includes('opened')) {
+      setIsIntroDismissed(true);
+      setIsHeroRevealed(true);
+    }
+  }, []);
 
   const lenisRef = useRef<Lenis | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);

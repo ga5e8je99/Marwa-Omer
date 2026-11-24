@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="m3Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#DEE9F5" />
+      <stop offset="45%" stop-color="#FFF5F2" />
+      <stop offset="80%" stop-color="#E8B4B8" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#FFF9F6" />
+    </linearGradient>
+  </defs>
+  <rect width="500" height="700" fill="url(#m3Grad)" />
+  <!-- Jasmine Garland / Floral Canopy Arches -->
+  <g opacity="0.4">
+    <path d="M 40 120 Q 250 40 460 120" fill="none" stroke="#A7C2A6" stroke-width="8" stroke-linecap="round" />
+    <circle cx="160" cy="95" r="8" fill="#FFFDF8" />
+    <circle cx="210" cy="80" r="9" fill="#F4CBD0" />
+    <circle cx="260" cy="78" r="10" fill="#FFFDF8" />
+    <circle cx="310" cy="85" r="9" fill="#F4CBD0" />
+    <circle cx="360" cy="100" r="8" fill="#FFFDF8" />
+  </g>
+  <text x="250" y="620" font-family="'Pinyon Script', cursive" font-size="28" fill="#8A7468" text-anchor="middle" opacity="0.75">Under the Jasmine Canopy</text>
+  <text x="250" y="645" font-family="'Cinzel', serif" font-size="9" letter-spacing="3" fill="#C9A24B" text-anchor="middle" opacity="0.8">SUMMER EMBRACE</text>
+</svg>

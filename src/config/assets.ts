@@ -1,51 +1,34 @@
-import envelopeBg from '../assets/envelope-bg.svg';
-import heroBg from '../assets/hero-bg.svg';
-import heroArch from '../assets/hero-arch.svg';
-import dividerLace from '../assets/divider-lace.svg';
-import bgWatercolor1 from '../assets/bg-watercolor-1.svg';
-import bgWatercolor2 from '../assets/bg-watercolor-2.svg';
-import cardMehendi from '../assets/card-mehendi.svg';
-import cardNikkah from '../assets/card-nikkah.svg';
-import cardWalima from '../assets/card-walima.svg';
-import closingBg from '../assets/closing-bg.svg';
-import stripLandscape from '../assets/strip-landscape.svg';
-import bgInvitationCard from '../assets/bg-invitation-card.svg';
-import moment1 from '../assets/gallery/moment-1.svg';
-import moment2 from '../assets/gallery/moment-2.svg';
-import moment3 from '../assets/gallery/moment-3.svg';
-import moment4 from '../assets/gallery/moment-4.svg';
-import moment5 from '../assets/gallery/moment-5.svg';
-import laceVPng from '../assets/lace-v.png';
-import laceVSvg from '../assets/lace-v.svg';
-import waxSealPng from '../assets/wax-seal.png';
-import waxSealSvg from '../assets/wax-seal.svg';
-import paperTextureJpg from '../assets/paper-texture.jpg';
-import coupleCartoonJpg from '../assets/couple-cartoon.jpg';
-
 /**
  * Single configuration entry for all visual assets & illustration slots.
- * Replace or customize any SVG or URL here to update the entire experience.
+ * Served directly from public/assets in Next.js.
  */
 export const ASSETS = {
-  envelopeBg,
-  heroBg,
-  heroArch,
-  dividerLace,
-  bgWatercolor1,
-  bgWatercolor2,
-  cardMehendi,
-  cardNikkah,
-  cardWalima,
-  closingBg,
-  stripLandscape,
-  bgInvitationCard,
-  gallery: [coupleCartoonJpg, moment1, moment2, moment3, moment4, moment5],
-  coupleCartoon: coupleCartoonJpg,
-  laceV: laceVPng,
-  laceVSvg: laceVSvg,
-  waxSeal: waxSealPng,
-  waxSealSvg: waxSealSvg,
-  paperTexture: paperTextureJpg,
+  envelopeBg: '/assets/envelope-bg.svg',
+  heroBg: '/assets/hero-bg.svg',
+  heroArch: '/assets/hero-arch.svg',
+  dividerLace: '/assets/divider-lace.svg',
+  bgWatercolor1: '/assets/bg-watercolor-1.svg',
+  bgWatercolor2: '/assets/bg-watercolor-2.svg',
+  cardMehendi: '/assets/card-mehendi.svg',
+  cardNikkah: '/assets/card-nikkah.svg',
+  cardWalima: '/assets/card-walima.svg',
+  closingBg: '/assets/closing-bg.svg',
+  stripLandscape: '/assets/strip-landscape.svg',
+  bgInvitationCard: '/assets/bg-invitation-card.svg',
+  gallery: [
+    '/assets/couple-cartoon.jpg',
+    '/assets/gallery/moment-1.svg',
+    '/assets/gallery/moment-2.svg',
+    '/assets/gallery/moment-3.svg',
+    '/assets/gallery/moment-4.svg',
+    '/assets/gallery/moment-5.svg',
+  ],
+  coupleCartoon: '/assets/couple-cartoon.jpg',
+  laceV: '/assets/lace-v.png',
+  laceVSvg: '/assets/lace-v.svg',
+  waxSeal: '/assets/wax-seal.png',
+  waxSealSvg: '/assets/wax-seal.svg',
+  paperTexture: '/assets/paper-texture.jpg',
 } as const;
 
 export type AssetKey = keyof typeof ASSETS;
