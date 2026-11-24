@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Heart, Send, Check } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
@@ -19,13 +19,6 @@ interface FormErrors {
   message?: string;
 }
 
-interface GuestbookEntry {
-  name: string;
-  message: string;
-  attending?: 'yes' | 'no';
-  time: string;
-}
-
 export const SectionRSVP: React.FC = () => {
   const { t, isArabic, dir } = useLanguage();
   const [formData, setFormData] = useState<FormState>({
@@ -38,36 +31,6 @@ export const SectionRSVP: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [entries, setEntries] = useState<GuestbookEntry[]>(t.rsvp.defaultEntries);
-
-  // Sync default entries if language changes
-  useEffect(() => {
-    setEntries(t.rsvp.defaultEntries);
-    try {
-      const stored = localStorage.getItem('rsvps');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const formatted = parsed.map((item: any) => ({
-            name: item.name || (isArabic ? 'محب للعروسين' : 'Well-wisher'),
-            message: item.message || '',
-            attending: item.attending || 'yes',
-            time: item.submittedAt
-              ? new Date(item.submittedAt).toLocaleDateString(isArabic ? 'ar-EG' : 'en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                })
-              : isArabic
-              ? 'مؤخراً'
-              : 'Recently',
-          }));
-          setEntries((prev) => [...formatted, ...prev]);
-        }
-      }
-    } catch (e) {
-      console.warn('Could not read guestbook from localStorage', e);
-    }
-  }, [t, isArabic]);
 
   const handleInputFocus = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -93,13 +56,6 @@ export const SectionRSVP: React.FC = () => {
 
     setIsSubmitting(true);
 
-    const newEntry: GuestbookEntry = {
-      name: formData.name.trim(),
-      message: formData.message.trim(),
-      attending: formData.attending,
-      time: isArabic ? 'الآن' : 'Just now',
-    };
-
     try {
       await submitRsvp({
         name: formData.name.trim(),
@@ -110,7 +66,6 @@ export const SectionRSVP: React.FC = () => {
         submittedAt: new Date().toISOString(),
       });
 
-      setEntries((prev) => [newEntry, ...prev]);
       setIsSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -297,42 +252,6 @@ export const SectionRSVP: React.FC = () => {
             </AnimatePresence>
           </div>
         </Reveal>
-
-        {/* Live Guestbook Wall */}
-        <div className="mt-10 text-start">
-          <div className="flex items-center justify-between mb-4 px-2">
-            <h3 className="font-bold text-sm sm:text-base text-taupe-dark flex items-center gap-2">
-              <Heart className="w-4 h-4 text-rose fill-rose/40" />
-              <span>
-                {t.rsvp.recentWishes} ({entries.length})
-              </span>
-            </h3>
-            <span className="text-xs text-[#78550E] font-semibold">{t.rsvp.liveBadge}</span>
-          </div>
-
-          <div className="space-y-3">
-            {entries.slice(0, 4).map((entry, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="p-4 rounded-2xl bg-cream/95 border border-gold/30 shadow-xs"
-              >
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="font-bold text-xs sm:text-sm text-[#78550E]">
-                    {entry.name}
-                  </span>
-                  <span className="text-[11px] text-taupe/60">{entry.time}</span>
-                </div>
-                <p className="font-serif italic text-xs sm:text-sm text-taupe-dark leading-relaxed">
-                  "{entry.message}"
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );

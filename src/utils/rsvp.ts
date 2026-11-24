@@ -2,54 +2,61 @@ export interface RsvpPayload {
   name: string;
   guests: number;
   attending: 'yes' | 'no';
-  events: string[];
+  events?: string[];
   message?: string;
+  submittedAt?: string;
+}
+
+export interface StoredRsvpItem extends RsvpPayload {
+  id: string;
   submittedAt: string;
 }
 
-/**
- * TODO: Connect this function to Google Sheets (Google Apps Script Web App) or Formspree.
- *
- * --- GOOGLE APPS SCRIPT SETUP ---
- * 1. Create a Google Sheet with columns: Timestamp, Name, Attending, Guests, Events, Message.
- * 2. Extensions > Apps Script, paste the doPost(e) handler that appends row.
- * 3. Deploy as Web App (Execute as: Me, Who has access: Anyone).
- * 4. Paste the Web App URL below in GOOGLE_SHEETS_ENDPOINT.
- *
- * --- FORMSPREE SETUP ---
- * 1. Create a Form on formspree.io
- * 2. Paste the endpoint below in FORMSPREE_ENDPOINT.
- */
-
 export const EXTERNAL_RSVP_CONFIG = {
   // Option A: Google Sheets Apps Script Web App URL
-  googleSheetsEndpoint: '', // e.g. 'https://script.google.com/macros/s/AKfycb.../exec'
-
+  googleSheetsEndpoint: '',
   // Option B: Formspree endpoint
-  formspreeEndpoint: '', // e.g. 'https://formspree.io/f/your_form_id'
+  formspreeEndpoint: '',
 };
 
 /**
  * Submits the RSVP payload:
- * 1. Stores in localStorage under key 'rsvps'.
- * 2. Logs to console.
- * 3. Asynchronously forwards to configured external endpoint if provided.
+ * 1. Sends to server API (/api/rsvp) for persistent dashboard storage.
+ * 2. Saves to localStorage as a client-side offline backup.
+ * 3. Asynchronously forwards to configured external endpoint (Google Sheets/Formspree) if provided.
  */
 export async function submitRsvp(
   payload: RsvpPayload
 ): Promise<{ success: boolean; error?: string }> {
-  // 1. Save to localStorage under "rsvps"
+  // 1. Send to server API
+  try {
+    const res = await fetch('/api/rsvp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      console.warn('[RSVP] Server API returned non-OK status:', res.status);
+    }
+  } catch (apiErr) {
+    console.warn('[RSVP] Could not reach server /api/rsvp:', apiErr);
+  }
+
+  // 2. Client-side localStorage backup
   try {
     const existing = localStorage.getItem('rsvps');
     const list: RsvpPayload[] = existing ? JSON.parse(existing) : [];
-    list.push(payload);
+    list.unshift({
+      ...payload,
+      submittedAt: payload.submittedAt || new Date().toISOString(),
+    });
     localStorage.setItem('rsvps', JSON.stringify(list));
   } catch (err) {
     console.warn('[RSVP] localStorage access error:', err);
   }
-
-  // 2. Console log the payload
-  console.log('[RSVP SUBMITTED SUCCESSFULLY]', payload);
 
   // 3. Forward to external endpoint if configured
   const endpoint =
@@ -58,7 +65,7 @@ export async function submitRsvp(
 
   if (endpoint) {
     try {
-      const response = await fetch(endpoint, {
+      await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,19 +73,62 @@ export async function submitRsvp(
         },
         body: JSON.stringify(payload),
       });
-
-      if (!response.ok) {
-        console.warn('[RSVP] External endpoint returned non-200 status:', response.status);
-      }
     } catch (networkError) {
       console.warn('[RSVP] External endpoint network dispatch failed:', networkError);
-      // We don't fail the user submission since it is safely in localStorage
     }
-  } else {
-    console.info(
-      '[RSVP TODO] Point EXTERNAL_RSVP_CONFIG in src/utils/rsvp.ts to your Google Sheets or Formspree endpoint when ready.'
-    );
   }
 
   return { success: true };
+}
+
+/**
+ * Fetch all RSVPs from server (used by Dashboard)
+ */
+export async function fetchRsvps(): Promise<StoredRsvpItem[]> {
+  try {
+    const res = await fetch('/api/rsvp', { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.rsvps)) {
+        return data.rsvps;
+      }
+    }
+  } catch (err) {
+    console.warn('[RSVP] fetchRsvps network error:', err);
+  }
+
+  // Fallback to local storage if server unreachable
+  try {
+    const local = localStorage.getItem('rsvps');
+    if (local) {
+      const parsed = JSON.parse(local);
+      return parsed.map((item: any, idx: number) => ({
+        id: item.id || `local-${idx}`,
+        name: item.name || 'ضيف',
+        attending: item.attending || 'yes',
+        guests: item.guests || 1,
+        message: item.message || '',
+        submittedAt: item.submittedAt || new Date().toISOString(),
+      }));
+    }
+  } catch (err) {
+    console.warn('[RSVP] localStorage read error:', err);
+  }
+
+  return [];
+}
+
+/**
+ * Delete an RSVP from server
+ */
+export async function deleteRsvpApi(id: string): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/rsvp?id=${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    return res.ok;
+  } catch (err) {
+    console.error('[RSVP] deleteRsvpApi error:', err);
+    return false;
+  }
 }
