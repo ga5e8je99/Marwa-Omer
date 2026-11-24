@@ -20,7 +20,6 @@ import { SectionLocation } from './components/sections/SectionLocation';
 import { SectionCountdown } from './components/sections/SectionCountdown';
 import { SectionRSVP } from './components/sections/SectionRSVP';
 import { SectionOurStory } from './components/sections/SectionOurStory';
-import { SectionGallery } from './components/sections/SectionGallery';
 import { SectionClosing } from './components/sections/SectionClosing';
 
 const MainAppContent: React.FC = () => {
@@ -247,11 +246,6 @@ const MainAppContent: React.FC = () => {
 
         {/* 9. Our Story */}
         <SectionOurStory />
-
-        <LaceDivider variant="subtle" />
-
-        {/* 10. Our Moments photo gallery */}
-        <SectionGallery />
 
         <LaceDivider />
 
