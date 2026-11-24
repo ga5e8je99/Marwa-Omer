@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
-import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface AudioPlayerProps {
   isPlaying: boolean;
@@ -17,6 +20,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   onToggleAutoScroll,
   visible,
 }) => {
+  const { lang, toggleLang, t, dir } = useLanguage();
+
   return (
     <AnimatePresence>
       {visible && (
@@ -26,9 +31,23 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="fixed bottom-5 left-4 z-40 flex items-center gap-2"
-          dir="rtl"
+          dir={dir}
         >
-          {/* 1. Auto Scroll Button */}
+          {/* 1. Language Switcher Button */}
+          <button
+            onClick={toggleLang}
+            type="button"
+            className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-full bg-cream/95 backdrop-blur-md border border-gold/50 shadow-soft-float hover:border-gold hover:shadow-gold-glow text-[#78550E] transition-all cursor-pointer select-none"
+            title={t.controls.switchLangPrompt}
+            aria-label={t.controls.switchLangPrompt}
+          >
+            <Globe className="w-3.5 h-3.5 text-gold-dark" />
+            <span className="text-xs font-bold font-cairo">
+              {t.controls.langName}
+            </span>
+          </button>
+
+          {/* 2. Auto Scroll Button */}
           {onToggleAutoScroll && (
             <button
               onClick={onToggleAutoScroll}
@@ -38,8 +57,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   ? 'bg-cream border-gold shadow-gold-glow text-[#78550E]'
                   : 'bg-cream/95 border-gold/45 hover:border-gold text-taupe-dark'
               }`}
-              aria-label={isAutoScrolling ? 'إيقاف التمرير التلقائي' : 'تشغيل التمرير التلقائي'}
-              title={isAutoScrolling ? 'إيقاف التمرير' : 'تمرير تلقائي'}
+              aria-label={isAutoScrolling ? t.controls.autoScrollOff : t.controls.autoScrollOn}
+              title={isAutoScrolling ? t.controls.autoScrollOff : t.controls.autoScrollOn}
             >
               {isAutoScrolling ? (
                 <span className="relative flex h-2.5 w-2.5">
@@ -56,21 +75,20 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 <Play className="w-4 h-4 text-taupe/70 group-hover:text-gold-dark fill-current" />
               )}
 
-              <span className="font-cairo text-xs font-semibold">
-                {isAutoScrolling ? 'إيقاف التمرير' : 'تمرير تلقائي'}
+              <span className="text-xs font-semibold">
+                {isAutoScrolling ? t.controls.autoScrollOff : t.controls.autoScrollOn}
               </span>
             </button>
           )}
 
-          {/* 2. Floating Music Button */}
+          {/* 3. Floating Music Button */}
           <button
             onClick={onToggle}
             type="button"
             className="group relative flex items-center gap-2 px-3.5 py-2.5 min-h-[44px] rounded-full bg-cream/95 backdrop-blur-md border border-gold/60 shadow-soft-float hover:border-gold hover:shadow-gold-glow transition-all duration-300 cursor-pointer select-none"
-            aria-label={isPlaying ? 'كتم الموسيقى' : 'تشغيل الموسيقى'}
-            title={isPlaying ? 'كتم الموسيقى' : 'تشغيل الموسيقى'}
+            aria-label={isPlaying ? t.controls.musicMute : t.controls.musicPlay}
+            title={isPlaying ? t.controls.musicMute : t.controls.musicPlay}
           >
-            {/* Visualizer Waves */}
             <div className="flex items-center gap-0.5 h-4 px-0.5">
               {[0, 1, 2].map((i) => (
                 <motion.span
@@ -99,7 +117,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               ))}
             </div>
 
-            {/* Icon */}
             <div className="text-taupe-dark group-hover:text-gold-dark transition-colors">
               {isPlaying ? (
                 <Volume2 className="w-4 h-4 text-[#78550E]" />
@@ -108,8 +125,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               )}
             </div>
 
-            <span className="font-cairo text-xs font-semibold text-[#58463D] group-hover:text-gold-dark">
-              {isPlaying ? 'الموسيقى' : 'مكتوم'}
+            <span className="text-xs font-semibold text-[#58463D] group-hover:text-gold-dark">
+              {isPlaying ? t.controls.musicPlay : t.controls.musicMute}
             </span>
           </button>
         </motion.div>

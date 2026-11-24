@@ -6,9 +6,11 @@ import Lenis from 'lenis';
 // Audio asset served from public/music.mp3
 const bgMusic = '/music.mp3';
 
-// Reusable components
+// Context & Reusable components
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { LaceDivider } from './components/common/LaceDivider';
 import { AudioPlayer } from './components/common/AudioPlayer';
+import { LanguageToggle } from './components/common/LanguageToggle';
 
 // Sections in order
 import { SectionEnvelopeIntro } from './components/sections/SectionEnvelopeIntro';
@@ -21,7 +23,8 @@ import { SectionOurStory } from './components/sections/SectionOurStory';
 import { SectionGallery } from './components/sections/SectionGallery';
 import { SectionClosing } from './components/sections/SectionClosing';
 
-export const App: React.FC = () => {
+const MainAppContent: React.FC = () => {
+  const { dir, isArabic } = useLanguage();
   const [isIntroDismissed, setIsIntroDismissed] = useState(false);
   const [isHeroRevealed, setIsHeroRevealed] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -51,7 +54,7 @@ export const App: React.FC = () => {
     });
     lenisRef.current = lenis;
 
-    // Body & HTML scroll locked while envelope is active (including iOS Safari)
+    // Body & HTML scroll locked while envelope is active
     if (!isIntroDismissed) {
       lenis.stop();
       document.body.style.overflow = 'hidden';
@@ -87,7 +90,7 @@ export const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, [isIntroDismissed]);
 
-  // Smooth Auto-scroll RAF loop (gentle reading pace ~45px/sec)
+  // Smooth Auto-scroll RAF loop
   useEffect(() => {
     if (!isIntroDismissed || !isAutoScrolling) return;
 
@@ -103,7 +106,6 @@ export const App: React.FC = () => {
       if (lenis && isAutoScrollingRef.current) {
         const maxScroll = lenis.limit || (document.documentElement.scrollHeight - window.innerHeight);
         if (lenis.scroll >= maxScroll - 4) {
-          // Reached the end of page
           setIsAutoScrolling(false);
           return;
         }
@@ -115,7 +117,6 @@ export const App: React.FC = () => {
 
     rafId = requestAnimationFrame(step);
 
-    // Pause auto-scroll on any manual user interaction
     const handleUserInteraction = () => {
       if (isAutoScrollingRef.current) {
         setIsAutoScrolling(false);
@@ -134,16 +135,14 @@ export const App: React.FC = () => {
     };
   }, [isIntroDismissed, isAutoScrolling]);
 
-  // Handle Audio Start on Tap
+  // Audio Playback
   const handleOpenStart = () => {
     if (audioRef.current) {
       audioRef.current.volume = 0.45;
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise
-          .then(() => {
-            setIsAudioPlaying(true);
-          })
+          .then(() => setIsAudioPlaying(true))
           .catch((error) => {
             console.warn('Autoplay prevented by browser policy:', error);
             setIsAudioPlaying(false);
@@ -152,7 +151,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // Toggle audio play/pause
   const toggleAudio = () => {
     if (!audioRef.current) return;
     if (isAudioPlaying) {
@@ -166,12 +164,10 @@ export const App: React.FC = () => {
     }
   };
 
-  // Toggle auto-scroll on/off
   const toggleAutoScroll = () => {
     setIsAutoScrolling((prev) => !prev);
   };
 
-  // Complete opening sequence: unmount overlay & unlock scroll
   const handleOpenComplete = () => {
     setIsIntroDismissed(true);
     if (lenisRef.current) {
@@ -181,8 +177,13 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-[#1E1815] flex justify-center selection:bg-rose/40 selection:text-taupe-dark">
-      {/* Hidden Audio Element with metadata preload */}
+    <div
+      dir={dir}
+      className={`min-h-screen w-full relative bg-[#1E1815] flex justify-center selection:bg-rose/40 selection:text-taupe-dark ${
+        isArabic ? 'font-cairo' : 'font-sans'
+      }`}
+    >
+      {/* Hidden Audio Element */}
       <audio
         ref={audioRef}
         src={bgMusic}
@@ -190,7 +191,12 @@ export const App: React.FC = () => {
         preload="metadata"
       />
 
-      {/* 1. Full Viewport Envelope Intro Screen (Fixed on top until opened) */}
+      {/* Top Floating Language Switcher Pill (Always accessible on all devices) */}
+      <div className="fixed top-4 start-4 z-50 pointer-events-auto">
+        <LanguageToggle />
+      </div>
+
+      {/* 1. Full Viewport Envelope Intro Screen */}
       {!isIntroDismissed && (
         <SectionEnvelopeIntro
           onOpenStart={handleOpenStart}
@@ -199,7 +205,7 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Floating Controls: Music Player & Auto-Scroll (Shown after opening) */}
+      {/* Floating Controls: Music Player & Auto-Scroll & Language (Shown after opening) */}
       <AudioPlayer
         isPlaying={isAudioPlaying}
         onToggle={toggleAudio}
@@ -218,12 +224,12 @@ export const App: React.FC = () => {
 
       {/* Mobile-First Centered Container (390px - 480px width) */}
       <main className="relative w-full max-w-[480px] min-h-screen bg-cream shadow-2xl md:border-x md:border-gold/30 flex flex-col overflow-x-hidden">
-        {/* 2. Hero: The primary grand invitation with couple, arch, and verse */}
+        {/* 2. Hero: The primary grand invitation */}
         <SectionHero isRevealed={isHeroRevealed} />
 
         <LaceDivider />
 
-        {/* 3. Wedding Event Cards (Comprehensive details for Mehndi, Nikkah, Walima) */}
+        {/* 3. Wedding Event Card */}
         <SectionEventCards />
 
         <LaceDivider variant="subtle" />
@@ -231,20 +237,20 @@ export const App: React.FC = () => {
         {/* 5. Dedicated Venue Location & Interactive Map Section */}
         <SectionLocation />
 
-        {/* 7. Countdown timer (enclosed between its two lace bands) */}
+        {/* 7. Countdown timer */}
         <SectionCountdown />
 
-        {/* 8. RSVP form */}
+        {/* 8. RSVP / Guestbook form */}
         <SectionRSVP />
 
         <LaceDivider />
 
-        {/* 9. Our Story (3 numbered chapters) */}
+        {/* 9. Our Story */}
         <SectionOurStory />
 
         <LaceDivider variant="subtle" />
 
-        {/* 10. Our Moments photo gallery in an arch frame carousel */}
+        {/* 10. Our Moments photo gallery */}
         <SectionGallery />
 
         <LaceDivider />
@@ -253,6 +259,14 @@ export const App: React.FC = () => {
         <SectionClosing />
       </main>
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <LanguageProvider>
+      <MainAppContent />
+    </LanguageProvider>
   );
 };
 

@@ -5,10 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Heart } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { LaceDivider } from '../common/LaceDivider';
-import { INVITATION_DATA } from '../../data/invitation';
 import { ASSETS } from '../../config/assets';
+import { useLanguage } from '../../context/LanguageContext';
 
-// 12-Lobed Scalloped Circle SVG
 const ScallopedCircle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="relative w-[72px] sm:w-[84px] h-[72px] sm:h-[84px] flex items-center justify-center select-none">
@@ -70,6 +69,7 @@ interface TimeRemaining {
 }
 
 export const SectionCountdown: React.FC = () => {
+  const { t, dir } = useLanguage();
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
     days: 0,
     hours: 0,
@@ -79,7 +79,7 @@ export const SectionCountdown: React.FC = () => {
   });
 
   useEffect(() => {
-    const targetTime = new Date(INVITATION_DATA.targetDateISO).getTime();
+    const targetTime = new Date(t.targetDateISO).getTime();
 
     const updateTimer = () => {
       const now = new Date().getTime();
@@ -112,13 +112,13 @@ export const SectionCountdown: React.FC = () => {
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [t.targetDateISO]);
 
   const countdownUnits = [
-    { label: 'يوم', value: timeRemaining.days },
-    { label: 'ساعة', value: timeRemaining.hours },
-    { label: 'دقيقة', value: timeRemaining.minutes },
-    { label: 'ثانية', value: timeRemaining.seconds },
+    { label: t.countdown.days, value: timeRemaining.days },
+    { label: t.countdown.hours, value: timeRemaining.hours },
+    { label: t.countdown.minutes, value: timeRemaining.minutes },
+    { label: t.countdown.seconds, value: timeRemaining.seconds },
   ];
 
   return (
@@ -128,7 +128,8 @@ export const SectionCountdown: React.FC = () => {
       <section
         id="section-countdown"
         className="relative py-14 px-4 sm:px-6 paper-texture bg-cream overflow-hidden text-center select-none"
-        aria-label="العد التنازلي لحفل الزفاف"
+        aria-label={t.countdown.title}
+        dir={dir}
       >
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <img
@@ -143,11 +144,11 @@ export const SectionCountdown: React.FC = () => {
         <div className="relative z-10 max-w-[420px] mx-auto">
           {/* Header */}
           <Reveal delay={0.1} className="mb-8">
-            <span className="font-cairo text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
-              حتى موعد حفل الزفاف
+            <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+              {t.countdown.tag}
             </span>
             <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
-              العد التنازلي
+              {t.countdown.title}
             </h2>
             <div className="flex items-center justify-center gap-2 mt-2">
               <span className="h-[1px] w-10 bg-gold/40" />
@@ -156,7 +157,7 @@ export const SectionCountdown: React.FC = () => {
             </div>
           </Reveal>
 
-          {/* Conditional Display: Countdown or Past Celebration Message */}
+          {/* Conditional Display */}
           {timeRemaining.isPassed ? (
             <Reveal delay={0.2}>
               <div className="border border-gold/45 rounded-3xl p-7 bg-cream/95 backdrop-blur-xs shadow-paper space-y-3">
@@ -164,19 +165,19 @@ export const SectionCountdown: React.FC = () => {
                   <Heart className="w-7 h-7 fill-gold/25" />
                 </div>
                 <h3 className="font-serif font-bold text-2xl sm:text-3xl text-[#78550E] py-0.5">
-                  الحمد لله الذي بنعمته تتم الصالحات
+                  {t.countdown.passedTitle}
                 </h3>
-                <p className="font-cairo text-sm sm:text-base text-taupe-dark max-w-xs mx-auto leading-relaxed font-medium">
-                  تم بحمد الله وتوفيقه زفافنا المبارك • نسأل الله دوام السعادة والمودة والبركة في حياتنا.
+                <p className="text-sm sm:text-base text-taupe-dark max-w-xs mx-auto leading-relaxed font-medium">
+                  {t.countdown.passedDesc}
                 </p>
-                <p className="font-cairo text-xs sm:text-sm font-bold text-[#78550E] pt-2">
-                  شكراً لكل من شاركنا الفرحة بصادق الدعوات والمحبة
+                <p className="text-xs sm:text-sm font-bold text-[#78550E] pt-2">
+                  {t.countdown.passedFooter}
                 </p>
               </div>
             </Reveal>
           ) : (
             <Reveal delay={0.2}>
-              <div className="flex items-center justify-center gap-3 sm:gap-4 py-2" dir="rtl">
+              <div className="flex items-center justify-center gap-3 sm:gap-4 py-2">
                 {countdownUnits.map((unit) => (
                   <div key={unit.label} className="flex flex-col items-center">
                     <ScallopedCircle>
@@ -199,16 +200,16 @@ export const SectionCountdown: React.FC = () => {
                       </div>
                     </ScallopedCircle>
 
-                    <span className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark mt-2">
+                    <span className="text-xs sm:text-sm font-bold text-taupe-dark mt-2">
                       {unit.label}
                     </span>
                   </div>
                 ))}
               </div>
 
-              {/* Ceremony Target Date Line */}
-              <p className="font-cairo font-semibold text-xs sm:text-sm text-taupe-dark/85 mt-6">
-                {INVITATION_DATA.weddingDateFormatted} · {INVITATION_DATA.events[0].time}
+              {/* Target Line */}
+              <p className="font-semibold text-xs sm:text-sm text-taupe-dark/85 mt-6">
+                {t.countdown.targetLine}
               </p>
             </Reveal>
           )}

@@ -5,7 +5,7 @@ import { Heart } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { GoldFlourish } from '../common/GoldFlourish';
 import { ASSETS } from '../../config/assets';
-import { INVITATION_DATA } from '../../data/invitation';
+import { useLanguage } from '../../context/LanguageContext';
 
 const SparkleStar: React.FC = () => (
   <svg
@@ -31,11 +31,13 @@ const SparkleStar: React.FC = () => (
 );
 
 export const SectionClosing: React.FC = () => {
+  const { t, dir } = useLanguage();
+
   return (
     <footer
       id="section-closing"
       className="relative pt-16 pb-12 px-6 paper-texture select-none overflow-hidden text-center bg-cream"
-      dir="rtl"
+      dir={dir}
     >
       <div className="absolute inset-0 pointer-events-none opacity-40 z-0">
         <img
@@ -53,7 +55,7 @@ export const SectionClosing: React.FC = () => {
           <GoldFlourish />
         </Reveal>
 
-        {/* Small Gold Sparkle Star */}
+        {/* Sparkle Star */}
         <Reveal delay={0.2} className="mb-4">
           <div className="w-11 h-11 rounded-full bg-cream/80 border border-gold/40 flex items-center justify-center shadow-xs">
             <SparkleStar />
@@ -63,11 +65,11 @@ export const SectionClosing: React.FC = () => {
         {/* Inscription */}
         <Reveal delay={0.25} className="mb-6 px-2">
           <h2 className="font-serif font-bold text-2xl sm:text-3xl text-[#78550E] py-1 leading-relaxed max-w-[340px] mx-auto drop-shadow-xs">
-            "نسعد ونتشرف بحضوركم لمشاركتنا فرحة العمر، سائلين الله عز وجل أن يبارك لنا ولكم ويملأ أيامنا بالمودة والسرور."
+            "{t.closing.inscription}"
           </h2>
         </Reveal>
 
-        {/* Thin Divider */}
+        {/* Divider */}
         <Reveal delay={0.3} className="w-full my-3">
           <div className="flex items-center justify-center gap-3">
             <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
@@ -78,28 +80,28 @@ export const SectionClosing: React.FC = () => {
 
         {/* Blessings of families */}
         <Reveal delay={0.35} className="mb-4">
-          <p className="font-cairo text-xs sm:text-sm font-bold text-[#78550E]">
-            ببركة ورضا الوالدين والأهل والأحباب
+          <p className="text-xs sm:text-sm font-bold text-[#78550E]">
+            {t.closing.familyBlessing}
           </p>
         </Reveal>
 
-        {/* Couple Signature: مروة وعمر */}
+        {/* Couple Signature: Marwa & Omer */}
         <Reveal delay={0.4} className="mb-2">
           <h1 className="font-script text-5xl sm:text-6xl text-gold-gradient py-0.5 drop-shadow-xs">
-            {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
+            {t.couple.bride} &amp; {t.couple.groom}
           </h1>
         </Reveal>
 
-        {/* Date: 1 · 1 · 2027 */}
+        {/* Date */}
         <Reveal delay={0.45} className="mb-10">
           <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-cream/90 border border-gold/40 shadow-xs">
-            <span className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark">
-              ١ · ١ · ٢٠٢٧
+            <span className="text-xs sm:text-sm font-bold text-taupe-dark">
+              {t.closing.dateBadge}
             </span>
           </div>
         </Reveal>
 
-        {/* Bottom Ornamental Floral flourish */}
+        {/* Bottom Flourish */}
         <Reveal delay={0.5} className="w-full mb-8">
           <GoldFlourish flipped={true} />
         </Reveal>
@@ -108,15 +110,15 @@ export const SectionClosing: React.FC = () => {
         <Reveal delay={0.55} className="w-full pt-6 border-t border-gold/25 space-y-2">
           <div className="flex items-center justify-center gap-1.5 text-[#78550E] text-xs sm:text-sm">
             <Heart className="w-4 h-4 text-rose fill-rose/30" />
-            <span className="font-serif italic font-medium">بكل الحب والتقدير والامتنان</span>
+            <span className="font-serif italic font-medium">{t.closing.gratitude}</span>
           </div>
 
-          <p className="font-cairo text-xs text-taupe-dark/80 font-bold">
-            حفل زفاف مروة وعمر • قاعة رويال، الإسماعيلية
+          <p className="text-xs text-taupe-dark/80 font-bold">
+            {t.closing.weddingOf}
           </p>
 
-          <p className="font-cairo text-[11px] text-taupe/60">
-            جميع الحقوق محفوظة © ٢٠٢٧
+          <p className="text-[11px] text-taupe/60">
+            {t.closing.rights}
           </p>
         </Reveal>
       </div>

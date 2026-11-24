@@ -3,8 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import { INVITATION_DATA } from '../../data/invitation';
 import { ASSETS } from '../../config/assets';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SectionEnvelopeIntroProps {
   onOpenStart?: () => void;
@@ -17,7 +17,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
   onRevealHero,
   onOpenComplete,
 }) => {
-  // Phases: 'closed' -> 'opening' (flap flips up) -> 'rising' (card comes out) -> 'expanding' (card becomes page) -> 'done'
+  const { t, isArabic, dir } = useLanguage();
   const [phase, setPhase] = useState<'closed' | 'opening' | 'rising' | 'expanding' | 'done'>('closed');
   const [hasInteracted, setHasInteracted] = useState(false);
   const interactionLockRef = useRef(false);
@@ -38,20 +38,16 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
     interactionLockRef.current = true;
     setHasInteracted(true);
 
-    // 1. Start audio immediately
     if (onOpenStart) {
       onOpenStart();
     }
 
-    // Phase 1: Flap flips open in 3D (0.0s - 0.7s)
     setPhase('opening');
 
-    // Phase 2: Card rises up out of envelope pocket (0.65s - 1.6s)
     setTimeout(() => {
       setPhase('rising');
     }, 650);
 
-    // Phase 3: Card expands to fill screen & envelope fades out (1.6s - 2.6s)
     setTimeout(() => {
       setPhase('expanding');
       if (onRevealHero) {
@@ -59,7 +55,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
       }
     }, 1650);
 
-    // Phase 4: Sequence complete & unmount envelope overlay (2.7s)
     setTimeout(() => {
       setPhase('done');
       if (onOpenComplete) {
@@ -77,14 +72,15 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
   return (
     <div
       id="envelope-intro-overlay"
-      className={`fixed inset-0 z-50 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none transition-colors duration-1000 ${
+      className={`fixed inset-0 z-40 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none transition-colors duration-1000 ${
         isCardExpanding ? 'bg-cream' : 'bg-[#181311]'
       }`}
       style={{ perspective: '1400px' }}
       onClick={handleOpen}
       role="button"
       tabIndex={0}
-      aria-label="انقر لفتح ظرف دعوة الزفاف"
+      aria-label={t.intro.tapPrompt}
+      dir={dir}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') handleOpen();
       }}
@@ -115,7 +111,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
         >
           {/* 1. Envelope Back Base (Layer 1 - deepest) */}
           <div className="absolute inset-0 rounded-2xl bg-[#E8C7C0] border border-gold/40 shadow-2xl overflow-hidden z-10">
-            {/* Satin Lining Pattern inside the envelope */}
             <div className="absolute inset-0 bg-gradient-to-b from-[#F5E2BE]/50 via-[#E8C7C0] to-[#DFB3A8] opacity-90">
               <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="opacity-20">
                 <defs>
@@ -128,7 +123,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             </div>
           </div>
 
-          {/* 2. THE WEDDING INVITATION CARD (Layer 2: tucked inside, glides UP out of the envelope) */}
+          {/* 2. THE WEDDING INVITATION CARD (Layer 2) */}
           <motion.div
             initial={{ y: 0, scale: 0.98 }}
             animate={
@@ -157,40 +152,40 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             {/* Fine Inner Gold Border */}
             <div className="absolute inset-1.5 rounded-lg border border-gold/30 pointer-events-none" />
 
-            {/* Top: Quranic Verse Preview */}
+            {/* Top: Spiritual Inscription Preview */}
             <div className="text-center pt-1 z-10">
-              <span className="font-amiri text-xs text-taupe-dark tracking-wide block font-semibold">
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+              <span className="font-amiri text-xs text-taupe-dark tracking-wide block font-bold">
+                {t.bismillah.arabic}
               </span>
-              <p className="font-amiri text-[12px] text-taupe-dark/90 mt-0.5 max-w-[260px] mx-auto leading-tight font-medium">
-                {INVITATION_DATA.bismillah.verseArabic}
+              <p className="font-serif italic text-[11px] text-taupe-dark/85 mt-0.5 max-w-[270px] mx-auto leading-tight font-medium">
+                {isArabic ? t.bismillah.verse : t.bismillah.translation || t.bismillah.verse}
               </p>
             </div>
 
             {/* Center: Grand Couple Names */}
             <div className="text-center my-auto z-10 flex flex-col items-center">
-              <span className="font-cairo text-[11px] font-semibold text-[#78550E] block mb-0.5">
-                ببركة ورضا الوالدين والأهل والأحباب
+              <span className="text-[11px] font-semibold text-[#78550E] block mb-0.5">
+                {t.couple.parentsTitle}
               </span>
               <h2 className="font-script text-3xl sm:text-4xl text-gold-gradient py-0.5">
-                {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
+                {t.couple.bride} &amp; {t.couple.groom}
               </h2>
               <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cream/90 border border-gold/40 shadow-2xs mt-1">
                 <Sparkles className="w-3 h-3 text-gold" />
-                <span className="font-cairo text-[11px] text-taupe-dark font-bold">
-                  {INVITATION_DATA.weddingDateFormatted}
+                <span className="text-[11px] text-taupe-dark font-bold">
+                  {t.weddingDateFormatted}
                 </span>
               </div>
             </div>
 
             {/* Bottom: Venue & Invitation prompt */}
             <div className="w-full text-center pb-1 z-10 flex flex-col items-center">
-              <p className="font-cairo text-[11px] text-taupe-dark font-medium">
-                {INVITATION_DATA.venue.subtitle}
+              <p className="text-[11px] text-taupe-dark font-medium">
+                {t.location.venueSubtitle}
               </p>
               <div className="w-12 h-[1px] bg-gold/40 mt-1 mb-1" />
-              <span className="font-cairo text-xs text-[#78550E] font-bold">
-                دعوة زفاف خاصة ✦ مرحباً بكم
+              <span className="text-xs text-[#78550E] font-bold">
+                {t.intro.cardTag}
               </span>
             </div>
 
@@ -204,9 +199,8 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             </div>
           </motion.div>
 
-          {/* 3. Envelope Pocket (Layer 3 - Front flaps covering bottom & sides of card) */}
+          {/* 3. Envelope Pocket */}
           <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden rounded-2xl">
-            {/* SVG Pocket Flaps: Left, Right & Bottom */}
             <svg
               viewBox="0 0 370 250"
               className="w-full h-full drop-shadow-md"
@@ -231,7 +225,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                 </filter>
               </defs>
 
-              {/* Left Triangular Flap */}
               <polygon
                 points="0,0 185,130 0,250"
                 fill="url(#pocketLeft)"
@@ -239,7 +232,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                 strokeWidth="1"
               />
 
-              {/* Right Triangular Flap */}
               <polygon
                 points="370,0 185,130 370,250"
                 fill="url(#pocketRight)"
@@ -247,7 +239,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                 strokeWidth="1"
               />
 
-              {/* Bottom Triangular Flap overlapping left & right */}
               <polygon
                 points="0,250 185,115 370,250"
                 fill="url(#pocketBottom)"
@@ -256,7 +247,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                 filter="url(#pocketShadow)"
               />
 
-              {/* Subtle Gold Outline on the bottom flap edge */}
               <polyline
                 points="0,250 185,115 370,250"
                 fill="none"
@@ -267,7 +257,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             </svg>
           </div>
 
-          {/* 4. Top Triangular Flap with 3D Flip (Layer 4 in closed state, flips up to -180deg) */}
+          {/* 4. Top Triangular Flap with 3D Flip */}
           <motion.div
             initial={{ rotateX: 0 }}
             animate={isFlapOpen ? { rotateX: -180 } : { rotateX: 0 }}
@@ -279,7 +269,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
               zIndex: isFlapOpen ? 5 : 40,
             }}
           >
-            {/* Front of Flap (pointing down when closed) */}
             <div className="absolute inset-0 backface-hidden">
               <svg
                 viewBox="0 0 370 135"
@@ -297,7 +286,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                   </filter>
                 </defs>
 
-                {/* Triangle pointing downwards */}
                 <polygon
                   points="0,0 370,0 185,130"
                   fill="url(#flapFront)"
@@ -306,7 +294,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                   filter="url(#flapEdgeShadow)"
                 />
 
-                {/* Gold Lace/Filigree V-line */}
                 <polyline
                   points="15,4 185,124 355,4"
                   fill="none"
@@ -318,7 +305,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
               </svg>
             </div>
 
-            {/* Back / Inside of Flap (revealed when flipped 180deg upwards) */}
             <div
               className="absolute inset-0 rounded-t-2xl backface-hidden"
               style={{ transform: 'rotateX(180deg)' }}
@@ -335,7 +321,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                   stroke="#D9ACA1"
                   strokeWidth="1"
                 />
-                {/* Inside gold sheen */}
                 <polygon
                   points="10,130 360,130 185,15"
                   fill="none"
@@ -347,7 +332,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             </div>
           </motion.div>
 
-          {/* 5. GOLDEN WAX SEAL (Centered at flap tip, pops/fades when opened) */}
+          {/* 5. GOLDEN WAX SEAL */}
           <div
             className="absolute left-1/2 -translate-x-1/2 z-50 pointer-events-auto cursor-pointer"
             style={{ top: '90px', width: '80px', height: '80px' }}
@@ -361,7 +346,6 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                   transition={{ duration: 0.35, ease: 'easeOut' }}
                   className="w-full h-full flex items-center justify-center filter drop-shadow-[0_8px_16px_rgba(70,30,8,0.45)] group"
                 >
-                  {/* Organic Gold Seal SVG */}
                   <svg
                     viewBox="0 0 80 80"
                     className="w-full h-full transition-transform duration-300 group-hover:scale-105"
@@ -381,13 +365,11 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
                       </linearGradient>
                     </defs>
 
-                    {/* Outer wavy wax pool */}
                     <circle cx="40" cy="40" r="37" fill="url(#sealGoldGrad)" />
                     <circle cx="40" cy="40" r="34" fill="none" stroke="url(#rimGoldGrad)" strokeWidth="2.5" />
                     <circle cx="40" cy="40" r="30" fill="none" stroke="#FFEBA1" strokeWidth="1" strokeDasharray="2 3" opacity="0.8" />
                     <circle cx="40" cy="40" r="28" fill="#B38022" />
 
-                    {/* Center Arabic Calligraphy */}
                     <text
                       x="40"
                       y="33"
@@ -428,7 +410,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
           </div>
         </motion.div>
 
-        {/* 6. "TAP TO OPEN" Call to action */}
+        {/* 6. Tap to open Call to action */}
         <AnimatePresence>
           {!hasInteracted && (
             <motion.div
@@ -440,13 +422,13 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             >
               <div className="flex items-center gap-2">
                 <span className="w-6 h-[1px] bg-gold/50" />
-                <span className="font-cairo text-sm tracking-wider text-gold-shimmer font-bold">
-                  دعوة زفاف خاصة
+                <span className="text-sm tracking-wider text-gold-shimmer font-bold">
+                  {t.intro.badge}
                 </span>
                 <span className="w-6 h-[1px] bg-gold/50" />
               </div>
-              <p className="font-cairo text-xs text-taupe-light/90 font-medium">
-                انقر على الشمع لفتح ظرف الدعوة ✉️
+              <p className="text-xs text-taupe-light/90 font-medium">
+                {t.intro.tapSubtitle}
               </p>
             </motion.div>
           )}

@@ -4,15 +4,16 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, type PanInfo, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
-import { INVITATION_DATA } from '../../data/invitation';
+import { useLanguage } from '../../context/LanguageContext';
 
 export const SectionGallery: React.FC = () => {
+  const { t, dir } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  const moments = INVITATION_DATA.moments;
+  const moments = t.gallery.moments;
   const autoplayTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const nextSlide = useCallback(() => {
@@ -25,7 +26,6 @@ export const SectionGallery: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + moments.length) % moments.length);
   }, [moments.length]);
 
-  // Autoplay every 4s, pause on touch/hover or if reduced motion is preferred
   useEffect(() => {
     if (isPaused || shouldReduceMotion) return;
 
@@ -52,22 +52,22 @@ export const SectionGallery: React.FC = () => {
     }
   };
 
-  const currentMoment = moments[currentIndex];
+  const currentMoment = moments[currentIndex] || moments[0];
 
   return (
     <section
       id="section-gallery"
       className="relative py-16 px-5 sm:px-6 paper-texture bg-gradient-to-b from-cream via-blush-50/40 to-cream overflow-hidden select-none"
-      dir="rtl"
+      dir={dir}
     >
       <div className="max-w-[420px] mx-auto text-center">
         {/* Header */}
         <Reveal delay={0.1} className="mb-10">
-          <span className="font-cairo text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
-            أجمل الذكريات
+          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+            {t.gallery.tag}
           </span>
           <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
-            ألبوم اللحظات
+            {t.gallery.title}
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
             <span className="h-[1px] w-10 bg-gold/40" />
@@ -76,7 +76,7 @@ export const SectionGallery: React.FC = () => {
           </div>
         </Reveal>
 
-        {/* Swipeable Arch-Shaped Frame Carousel */}
+        {/* Swipeable Arch Frame Carousel */}
         <Reveal delay={0.2}>
           <div
             className="relative mx-auto w-full max-w-[320px] touch-pan-y"
@@ -85,7 +85,6 @@ export const SectionGallery: React.FC = () => {
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
           >
-            {/* The Signature ARCH-Shaped Frame */}
             <div
               style={{ borderRadius: '999px 999px 28px 28px' }}
               className="relative w-full h-[440px] sm:h-[460px] border-2 border-gold/55 bg-cream shadow-soft-float p-2.5 overflow-hidden flex flex-col items-center justify-center"
@@ -123,15 +122,14 @@ export const SectionGallery: React.FC = () => {
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
-                    {/* Photo Caption Overlay at Bottom */}
                     <div className="absolute bottom-5 left-4 right-4 text-center text-white z-10 pointer-events-none">
-                      <span className="font-cairo text-xs font-semibold text-gold-shimmer block mb-1">
-                        صورة {currentIndex + 1} من {moments.length}
+                      <span className="text-xs font-semibold text-gold-shimmer block mb-1">
+                        {t.gallery.photoCounter(currentIndex + 1, moments.length)}
                       </span>
                       <h4 className="font-serif font-bold text-2xl sm:text-3xl text-white drop-shadow-md leading-tight">
                         {currentMoment.title}
                       </h4>
-                      <p className="font-cairo text-xs sm:text-sm text-white/95 mt-1 max-w-[240px] mx-auto drop-shadow-sm font-medium">
+                      <p className="text-xs sm:text-sm text-white/95 mt-1 max-w-[240px] mx-auto drop-shadow-sm font-medium">
                         "{currentMoment.caption}"
                       </p>
                     </div>
@@ -139,23 +137,23 @@ export const SectionGallery: React.FC = () => {
                 </AnimatePresence>
               </motion.div>
 
-              {/* Prev / Next Circular Arrow Buttons (Min 44x44px for Touch) */}
+              {/* Prev / Next Circular Arrow Buttons (44x44px for touch) */}
               <button
                 onClick={prevSlide}
                 type="button"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                aria-label="الصورة السابقة"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                aria-label={t.gallery.prevAria}
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
 
               <button
                 onClick={nextSlide}
                 type="button"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                aria-label="الصورة التالية"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                aria-label={t.gallery.nextAria}
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>

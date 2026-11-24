@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, ExternalLink, Sparkles } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
-import { INVITATION_DATA, type WeddingEvent } from '../../data/invitation';
+import { ASSETS } from '../../config/assets';
+import { useLanguage } from '../../context/LanguageContext';
 
-// Symmetrical Hanging Golden Lantern SVG Component that gently sways
 interface HangingLanternProps {
   align?: 'left' | 'right';
   delay?: number;
@@ -115,11 +115,8 @@ const HangingLantern: React.FC<HangingLanternProps> = ({
   );
 };
 
-// Single Wedding Event Card with 3D Tilt Parallax & Arched Frame
-const EventCardItem: React.FC<{ event: WeddingEvent; index: number }> = ({
-  event,
-  index,
-}) => {
+export const SectionEventCards: React.FC = () => {
+  const { t, dir } = useLanguage();
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -133,148 +130,137 @@ const EventCardItem: React.FC<{ event: WeddingEvent; index: number }> = ({
     setTilt({ x: 0, y: 0 });
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 38, scale: 0.94 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.22 }}
-      transition={{
-        duration: 0.9,
-        delay: index * 0.18,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{
-        rotateY: tilt.x,
-        rotateX: tilt.y,
-      }}
-      style={{ perspective: '1000px' }}
-      className="relative w-full max-w-[400px] mx-auto rounded-[28px] overflow-hidden shadow-soft-float border border-gold/40 paper-texture bg-cream transition-shadow hover:shadow-gold-glow duration-500"
-    >
-      {/* 1. Pastel Illustrated Background Layer */}
-      <div className="absolute inset-0 pointer-events-none opacity-40">
-        <img
-          src={event.image}
-          alt={event.name}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-cover filter brightness-[1.04]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-cream/60 via-cream/80 to-cream pointer-events-none" />
-      </div>
+  const googleMapsUrl = 'https://maps.google.com/?q=Royal+Hall+Ismailia+Egypt';
 
-      {/* 2. Hanging Golden Swaying Lanterns at Top Corners */}
-      <HangingLantern align="left" delay={0} />
-      <HangingLantern align="right" delay={1.5} />
-
-      {/* 3. Outer Hairline Margin Border */}
-      <div className="absolute inset-2.5 rounded-[22px] border border-gold/25 pointer-events-none" />
-
-      {/* 4. Inside Centered Arched Frame */}
-      <div className="relative z-10 pt-10 pb-8 px-6 sm:px-8 text-center flex flex-col items-center">
-        <div className="relative w-full rounded-t-[140px] rounded-b-2xl border border-gold/50 bg-cream/90 backdrop-blur-xs p-6 pt-9 shadow-paper flex flex-col items-center">
-          {/* Top Delicate Diamond Emblem */}
-          <div className="w-6 h-6 rounded-full bg-cream border border-gold/60 flex items-center justify-center mb-1">
-            <span className="text-xs text-gold-metallic">✦</span>
-          </div>
-
-          {/* Event Name */}
-          <h3 className="font-serif font-bold text-3xl sm:text-4xl text-[#78550E] py-1 mb-1">
-            {event.name}
-          </h3>
-
-          <p className="font-serif italic text-sm text-taupe-dark/85 max-w-[280px] leading-relaxed mb-6">
-            "{event.description}"
-          </p>
-
-          {/* Structured Information Blocks */}
-          <div className="w-full space-y-4 pt-3 border-t border-gold/25">
-            {/* DATE BLOCK */}
-            <div className="flex flex-col items-center">
-              <span className="font-cairo text-xs font-bold text-[#78550E] uppercase">
-                التاريخ
-              </span>
-              <p className="font-cairo text-sm sm:text-base font-semibold text-taupe-dark mt-0.5">
-                {event.date}
-              </p>
-            </div>
-
-            {/* TIME BLOCK */}
-            <div className="flex flex-col items-center">
-              <span className="font-cairo text-xs font-bold text-[#78550E] uppercase">
-                الموعد
-              </span>
-              <p className="font-cairo text-sm sm:text-base font-bold text-taupe-dark mt-0.5">
-                {event.time}
-              </p>
-            </div>
-
-            {/* VENUE BLOCK */}
-            <div className="flex flex-col items-center">
-              <span className="font-cairo text-xs font-bold text-[#78550E] uppercase">
-                المكان
-              </span>
-              <p className="font-cairo text-sm sm:text-base font-bold text-taupe-dark mt-0.5">
-                {event.venue}
-              </p>
-              <p className="font-cairo text-xs sm:text-sm text-taupe-dark/80 mt-0.5 select-text">
-                {event.address}
-              </p>
-            </div>
-
-            {/* Attire note */}
-            <div className="pt-2 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-cairo text-[#78550E] font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-gold shrink-0" />
-              <span>الزي: {event.attire}</span>
-            </div>
-          </div>
-
-          {/* Pill "View Map" Button */}
-          <div className="mt-6 w-full flex justify-center">
-            <a
-              href={event.googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-full border border-gold/60 bg-cream/95 hover:bg-blush-50 text-taupe-dark hover:text-gold-dark font-cairo text-xs sm:text-sm font-bold shadow-xs hover:shadow-gold-glow hover:border-gold transition-all duration-300 cursor-pointer"
-            >
-              <MapPin className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />
-              <span>عرض الموقع على الخريطة</span>
-              <ExternalLink className="w-3.5 h-3.5 text-taupe/60 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-export const SectionEventCards: React.FC = () => {
   return (
     <section
       id="section-event-cards"
       className="relative py-16 px-6 paper-texture bg-cream"
+      dir={dir}
     >
       <div className="max-w-[420px] mx-auto text-center">
         {/* Section Heading */}
         <Reveal delay={0.1} className="mb-10">
-          <span className="font-cairo text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
-            المناسبة السعيدة
+          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+            {t.event.tag}
           </span>
           <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark mb-2">
-            حفل الزفاف المبارك
+            {t.event.title}
           </h2>
           <p className="font-serif italic text-sm sm:text-base text-taupe-dark/80 max-w-xs mx-auto leading-relaxed">
-            يسرنا دعوتكم لمشاركتنا فرحة العمر في ليلة من أجمل ليالي العمر، متمنين لكم دوام البهجة والسرور.
+            {t.event.description}
           </p>
         </Reveal>
 
-        {/* Stacked Event Card */}
-        <div className="space-y-12">
-          {INVITATION_DATA.events.map((event, index) => (
-            <EventCardItem key={event.id} event={event} index={index} />
-          ))}
-        </div>
+        {/* Wedding Event Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 38, scale: 0.94 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.22 }}
+          transition={{
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          animate={{
+            rotateY: tilt.x,
+            rotateX: tilt.y,
+          }}
+          style={{ perspective: '1000px' }}
+          className="relative w-full max-w-[400px] mx-auto rounded-[28px] overflow-hidden shadow-soft-float border border-gold/40 paper-texture bg-cream transition-shadow hover:shadow-gold-glow duration-500"
+        >
+          {/* Background Illustration */}
+          <div className="absolute inset-0 pointer-events-none opacity-40">
+            <img
+              src={ASSETS.cardNikkah}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-cover filter brightness-[1.04]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-cream/60 via-cream/80 to-cream pointer-events-none" />
+          </div>
+
+          <HangingLantern align="left" delay={0} />
+          <HangingLantern align="right" delay={1.5} />
+
+          <div className="absolute inset-2.5 rounded-[22px] border border-gold/25 pointer-events-none" />
+
+          {/* Card Body */}
+          <div className="relative z-10 pt-10 pb-8 px-6 sm:px-8 text-center flex flex-col items-center">
+            <div className="relative w-full rounded-t-[140px] rounded-b-2xl border border-gold/50 bg-cream/90 backdrop-blur-xs p-6 pt-9 shadow-paper flex flex-col items-center">
+              <div className="w-6 h-6 rounded-full bg-cream border border-gold/60 flex items-center justify-center mb-1">
+                <span className="text-xs text-gold-metallic">✦</span>
+              </div>
+
+              <h3 className="font-serif font-bold text-3xl sm:text-4xl text-[#78550E] py-1 mb-1">
+                {t.event.title}
+              </h3>
+
+              <p className="font-serif italic text-sm text-taupe-dark/85 max-w-[280px] leading-relaxed mb-6">
+                "{t.event.description}"
+              </p>
+
+              <div className="w-full space-y-4 pt-3 border-t border-gold/25">
+                {/* DATE */}
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-bold text-[#78550E] uppercase">
+                    {t.event.dateLabel}
+                  </span>
+                  <p className="text-sm sm:text-base font-semibold text-taupe-dark mt-0.5">
+                    {t.weddingDateFormatted}
+                  </p>
+                </div>
+
+                {/* TIME */}
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-bold text-[#78550E] uppercase">
+                    {t.event.timeLabel}
+                  </span>
+                  <p className="text-sm sm:text-base font-bold text-taupe-dark mt-0.5">
+                    {t.timeFormatted}
+                  </p>
+                </div>
+
+                {/* VENUE */}
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-bold text-[#78550E] uppercase">
+                    {t.event.venueLabel}
+                  </span>
+                  <p className="text-sm sm:text-base font-bold text-taupe-dark mt-0.5">
+                    {t.event.venueName}
+                  </p>
+                  <p className="text-xs sm:text-sm text-taupe-dark/80 mt-0.5 select-text">
+                    {t.event.venueAddress}
+                  </p>
+                </div>
+
+                {/* ATTIRE */}
+                <div className="pt-2 flex items-center justify-center gap-1.5 text-xs sm:text-sm text-[#78550E] font-medium">
+                  <Sparkles className="w-3.5 h-3.5 text-gold shrink-0" />
+                  <span>
+                    {t.event.attireLabel}: {t.event.attireValue}
+                  </span>
+                </div>
+              </div>
+
+              {/* Map Button */}
+              <div className="mt-6 w-full flex justify-center">
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-full border border-gold/60 bg-cream/95 hover:bg-blush-50 text-taupe-dark hover:text-gold-dark text-xs sm:text-sm font-bold shadow-xs hover:shadow-gold-glow hover:border-gold transition-all duration-300 cursor-pointer"
+                >
+                  <MapPin className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />
+                  <span>{t.event.mapButton}</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-taupe/60 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
