@@ -32,12 +32,14 @@ export const INVITATION_DATA = {
   // Couple Information: Marwa & Omer
   couple: {
     bride: {
+      name: 'Marwa',
       firstName: 'مروة',
       fullName: 'مروة',
       arabicName: 'مروة',
       parentsTitle: 'كريمة الأستاذ / يوسف خان',
     },
     groom: {
+      name: 'Omer',
       firstName: 'عمر',
       fullName: 'عمر',
       arabicName: 'عمر',

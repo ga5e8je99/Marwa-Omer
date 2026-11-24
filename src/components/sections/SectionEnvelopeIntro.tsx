@@ -193,8 +193,8 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
 
   const ease = [0.22, 1, 0.36, 1] as const;
 
-  const brideDisplayName = isArabic ? bride.arabicName : bride.name;
-  const groomDisplayName = isArabic ? groom.arabicName : groom.name;
+  const brideDisplayName = t?.couple?.bride || (isArabic ? bride.arabicName : bride.fullName);
+  const groomDisplayName = t?.couple?.groom || (isArabic ? groom.arabicName : groom.fullName);
   const weddingDateDisplay = isArabic ? weddingDateAr : INVITATION_DATA.weddingDateFormatted;
 
   return (
