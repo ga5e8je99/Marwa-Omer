@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+
 import { Reveal } from '../common/Reveal';
 import { ASSETS } from '../../config/assets';
 import { useLanguage } from '../../context/LanguageContext';
@@ -118,7 +118,6 @@ export const SectionOurStory: React.FC = () => {
                       transition={{ duration: 0.8, delay: 0.3 }}
                       className="mt-6 pt-5 border-t border-gold/30 text-center"
                     >
-                      <Sparkles className="w-5 h-5 text-gold mx-auto mb-2" />
                       <p className="font-serif italic text-sm sm:text-base text-taupe-dark leading-relaxed font-bold">
                         "{t.story.closingQuote}"
                       </p>

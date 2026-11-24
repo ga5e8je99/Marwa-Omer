@@ -7,28 +7,7 @@ import { GoldFlourish } from '../common/GoldFlourish';
 import { ASSETS } from '../../config/assets';
 import { useLanguage } from '../../context/LanguageContext';
 
-const SparkleStar: React.FC = () => (
-  <svg
-    viewBox="0 0 24 24"
-    width="22"
-    height="22"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className="filter drop-shadow-[0_0_8px_rgba(241,217,139,0.7)]"
-  >
-    <path
-      d="M12 1 Q12 12 1 12 Q12 12 12 23 Q12 12 23 12 Q12 12 12 1 Z"
-      fill="url(#closingStarGold)"
-    />
-    <defs>
-      <linearGradient id="closingStarGold" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#B8913A" />
-        <stop offset="50%" stopColor="#F1D98B" />
-        <stop offset="100%" stopColor="#B8913A" />
-      </linearGradient>
-    </defs>
-  </svg>
-);
+
 
 export const SectionClosing: React.FC = () => {
   const { t, dir } = useLanguage();
@@ -55,12 +34,7 @@ export const SectionClosing: React.FC = () => {
           <GoldFlourish />
         </Reveal>
 
-        {/* Sparkle Star */}
-        <Reveal delay={0.2} className="mb-4">
-          <div className="w-11 h-11 rounded-full bg-cream/80 border border-gold/40 flex items-center justify-center shadow-xs">
-            <SparkleStar />
-          </div>
-        </Reveal>
+
 
         {/* Inscription */}
         <Reveal delay={0.25} className="mb-6 px-2">

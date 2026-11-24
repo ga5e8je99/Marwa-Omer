@@ -17,7 +17,7 @@ import {
   Unlock,
   Heart,
   ChevronLeft,
-  Sparkles,
+
   Phone,
   Calendar,
   LogOut,

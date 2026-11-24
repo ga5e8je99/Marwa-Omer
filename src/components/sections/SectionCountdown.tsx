@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { LaceDivider } from '../common/LaceDivider';
 import { ASSETS } from '../../config/assets';
@@ -150,10 +150,8 @@ export const SectionCountdown: React.FC = () => {
             <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
               {t.countdown.title}
             </h2>
-            <div className="flex items-center justify-center gap-2 mt-2">
-              <span className="h-[1px] w-10 bg-gold/40" />
-              <Sparkles className="w-4 h-4 text-gold" />
-              <span className="h-[1px] w-10 bg-gold/40" />
+            <div className="flex items-center justify-center mt-2">
+              <span className="h-[1px] w-16 bg-gold/40" />
             </div>
           </Reveal>
 

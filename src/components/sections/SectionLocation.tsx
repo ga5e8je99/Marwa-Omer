@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Navigation, Copy, Check, Car, Clock, Sparkles, ExternalLink } from 'lucide-react';
+import { MapPin, Navigation, Copy, Check, Car, Clock, ExternalLink } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -193,8 +193,7 @@ export const SectionLocation: React.FC = () => {
         </motion.div>
 
         {/* Bottom subtle blessing */}
-        <Reveal delay={0.3} className="mt-6 flex items-center justify-center gap-2 text-taupe-dark/80 text-xs sm:text-sm">
-          <Sparkles className="w-4 h-4 text-gold shrink-0" />
+        <Reveal delay={0.3} className="mt-6 flex items-center justify-center text-taupe-dark/80 text-xs sm:text-sm">
           <span className="font-medium">{t.location.blessingFooter}</span>
         </Reveal>
       </div>

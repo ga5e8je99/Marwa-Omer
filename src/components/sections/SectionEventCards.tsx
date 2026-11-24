@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, ExternalLink, Sparkles } from 'lucide-react';
+import { MapPin, ExternalLink } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { ASSETS } from '../../config/assets';
 import { useLanguage } from '../../context/LanguageContext';
@@ -237,8 +237,7 @@ export const SectionEventCards: React.FC = () => {
                 </div>
 
                 {/* ATTIRE */}
-                <div className="pt-2 flex items-center justify-center gap-1.5 text-xs sm:text-sm text-[#78550E] font-medium">
-                  <Sparkles className="w-3.5 h-3.5 text-gold shrink-0" />
+                <div className="pt-2 flex items-center justify-center text-xs sm:text-sm text-[#78550E] font-medium">
                   <span>
                     {t.event.attireLabel}: {t.event.attireValue}
                   </span>

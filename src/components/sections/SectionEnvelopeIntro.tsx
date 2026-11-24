@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+
 import { ASSETS } from '../../config/assets';
 import { useLanguage } from '../../context/LanguageContext';
 
@@ -170,8 +170,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
               <h2 className="font-script text-3xl sm:text-4xl text-gold-gradient py-0.5">
                 {t.couple.bride} &amp; {t.couple.groom}
               </h2>
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cream/90 border border-gold/40 shadow-2xs mt-1">
-                <Sparkles className="w-3 h-3 text-gold" />
+              <div className="inline-flex items-center px-3.5 py-0.5 rounded-full bg-cream/90 border border-gold/40 shadow-2xs mt-1">
                 <span className="text-[11px] text-taupe-dark font-bold">
                   {t.weddingDateFormatted}
                 </span>
