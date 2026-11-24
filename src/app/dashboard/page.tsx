@@ -213,7 +213,7 @@ export default function DashboardPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `تهاني_فرح_مروة_وعمر_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `تهاني_فرح_رحمة_وعمر_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -235,7 +235,7 @@ export default function DashboardPage() {
             منطقة العروسين الخاصة
           </span>
           <h1 className="text-2xl font-bold font-serif text-taupe-dark">
-            لوحة تحكم مروة وعمر
+            لوحة تحكم رحمة وعمر
           </h1>
           <p className="text-xs text-taupe-dark/80 mt-1 mb-6">
             أدخل رمز المرور لعرض دفتر التهاني وتأكيدات الحضور
@@ -302,7 +302,7 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center gap-1.5">
                 <h1 className="text-base sm:text-lg font-bold font-serif text-taupe-dark leading-tight">
-                  فرح مروة وعمر
+                  فرح رحمة وعمر
                 </h1>
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1 animate-pulse"></span>
@@ -720,7 +720,7 @@ export default function DashboardPage() {
 
         {/* Footer info */}
         <footer className="pt-3 border-t border-gold/20 mt-3 text-center text-[11px] text-taupe/60 flex items-center justify-between">
-          <span>فرح مروة وعمر • ١ يناير ٢٠٢٧</span>
+          <span>فرح رحمة وعمر • ١ يناير ٢٠٢٧</span>
           <span>رمز الدخول الافتراضي: 2027</span>
         </footer>
       </div>

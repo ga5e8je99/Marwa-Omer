@@ -29,13 +29,13 @@ export interface PhotoMoment {
 }
 
 export const INVITATION_DATA = {
-  // Couple Information: Marwa & Omer
+  // Couple Information: Rahma & Omer
   couple: {
     bride: {
-      name: 'Marwa',
-      firstName: 'مروة',
-      fullName: 'مروة',
-      arabicName: 'مروة',
+      name: 'Rahma',
+      firstName: 'رحمة',
+      fullName: 'رحمة',
+      arabicName: 'رحمة',
       parentsTitle: 'كريمة الأستاذ / يوسف خان',
     },
     groom: {
@@ -127,7 +127,7 @@ export const INVITATION_DATA = {
   moments: [
     {
       id: 'moment-1',
-      title: 'مروة وعمر',
+      title: 'رحمة وعمر',
       caption: 'قلبان جمعهما الإيمان والمودة والوفاء.',
       image: ASSETS.gallery[0],
     },
@@ -173,6 +173,6 @@ export const INVITATION_DATA = {
   // Footer & Credits
   footer: {
     blessing: 'بارك الله لهما وبارك عليهما وجمع بينهما في خير',
-    credit: 'صُممت بكل حب لزفاف مروة & عمر',
+    credit: 'صُممت بكل حب لزفاف رحمة & عمر',
   },
 } as const;

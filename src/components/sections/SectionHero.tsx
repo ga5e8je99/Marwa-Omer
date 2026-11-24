@@ -439,7 +439,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                   aria-hidden="true"
                 />
                 <img
-                  src={ASSETS.coupleMonogramGold || '/couple-monogram-gold.png?v=3'}
+                  src={ASSETS.coupleMonogramGold || '/couple-monogram-gold.png?v=4'}
                   alt={`${t.couple.bride} & ${t.couple.groom}`}
                   className="relative h-28 sm:h-36 md:h-44 w-auto object-contain filter drop-shadow-[0_4px_18px_rgba(212,175,55,0.45)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.35)] transition-transform duration-500 hover:scale-105"
                   draggable={false}

@@ -145,7 +145,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
   // 1. Egyptian Arabic (اللهجة المصرية الدافئة والأصيلة)
   ar: {
     couple: {
-      bride: 'مروة',
+      bride: 'رحمة',
       groom: 'عمر',
       parentsTitle: 'برضا الوالدين ودعوات الحبايب والأهل',
     },
@@ -217,7 +217,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     rsvp: {
       tag: 'كلمة حلوة ودعوة من القلب',
       title: 'دفتر التهاني والمباركات',
-      subtitle: 'سيبوا كلمة طيبة أو دعوة تفرح قلب مروة وعمر في بداية مشوارهم.',
+      subtitle: 'سيبوا كلمة طيبة أو دعوة تفرح قلب رحمة وعمر في بداية مشوارهم.',
       nameLabel: 'اسمك الكريم *',
       namePlaceholder: 'اكتب اسمك هنا عشان نعرف مين منورنا...',
       attendingLabel: 'هتنورونا إن شاء الله؟',
@@ -231,7 +231,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
         { value: 4, label: '4 أشخاص أو أكثر (عيلة)' },
       ],
       messageLabel: 'دعوة حلوة أو كلمة للعروسين *',
-      messagePlaceholder: 'اكتب دعوة مباركة أو كلمة من قلبك لمروة وعمر...',
+      messagePlaceholder: 'اكتب دعوة مباركة أو كلمة من قلبك لرحمة وعمر...',
       submitButton: 'سجل تهنئتك في دفتر الفرح',
       submitting: 'جارٍ التسجيل...',
       whatsappButton: 'ابعت التهنئة على واتساب للعروسين علطول',
@@ -248,7 +248,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
         },
         {
           name: 'سارة إبراهيم',
-          message: 'ما شاء الله تبارك الله، قمرين ونورتم دنيانا. ألف مبروك يا مروة وعقبال كل الأيام الحلوة يا رب.',
+          message: 'ما شاء الله تبارك الله، قمرين ونورتم دنيانا. ألف مبروك يا رحمة وعقبال كل الأيام الحلوة يا رب.',
           time: 'منذ قليل',
         },
       ],
@@ -256,7 +256,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     story: {
       tag: 'حكايتنا خطوة بخطوة',
       title: 'قصتنا',
-      badge: 'مروة & عمر',
+      badge: 'رحمة & عمر',
       chapters: [
         {
           number: '٠١',
@@ -289,7 +289,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       moments: [
         {
           id: 'moment-1',
-          title: 'مروة وعمر',
+          title: 'رحمة وعمر',
           caption: 'قلبين اتجمعوا على الخير والمودة والوفاء.',
           image: ASSETS.gallery[0],
         },
@@ -332,7 +332,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       familyBlessing: 'برضا الوالدين ودعوات الأهل والأحباب',
       dateBadge: '١ · ١ · ٢٠٢٧',
       gratitude: 'بكل الحب والتقدير والامتنان',
-      weddingOf: 'حفل زفاف مروة وعمر • قاعة رويال، الإسماعيلية',
+      weddingOf: 'حفل زفاف رحمة وعمر • قاعة رويال، الإسماعيلية',
       rights: 'جميع الحقوق محفوظة © ٢٠٢٧',
     },
     controls: {
@@ -348,7 +348,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
   // 2. English (International & Elegant)
   en: {
     couple: {
-      bride: 'Marwa',
+      bride: 'Rahma',
       groom: 'Omer',
       parentsTitle: 'Together with their families',
     },
@@ -421,7 +421,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     rsvp: {
       tag: 'Wishes & Prayers',
       title: 'Wedding Guestbook',
-      subtitle: 'Leave a heartfelt prayer or sweet blessing for Marwa & Omer.',
+      subtitle: 'Leave a heartfelt prayer or sweet blessing for Rahma & Omer.',
       nameLabel: 'Your Name *',
       namePlaceholder: 'Please enter your full name...',
       attendingLabel: 'Will you attend?',
@@ -452,7 +452,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
         },
         {
           name: 'Sara Ibrahim',
-          message: 'Mabrouk Marwa & Omer! Wishing you a lifetime of love, laughter, and beautiful blessings.',
+          message: 'Mabrouk Rahma & Omer! Wishing you a lifetime of love, laughter, and beautiful blessings.',
           time: 'Just now',
         },
       ],
@@ -460,7 +460,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     story: {
       tag: 'Our Journey',
       title: 'Our Story',
-      badge: 'Marwa & Omer',
+      badge: 'Rahma & Omer',
       chapters: [
         {
           number: '01',
@@ -493,7 +493,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       moments: [
         {
           id: 'moment-1',
-          title: 'Marwa & Omer',
+          title: 'Rahma & Omer',
           caption: 'Two souls united in faith, devotion, and love.',
           image: ASSETS.gallery[0],
         },
@@ -536,7 +536,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       familyBlessing: 'With the Blessings of Their Families',
       dateBadge: '1 · 1 · 2027',
       gratitude: 'With Love & Gratitude',
-      weddingOf: 'Wedding of Marwa & Omer • Royal Hall, Ismailia',
+      weddingOf: 'Wedding of Rahma & Omer • Royal Hall, Ismailia',
       rights: 'All Rights Reserved © 2027',
     },
     controls: {

@@ -30,8 +30,8 @@ export const ASSETS = {
   waxSeal: '/assets/wax-seal.webp',
   waxSealSvg: '/assets/wax-seal.svg',
   paperTexture: '/assets/paper-texture.webp',
-  coupleMonogramGold: '/assets/couple-monogram-gold.png?v=3',
-  coupleMonogramWhite: '/assets/couple-monogram-white.png?v=3',
+  coupleMonogramGold: '/assets/couple-monogram-gold.png?v=4',
+  coupleMonogramWhite: '/assets/couple-monogram-white.png?v=4',
   coupleMonogramSvg: '/assets/couple-monogram.svg',
 } as const;
 
