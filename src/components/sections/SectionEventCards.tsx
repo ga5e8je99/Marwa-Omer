@@ -275,13 +275,13 @@ export const SectionEventCards: React.FC = () => {
         {/* Section Heading */}
         <Reveal delay={0.1} className="mb-12">
           <span className="font-cinzel text-xs tracking-loose-tracked text-gold uppercase block mb-1">
-            The Auspicious Occasions
+            The Auspicious Occasion
           </span>
           <h2 className="font-script text-4xl sm:text-5xl text-taupe-dark mb-2">
-            Wedding Festivities
+            Wedding Celebration
           </h2>
           <p className="font-serif italic text-sm text-taupe/80 max-w-xs mx-auto">
-            Each ceremony holds a unique grace and meaning. We warmly invite you to share in these moments.
+            We warmly invite you to celebrate with us the joyous union of our wedding day.
           </p>
         </Reveal>
 

@@ -82,30 +82,17 @@ export const INVITATION_DATA = {
     embedMapUrl: 'https://maps.google.com/maps?q=Ismailia+Egypt&t=&z=13&ie=UTF8&iwloc=&output=embed',
   },
 
-  // Events & Celebrations
+  // Events & Celebrations (Single Wedding Event)
   events: [
     {
-      id: 'mehendi',
-      name: 'Henna Night',
-      subtitle: 'Henna, Music & Celebration',
-      date: 'Sunday, 11 October 2026',
-      time: '6:00 PM onwards',
-      venue: 'The Garden Courtyard',
-      address: 'Ismailia, Egypt',
-      description: 'An enchanting evening of celebration, henna, melodies, laughter, and joy under twilight skies.',
-      attire: 'Festive & Elegant',
-      googleMapsUrl: 'https://maps.google.com/?q=Ismailia+Egypt',
-      image: ASSETS.cardMehendi,
-    },
-    {
-      id: 'nikkah',
-      name: 'Wedding Ceremony & Party',
+      id: 'wedding',
+      name: 'The Wedding Ceremony',
       subtitle: 'The Sacred Vows & Celebration Feast',
       date: 'Monday, 12 October 2026',
-      time: '7:00 PM ceremony',
+      time: '7:00 PM',
       venue: 'The Grand Ballroom',
       address: 'Ismailia, Egypt',
-      description: 'The solemnization of our vows, followed by heartfelt congratulations, dining, and celebratory festivities.',
+      description: 'The celebration of our wedding and sacred vows, followed by dinner, music, and joyful festivities.',
       attire: 'Formal / Evening Glamour',
       googleMapsUrl: 'https://maps.google.com/?q=Ismailia+Egypt',
       image: ASSETS.cardNikkah,
