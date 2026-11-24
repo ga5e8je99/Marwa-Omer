@@ -32,24 +32,24 @@ export const INVITATION_DATA = {
   // Couple Information: Marwa & Omer
   couple: {
     bride: {
-      firstName: 'Marwa',
-      fullName: 'Marwa Khan',
+      firstName: 'مروة',
+      fullName: 'مروة',
       arabicName: 'مروة',
-      parentsTitle: 'D/o Mr. Yusuf Khan & Mrs. Fatima Khan',
+      parentsTitle: 'كريمة الأستاذ / يوسف خان',
     },
     groom: {
-      firstName: 'Omer',
-      fullName: 'Omer Malik',
+      firstName: 'عمر',
+      fullName: 'عمر',
       arabicName: 'عمر',
-      parentsTitle: 'S/o Mr. Idris Malik & Mrs. Aisha Malik',
+      parentsTitle: 'نجل الأستاذ / إدريس مالك',
     },
   },
 
   // Primary Wedding Date
-  weddingDate: '12 Oct 2026',
-  weddingDateFormatted: 'Monday, 12th of October 2026',
-  // ISO string for live countdown
-  targetDateISO: '2026-10-12T16:00:00',
+  weddingDate: '12 أكتوبر 2026',
+  weddingDateFormatted: 'الاثنين، 12 أكتوبر 2026',
+  // ISO string for live countdown (Cairo Time UTC+2)
+  targetDateISO: '2026-10-12T19:00:00+02:00',
 
   // Spiritual Inscription
   bismillah: {
@@ -58,27 +58,27 @@ export const INVITATION_DATA = {
     verseArabic: 'وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً',
     verseArabicFormatted: '﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾',
     surahReferenceArabic: 'سورة الروم — آية ٢١',
-    verse: '“And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy.”',
-    reference: 'Surah Ar-Rum (30:21)',
+    verse: '“ومن آياته أن خلق لكم من أنفسكم أزواجاً لتسكنوا إليها وجعل بينكم مودة ورحمة”',
+    reference: 'سورة الروم (الآية ٢١)',
   },
 
   // Invitation Message Body
   invitationText: {
-    welcome: 'With immense joy and gratitude in our hearts, we invite you to celebrate the blessed union of our children',
-    honor: 'Your gracious presence and heartfelt prayers are our greatest blessings as they embark on this sacred journey together.',
+    welcome: 'بقلوب تفيض فرحاً ومحبة، وببركة من الله وتوفيقه، يسرنا ويشرفنا دعوتكم لحضور حفل زفافنا الميمون',
+    honor: 'حضوركم يكتمل به أُنسنا، ودعواتكم الصادقة هي أغلى هدية تزين بداية رحلتنا المباركة.',
   },
 
   // Comprehensive Venue / Location Information
   venue: {
-    title: 'The Wedding Celebration',
-    subtitle: 'Ismailia · Egypt',
-    estate: 'Ismailia',
-    address: 'Ismailia, Egypt',
-    city: 'Ismailia',
-    fullAddress: 'Ismailia, Egypt (الإسماعيلية)',
-    valetParking: 'Complimentary Valet Parking Available',
-    arrivalNotice: 'Please arrive 30 minutes prior to the ceremony',
-    googleMapsUrl: 'https://maps.google.com/?q=Ismailia+Egypt',
+    title: 'حفل الزفاف المبارك',
+    subtitle: 'قاعة رويال للمناسبات • الإسماعيلية',
+    estate: 'قاعة رويال',
+    address: 'طريق البلاجات، الإسماعيلية، مصر',
+    city: 'الإسماعيلية',
+    fullAddress: 'قاعة رويال للمناسبات - طريق البلاجات، الإسماعيلية، مصر',
+    valetParking: 'خدمة صف السيارات متوفرة مجاناً',
+    arrivalNotice: 'يسعدنا ويشرفنا حضوركم في تمام الساعة السابعة مساءً',
+    googleMapsUrl: 'https://maps.google.com/?q=Royal+Hall+Ismailia+Egypt',
     embedMapUrl: 'https://maps.google.com/maps?q=Ismailia+Egypt&t=&z=13&ie=UTF8&iwloc=&output=embed',
   },
 
@@ -86,38 +86,38 @@ export const INVITATION_DATA = {
   events: [
     {
       id: 'wedding',
-      name: 'The Wedding Ceremony',
-      subtitle: 'The Sacred Vows & Celebration Feast',
-      date: 'Monday, 12 October 2026',
-      time: '7:00 PM',
-      venue: 'The Grand Ballroom',
-      address: 'Ismailia, Egypt',
-      description: 'The celebration of our wedding and sacred vows, followed by dinner, music, and joyful festivities.',
-      attire: 'Formal / Evening Glamour',
-      googleMapsUrl: 'https://maps.google.com/?q=Ismailia+Egypt',
+      name: 'حفل الزفاف الميمون',
+      subtitle: 'مراسم عقد القران والاحتفال بحضور الأحباب',
+      date: 'الاثنين، 12 أكتوبر 2026',
+      time: '7:00 مساءً',
+      venue: 'قاعة رويال للمناسبات',
+      address: 'طريق البلاجات، الإسماعيلية، مصر',
+      description: 'يسرنا دعوتكم لمشاركتنا فرحة العمر، متمنين أن يديم الله المحبة والبهجة في قلوبكم.',
+      attire: 'ملابس رسمية / أنيقة',
+      googleMapsUrl: 'https://maps.google.com/?q=Royal+Hall+Ismailia+Egypt',
       image: ASSETS.cardNikkah,
     },
   ] as WeddingEvent[],
 
-  // "Our Story" in 3 Chapters
+  // "Our Story" in 3 Chapters (Arabic)
   story: [
     {
-      number: '01',
-      title: 'A Quiet Introduction',
-      date: 'Spring 2023',
-      text: 'What began across a quiet garden courtyard with warm tea blossomed into hours of effortless conversation, discovering shared values, kindness, and dreams for tomorrow.',
+      number: '٠١',
+      title: 'بداية اللقاء',
+      date: 'ربيع ٢٠٢٣',
+      text: 'حديث هادئ في أمسية طيبة تلاقت فيها القلوب والأفكار، لتولد المودة المشتركة وتتفق الرؤى والآمال الصادقة نحو الغد.',
     },
     {
-      number: '02',
-      title: 'A Shared Dinner',
-      date: 'Autumn 2024',
-      text: 'Under a canopy of amber lights and autumn leaves, an evening of laughter turned into an unspoken realization: every future felt brighter and sweeter together.',
+      number: '٠٢',
+      title: 'تآلف القلوب',
+      date: 'خريف ٢٠٢٤',
+      text: 'مع مرور الأيام تلاقت المشاعر الصادقة على الخير والوئام، وتأكدت القلوب أن كل خطوة قادمة ستكون أحلى وأجمل بالتعاون والمودة.',
     },
     {
-      number: '03',
-      title: 'And So We Begin',
-      date: 'Winter 2025',
-      text: 'With our families’ warmest blessings and dua, two paths softly aligned into one. Now, with pure hearts, we prepare to step hand-in-hand into forever.',
+      number: '٠٣',
+      title: 'نبدأ الرحلة معاً',
+      date: 'شتاء ٢٠٢٥',
+      text: 'ببركة من الله ورضا الوالدين ودعوات الأهل والأحباب، تلاقت الدروب لنبدأ معاً عهداً أبدياً يملؤه السكن والرحمة والإخلاص.',
     },
   ] as StoryChapter[],
 
@@ -125,60 +125,52 @@ export const INVITATION_DATA = {
   moments: [
     {
       id: 'moment-1',
-      title: 'Marwa & Omer',
-      caption: 'Two souls united in love and faith.',
+      title: 'مروة وعمر',
+      caption: 'قلبان جمعهما الإيمان والمودة والوفاء.',
       image: ASSETS.gallery[0],
     },
     {
       id: 'moment-2',
-      title: 'The Golden Hour Promise',
-      caption: 'A quiet stroll as twilight touched the hills.',
+      title: 'وعد الأصيل',
+      caption: 'أمنيات مشرقة تبتسم لمستقبل واعد.',
       image: ASSETS.gallery[1],
     },
     {
       id: 'moment-3',
-      title: 'A Quiet Conversation',
-      caption: 'Warm tea, shared laughter, and quiet discoveries.',
+      title: 'حديث المودة',
+      caption: 'أوقات طيبة تلاقت فيها الرؤى بطمأنينة وسرور.',
       image: ASSETS.gallery[2],
     },
     {
       id: 'moment-4',
-      title: 'Under the Jasmine Canopy',
-      caption: 'Fragrant summer breezes and unspoken promises.',
+      title: 'أزهار البهجة',
+      caption: 'فرحة تسكن الأفق ونسائم مودة تدوم.',
       image: ASSETS.gallery[3],
     },
     {
       id: 'moment-5',
-      title: 'Laughter & Sunset',
-      caption: 'Reflections by the lake as day gave way to twilight.',
+      title: 'سكينة الغروب',
+      caption: 'لحظات هدوء وامتنان لنعم الله الواسعة.',
       image: ASSETS.gallery[4],
     },
     {
       id: 'moment-6',
-      title: 'Together Toward Tomorrow',
-      caption: 'Stepping softly and joyfully into our new dawn.',
+      title: 'معاً نحو الغد',
+      caption: 'خطوات مباركة وواثقة نحو رحلة العمر.',
       image: ASSETS.gallery[5],
     },
   ] as PhotoMoment[],
 
-  // With Best Compliments Family List
-  compliments: [
-    { name: 'The Khan Family', relation: 'Family of the Bride' },
-    { name: 'The Malik Family', relation: 'Family of the Groom' },
-    { name: 'The Rahman Family', relation: 'Elders & Extended Relations' },
-  ],
-
-  // RSVP Configuration & Info
+  // RSVP / Guestbook Configuration
   rsvp: {
-    deadline: 'Kindly reply by 15 September 2026',
-    storageKey: 'wedding_rsvp_submission_v1',
-    // TODO: Connect external backend here (Google Sheets API or Formspree endpoint)
-    externalEndpointPlaceholder: 'https://formspree.io/f/your_form_id_here',
+    deadline: 'يسعدنا استقبال تهانيكم ودعواتكم العطرة',
+    storageKey: 'wedding_guestbook_messages_v1',
+    whatsappPhone: '+201000000000', // Egyptian phone format for direct blessings
   },
 
   // Footer & Credits
   footer: {
-    blessing: 'May Allah bless this union and grant them love, harmony, and eternal peace.',
-    credit: 'Designed with love for Marwa & Omer',
+    blessing: 'بارك الله لهما وبارك عليهما وجمع بينهما في خير',
+    credit: 'صُممت بكل حب لزفاف مروة & عمر',
   },
 } as const;

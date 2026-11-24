@@ -4,8 +4,7 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Cairo', 'Cormorant Garamond', Georgia, serif;
     color: #4E3E37;
     background-color: #1E1815;
     -webkit-text-size-adjust: 100%;

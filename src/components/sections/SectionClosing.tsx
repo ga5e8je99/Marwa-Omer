@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
@@ -5,7 +7,6 @@ import { GoldFlourish } from '../common/GoldFlourish';
 import { ASSETS } from '../../config/assets';
 import { INVITATION_DATA } from '../../data/invitation';
 
-// Small Gold Sparkle Star
 const SparkleStar: React.FC = () => (
   <svg
     viewBox="0 0 24 24"
@@ -34,12 +35,12 @@ export const SectionClosing: React.FC = () => {
     <footer
       id="section-closing"
       className="relative pt-16 pb-12 px-6 paper-texture select-none overflow-hidden text-center bg-cream"
+      dir="rtl"
     >
-      {/* Warm Gold/Cream Watercolor Background Wash */}
       <div className="absolute inset-0 pointer-events-none opacity-40 z-0">
         <img
           src={ASSETS.closingBg}
-          alt="Warm golden closing wash"
+          alt=""
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover"
@@ -47,22 +48,22 @@ export const SectionClosing: React.FC = () => {
       </div>
 
       <div className="relative z-10 max-w-[420px] mx-auto flex flex-col items-center">
-        {/* Gold Flourish at the Top */}
+        {/* Gold Flourish */}
         <Reveal delay={0.1} className="w-full mb-6">
           <GoldFlourish />
         </Reveal>
 
-        {/* Small Gold Sparkle Star in the Middle */}
+        {/* Small Gold Sparkle Star */}
         <Reveal delay={0.2} className="mb-4">
-          <div className="w-10 h-10 rounded-full bg-cream/80 border border-gold/40 flex items-center justify-center shadow-xs">
+          <div className="w-11 h-11 rounded-full bg-cream/80 border border-gold/40 flex items-center justify-center shadow-xs">
             <SparkleStar />
           </div>
         </Reveal>
 
-        {/* Script Inscription */}
+        {/* Inscription */}
         <Reveal delay={0.25} className="mb-6 px-2">
-          <h2 className="font-script text-3xl sm:text-4xl text-gold-gradient py-1 leading-snug max-w-[340px] mx-auto drop-shadow-xs">
-            "We cannot wait to celebrate this beautiful occasion with your presence, love, and blessings."
+          <h2 className="font-serif font-bold text-2xl sm:text-3xl text-[#78550E] py-1 leading-relaxed max-w-[340px] mx-auto drop-shadow-xs">
+            "نسعد ونتشرف بحضوركم لمشاركتنا فرحة العمر، سائلين الله عز وجل أن يبارك لنا ولكم ويملأ أيامنا بالمودة والسرور."
           </h2>
         </Reveal>
 
@@ -75,55 +76,47 @@ export const SectionClosing: React.FC = () => {
           </div>
         </Reveal>
 
-        {/* Tiny Caps: WITH THE BLESSINGS OF THEIR FAMILIES */}
+        {/* Blessings of families */}
         <Reveal delay={0.35} className="mb-4">
-          <p className="font-cinzel text-[10px] sm:text-[11px] tracking-loose-tracked text-gold-dark uppercase font-semibold">
-            With The Blessings of Their Families
+          <p className="font-cairo text-xs sm:text-sm font-bold text-[#78550E]">
+            ببركة ورضا الوالدين والأهل والأحباب
           </p>
         </Reveal>
 
-        {/* Script Signature: Marwa & Omer */}
-        <Reveal delay={0.4} className="mb-1">
+        {/* Couple Signature: مروة وعمر */}
+        <Reveal delay={0.4} className="mb-2">
           <h1 className="font-script text-5xl sm:text-6xl text-gold-gradient py-0.5 drop-shadow-xs">
             {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
           </h1>
         </Reveal>
 
         {/* Date: 12 · 10 · 2026 */}
-        <Reveal delay={0.45} className="mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-cream/70 border border-gold/30">
-            <span className="font-cinzel text-xs tracking-loose-tracked text-taupe-dark font-medium">
-              12 · 10 · 2026
+        <Reveal delay={0.45} className="mb-10">
+          <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-cream/90 border border-gold/40 shadow-xs">
+            <span className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark">
+              ١٢ · ١٠ · ٢٠٢٦
             </span>
           </div>
         </Reveal>
 
         {/* Bottom Ornamental Floral flourish */}
-        <Reveal delay={0.5} className="w-full mb-10">
+        <Reveal delay={0.5} className="w-full mb-8">
           <GoldFlourish flipped={true} />
         </Reveal>
 
-        {/* Footer Credit at the Very Bottom */}
-        <Reveal delay={0.55} className="w-full pt-8 border-t border-gold/25 space-y-2">
-          <div className="flex items-center justify-center gap-1.5 text-gold-dark/80 text-xs">
-            <Heart className="w-3.5 h-3.5 text-rose fill-rose/30" />
-            <span className="font-serif italic text-taupe/70">With love &amp; gratitude</span>
+        {/* Footer Credit */}
+        <Reveal delay={0.55} className="w-full pt-6 border-t border-gold/25 space-y-2">
+          <div className="flex items-center justify-center gap-1.5 text-[#78550E] text-xs sm:text-sm">
+            <Heart className="w-4 h-4 text-rose fill-rose/30" />
+            <span className="font-serif italic font-medium">بكل الحب والتقدير والامتنان</span>
           </div>
 
-          <p className="font-cinzel text-[10px] tracking-loose-tracked text-taupe-dark uppercase font-semibold">
-            DESIGNED BY [STUDIO NAME]
+          <p className="font-cairo text-xs text-taupe-dark/80 font-bold">
+            حفل زفاف مروة وعمر • قاعة رويال، الإسماعيلية
           </p>
 
-          <p className="font-cinzel text-[9px] tracking-wider text-taupe/60 uppercase">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gold transition-colors"
-            >
-              @yourstudioname
-            </a>{' '}
-            • All Rights Reserved
+          <p className="font-cairo text-[11px] text-taupe/60">
+            جميع الحقوق محفوظة © ٢٠٢٦
           </p>
         </Reveal>
       </div>

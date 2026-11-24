@@ -1,10 +1,12 @@
+'use client';
+
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { INVITATION_DATA } from '../../data/invitation';
 import { ASSETS } from '../../config/assets';
 
-// Animated letter-by-letter reveal with blur-to-sharp
+// Animated word reveal
 interface AnimatedWordProps {
   word: string;
   startDelay?: number;
@@ -93,7 +95,6 @@ const FlyingDove: React.FC<FlyingDoveProps> = ({
         xmlns="http://www.w3.org/2000/svg"
         className="w-8 h-6 filter drop-shadow-[0_2px_4px_rgba(255,255,255,0.7)]"
       >
-        {/* Stylized White Dove in Gentle Flight */}
         <path
           d="M 3 16 
              C 8 13, 14 6, 23 2 
@@ -106,7 +107,6 @@ const FlyingDove: React.FC<FlyingDoveProps> = ({
           fill="#FFFFFF"
           fillOpacity="0.92"
         />
-        {/* Soft Wing Shading */}
         <path
           d="M 12 16 C 18 10, 22 7, 26 5 C 24 9, 23 13, 21 16 Z"
           fill="#FFF4F1"
@@ -147,7 +147,6 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
     offset: ['start start', 'end start'],
   });
 
-  // Background moves slower (0.22x) than foreground, or disabled if reduced motion
   const scrollBgY = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
   const scrollContentY = useTransform(scrollYProgress, [0, 1], ['0%', '35%']);
   const backgroundY = shouldReduceMotion ? '0%' : scrollBgY;
@@ -155,7 +154,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
   const scrollToNext = () => {
-    const nextSection = document.getElementById('section-save-the-date');
+    const nextSection = document.getElementById('section-event-cards');
     if (nextSection) {
       nextSection.scrollIntoView({ behavior: 'smooth' });
     }
@@ -167,33 +166,28 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
       id="section-hero"
       className="relative w-full h-screen min-h-[640px] max-h-[960px] flex flex-col items-center justify-between text-center overflow-hidden select-none"
     >
-      {/* 
-        CINEMATIC REVEAL CONTAINER:
-        Starts slightly zoomed-in (scale 1.18, blur 6px, brightness 1.4) 
-        and settles to scale 1, blur 0, brightness 1 over 1.4s ease-out 
-      */}
       <motion.div
         initial={
           shouldReduceMotion
             ? { opacity: 0 }
             : {
-              opacity: 0,
-              scale: 1.18,
-              filter: 'blur(6px) brightness(1.4)',
-            }
+                opacity: 0,
+                scale: 1.18,
+                filter: 'blur(6px) brightness(1.4)',
+              }
         }
         animate={
           isRevealed
             ? shouldReduceMotion
               ? { opacity: 1 }
               : {
-                opacity: 1,
-                scale: 1,
-                filter: 'blur(0px) brightness(1.0)',
-              }
+                  opacity: 1,
+                  scale: 1,
+                  filter: 'blur(0px) brightness(1.0)',
+                }
             : shouldReduceMotion
-              ? { opacity: 0 }
-              : {
+            ? { opacity: 0 }
+            : {
                 opacity: 0,
                 scale: 1.18,
                 filter: 'blur(6px) brightness(1.4)',
@@ -216,34 +210,32 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
         >
           <img
             src={ASSETS.heroBg}
-            alt="Dreamy watercolor lake and wedding arch"
+            alt="خلفية زفاف مائية بأقواس وزهور"
             fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover object-center filter brightness-[1.02]"
           />
-
           {/* Soft Dreamy Vignette Wash */}
           <div className="absolute inset-0 bg-gradient-to-b from-sky/15 via-transparent to-blush/30 pointer-events-none" />
         </motion.div>
 
-        {/* 2. Sun-Ray Flare: Soft golden conic/radial light burst from TOP-RIGHT corner */}
+        {/* 2. Sun-Ray Flare: Golden radial light burst */}
         {!shouldReduceMotion && (
           <div className="absolute -top-24 -right-24 w-[380px] h-[380px] sm:w-[500px] sm:h-[500px] pointer-events-none overflow-hidden z-10">
-            {/* Ambient Rotating Conic Golden Rays */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={
                 isRevealed
                   ? {
-                    opacity: [0, 0.8, 0.5],
-                    rotate: [0, 360],
-                  }
+                      opacity: [0, 0.8, 0.5],
+                      rotate: [0, 360],
+                    }
                   : { opacity: 0 }
               }
               transition={{
                 opacity: {
                   duration: 1.8,
-                  delay: 0.3, // starts at 2.6s (2.3s reveal + 0.3s)
+                  delay: 0.3,
                   times: [0, 0.45, 1],
                   ease: 'easeOut',
                 },
@@ -267,7 +259,6 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 willChange: 'transform, opacity',
               }}
             />
-            {/* Core golden bloom glow */}
             <motion.div
               initial={{ opacity: 0, scale: 0.6 }}
               animate={
@@ -292,7 +283,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
           </div>
         )}
 
-        {/* 3. 2-3 White Doves Flying in from Left Side across the Sky */}
+        {/* 3. White Doves Flying across the Sky */}
         {!shouldReduceMotion && (
           <>
             <FlyingDove
@@ -325,7 +316,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
           </>
         )}
 
-        {/* 4. Floating Soft Petals & Sparkle Particles (12 elements) */}
+        {/* 4. Floating Soft Petals & Sparkle Particles */}
         {!shouldReduceMotion && (
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
             {PARTICLES.map((p) => (
@@ -340,11 +331,11 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 animate={
                   isRevealed
                     ? {
-                      y: ['0%', '110%'],
-                      x: [0, p.id % 2 === 0 ? 25 : -25, 0],
-                      opacity: [0, 0.75, 0.85, 0.6, 0],
-                      rotate: [0, 180, 360],
-                    }
+                        y: ['0%', '110%'],
+                        x: [0, p.id % 2 === 0 ? 25 : -25, 0],
+                        opacity: [0, 0.75, 0.85, 0.6, 0],
+                        rotate: [0, 180, 360],
+                      }
                     : { opacity: 0 }
                 }
                 transition={{
@@ -361,7 +352,6 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 }}
               >
                 {p.type === 'petal' ? (
-                  // Soft Blush Rose Petal
                   <svg
                     width={p.size}
                     height={p.size * 1.3}
@@ -377,7 +367,6 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                     />
                   </svg>
                 ) : (
-                  // Delicate Light Gold Sparkle
                   <div
                     style={{
                       width: `${p.size}px`,
@@ -391,14 +380,14 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
           </div>
         )}
 
-        {/* 5. Foreground Content: Choreographed Stagger (0.25s apart) */}
+        {/* 5. Foreground Content */}
         <motion.div
           style={{ y: contentY, opacity: contentOpacity }}
           className="relative z-20 w-full flex flex-col items-center justify-between h-full pt-3 pb-2"
         >
-          {/* Top Block: Bismillah + Families + Quranic Verse + Couple Names & Date (Raised into upper mountain/sky area) */}
+          {/* Top Block: Bismillah + Verse + Couple Names & Date */}
           <div className="flex flex-col items-center w-full max-w-sm px-4">
-            {/* Step 1: Bismillah fades in first (0.6s, delay 0.3s) */}
+            {/* Step 1: Bismillah */}
             <motion.span
               initial={{ opacity: 0, y: -16, filter: 'blur(8px)' }}
               animate={
@@ -412,12 +401,12 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ willChange: 'transform, opacity, filter' }}
-              className="font-serif text-base sm:text-lg text-white font-medium select-none tracking-wide drop-shadow-[0_0_14px_rgba(255,255,255,0.85)] drop-shadow-[0_2px_4px_rgba(78,62,55,0.35)] block mb-0.5"
+              className="font-amiri text-lg sm:text-xl text-white font-bold select-none tracking-wide drop-shadow-[0_0_14px_rgba(255,255,255,0.85)] drop-shadow-[0_2px_4px_rgba(78,62,55,0.4)] block mb-0.5"
             >
               {INVITATION_DATA.bismillah.arabic}
             </motion.span>
 
-            {/* Step 2: "TOGETHER WITH THEIR FAMILIES" */}
+            {/* Step 2: Blessing text */}
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={
@@ -431,12 +420,12 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ willChange: 'transform, opacity' }}
-              className="font-cinzel text-[8.5px] sm:text-[9.5px] tracking-loose-tracked text-white/95 uppercase font-medium drop-shadow-[0_1px_4px_rgba(78,62,55,0.5)]"
+              className="font-cairo text-xs sm:text-sm font-semibold text-white/95 drop-shadow-[0_1px_4px_rgba(78,62,55,0.5)]"
             >
-              Together With Their Families
+              ببركة ورضا الوالدين والأهل والأحباب
             </motion.p>
 
-            {/* Step 1b: Quranic Verse (الآية القرآنية الكريمة) in the open upper area */}
+            {/* Step 1b: Quranic Verse in high-contrast frosted badge */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={
@@ -450,22 +439,22 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ willChange: 'transform, opacity' }}
-              className="mt-1 px-3 py-1 rounded-xl bg-white/20 backdrop-blur-xs border border-white/35 shadow-xs text-center max-w-xs"
+              className="mt-1.5 px-4 py-1.5 rounded-2xl bg-black/25 backdrop-blur-md border border-white/40 shadow-sm text-center max-w-sm"
             >
               <p
                 dir="rtl"
-                className="font-amiri text-xs sm:text-[13px] text-white font-bold leading-snug tracking-wide drop-shadow-[0_2px_6px_rgba(78,62,55,0.5)] select-none"
+                className="font-amiri text-sm sm:text-base text-white font-bold leading-relaxed tracking-wide drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] select-none"
               >
                 {INVITATION_DATA.bismillah.verseArabicFormatted}
               </p>
-              <span className="block text-[8px] sm:text-[8.5px] text-white/95 font-cinzel font-semibold tracking-wider uppercase mt-0.5 drop-shadow-xs">
+              <span className="block text-[11px] text-white/90 font-cairo font-semibold tracking-wider mt-0.5">
                 {INVITATION_DATA.bismillah.surahReferenceArabic}
               </span>
             </motion.div>
 
-            {/* Couple Names Raised Up into the Mountain/Sky Space (Above the Arch) */}
-            <div className="mt-2 flex flex-col items-center transform-gpu">
-              {/* Step 3: Bride Name "Marwa" - Letter-by-letter reveal */}
+            {/* Couple Names */}
+            <div className="mt-3 flex flex-col items-center transform-gpu">
+              {/* Bride Name "مروة" */}
               <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] leading-tight">
                 <AnimatedWord
                   word={INVITATION_DATA.couple.bride.firstName}
@@ -474,7 +463,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 />
               </h1>
 
-              {/* Step 4: Centered Ampersand */}
+              {/* Centered Ampersand */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, filter: 'blur(6px)' }}
                 animate={
@@ -497,7 +486,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 <span className="h-[1px] w-8 bg-white/60 drop-shadow-xs" />
               </motion.div>
 
-              {/* Step 5: Groom Name "Omer" - Letter-by-letter reveal */}
+              {/* Groom Name "عمر" */}
               <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] leading-tight">
                 <AnimatedWord
                   word={INVITATION_DATA.couple.groom.firstName}
@@ -506,7 +495,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 />
               </h1>
 
-              {/* Step 6a: Wedding Date Pill Badge sitting right above the Arch */}
+              {/* Wedding Date Pill Badge */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={
@@ -520,9 +509,9 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{ willChange: 'transform, opacity' }}
-                className="mt-1 px-3.5 py-0.5 rounded-full bg-cream/75 backdrop-blur-xs border border-white/60 shadow-xs"
+                className="mt-2 px-4 py-1 rounded-full bg-cream/90 backdrop-blur-xs border border-white/60 shadow-xs"
               >
-                <p className="font-cinzel text-[9px] sm:text-[10px] tracking-wider text-taupe-dark uppercase font-semibold">
+                <p className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark">
                   {INVITATION_DATA.weddingDateFormatted}
                 </p>
               </motion.div>
@@ -545,17 +534,15 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
             style={{ willChange: 'transform, opacity' }}
             className="flex flex-col items-center gap-3 pb-2"
           >
-            {/* Step 6b: Bottom invitation line */}
-            <p className="font-cinzel text-[10px] sm:text-[11px] tracking-tracked text-white/95 uppercase max-w-xs leading-relaxed drop-shadow-[0_1px_4px_rgba(78,62,55,0.55)]">
-              Cordially invite you to celebrate their beginning
+            <p className="font-cairo text-xs sm:text-sm text-white font-medium max-w-xs leading-relaxed drop-shadow-[0_1px_4px_rgba(78,62,55,0.6)]">
+              يسرنا دعوتكم لمشاركتنا فرحة العمر وبداية رحلتنا المباركة
             </p>
 
-            {/* Subtle Bouncing Scroll-Down Chevron */}
             <button
               onClick={scrollToNext}
               type="button"
-              className="group flex flex-col items-center cursor-pointer mt-1 focus:outline-none"
-              aria-label="Scroll down to Save The Date"
+              className="group flex flex-col items-center cursor-pointer mt-1 focus:outline-none min-h-[44px] min-w-[44px] justify-center"
+              aria-label="الانتقال إلى تفاصيل الفرح"
             >
               <motion.div
                 animate={{ y: [0, 6, 0] }}
@@ -564,9 +551,9 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                   repeat: Infinity,
                   ease: 'easeInOut',
                 }}
-                className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs border border-white/40 flex items-center justify-center text-white shadow-xs group-hover:bg-white/30 transition-colors"
+                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs border border-white/40 flex items-center justify-center text-white shadow-xs group-hover:bg-white/30 transition-colors"
               >
-                <ChevronDown className="w-4 h-4 text-white" />
+                <ChevronDown className="w-5 h-5 text-white" />
               </motion.div>
             </button>
           </motion.div>

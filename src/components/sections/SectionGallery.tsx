@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
+import { motion, AnimatePresence, type PanInfo, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { INVITATION_DATA } from '../../data/invitation';
@@ -8,6 +10,7 @@ export const SectionGallery: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const moments = INVITATION_DATA.moments;
   const autoplayTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -22,22 +25,21 @@ export const SectionGallery: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + moments.length) % moments.length);
   }, [moments.length]);
 
-  // Autoplay every 4s, pause on touch/hover
+  // Autoplay every 4s, pause on touch/hover or if reduced motion is preferred
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || shouldReduceMotion) return;
 
     autoplayTimerRef.current = setInterval(() => {
       nextSlide();
-    }, 4000);
+    }, 4500);
 
     return () => {
       if (autoplayTimerRef.current) {
         clearInterval(autoplayTimerRef.current);
       }
     };
-  }, [isPaused, nextSlide]);
+  }, [isPaused, nextSlide, shouldReduceMotion]);
 
-  // Swipe gesture handling
   const handleDragEnd = (
     _event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
@@ -55,21 +57,22 @@ export const SectionGallery: React.FC = () => {
   return (
     <section
       id="section-gallery"
-      className="relative py-18 px-5 sm:px-6 paper-texture bg-gradient-to-b from-cream via-blush-50/40 to-cream overflow-hidden select-none"
+      className="relative py-16 px-5 sm:px-6 paper-texture bg-gradient-to-b from-cream via-blush-50/40 to-cream overflow-hidden select-none"
+      dir="rtl"
     >
       <div className="max-w-[420px] mx-auto text-center">
         {/* Header */}
         <Reveal delay={0.1} className="mb-10">
-          <span className="font-cinzel text-xs tracking-loose-tracked text-gold uppercase block mb-1">
-            Memories
+          <span className="font-cairo text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+            أجمل الذكريات
           </span>
-          <h2 className="font-script text-5xl sm:text-6xl text-taupe-dark">
-            Our Moments
+          <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
+            ألبوم اللحظات
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="h-[1px] w-8 bg-gold/40" />
-            <Sparkles className="w-3.5 h-3.5 text-gold" />
-            <span className="h-[1px] w-8 bg-gold/40" />
+            <span className="h-[1px] w-10 bg-gold/40" />
+            <Sparkles className="w-4 h-4 text-gold" />
+            <span className="h-[1px] w-10 bg-gold/40" />
           </div>
         </Reveal>
 
@@ -82,25 +85,23 @@ export const SectionGallery: React.FC = () => {
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
           >
-            {/* The Signature ARCH-Shaped Frame: border-radius: 999px 999px 24px 24px */}
+            {/* The Signature ARCH-Shaped Frame */}
             <div
-              style={{ borderRadius: '999px 999px 24px 24px' }}
+              style={{ borderRadius: '999px 999px 28px 28px' }}
               className="relative w-full h-[440px] sm:h-[460px] border-2 border-gold/55 bg-cream shadow-soft-float p-2.5 overflow-hidden flex flex-col items-center justify-center"
             >
-              {/* Inner Double Gold Hairline Frame */}
               <div
-                style={{ borderRadius: '999px 999px 18px 18px' }}
+                style={{ borderRadius: '999px 999px 22px 22px' }}
                 className="absolute inset-2 border border-gold/30 pointer-events-none z-20"
               />
 
-              {/* Swipeable Image Container */}
               <motion.div
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.25}
                 onDragEnd={handleDragEnd}
                 className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
-                style={{ borderRadius: '999px 999px 16px 16px' }}
+                style={{ borderRadius: '999px 999px 20px 20px' }}
               >
                 <AnimatePresence initial={false} custom={direction} mode="wait">
                   <motion.div
@@ -120,18 +121,17 @@ export const SectionGallery: React.FC = () => {
                       className="w-full h-full object-cover select-none pointer-events-none"
                     />
 
-                    {/* Gradient Overlay for Title & Caption Readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-taupe-dark/80 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
                     {/* Photo Caption Overlay at Bottom */}
-                    <div className="absolute bottom-5 left-4 right-4 text-center text-cream z-10 pointer-events-none">
-                      <span className="font-cinzel text-[9px] tracking-loose-tracked text-gold-shimmer uppercase block mb-0.5">
-                        Moment {currentIndex + 1} of {moments.length}
+                    <div className="absolute bottom-5 left-4 right-4 text-center text-white z-10 pointer-events-none">
+                      <span className="font-cairo text-xs font-semibold text-gold-shimmer block mb-1">
+                        صورة {currentIndex + 1} من {moments.length}
                       </span>
-                      <h4 className="font-script text-3xl sm:text-4xl text-cream drop-shadow-md leading-tight">
+                      <h4 className="font-serif font-bold text-2xl sm:text-3xl text-white drop-shadow-md leading-tight">
                         {currentMoment.title}
                       </h4>
-                      <p className="font-serif italic text-xs text-cream/90 mt-1 max-w-[240px] mx-auto drop-shadow-xs">
+                      <p className="font-cairo text-xs sm:text-sm text-white/95 mt-1 max-w-[240px] mx-auto drop-shadow-sm font-medium">
                         "{currentMoment.caption}"
                       </p>
                     </div>
@@ -139,44 +139,24 @@ export const SectionGallery: React.FC = () => {
                 </AnimatePresence>
               </motion.div>
 
-              {/* Prev / Next Circular Arrow Buttons Overlaid on Left and Right Edges */}
+              {/* Prev / Next Circular Arrow Buttons (Min 44x44px for Touch) */}
               <button
                 onClick={prevSlide}
                 type="button"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                aria-label="Previous photo"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                aria-label="الصورة السابقة"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronRight className="w-5 h-5" />
               </button>
 
               <button
                 onClick={nextSlide}
                 type="button"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                aria-label="Next photo"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-cream/90 backdrop-blur-xs border border-gold/50 flex items-center justify-center text-taupe-dark hover:text-gold-dark hover:border-gold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                aria-label="الصورة التالية"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
-            </div>
-
-            {/* Progress Dashes Under Carousel (Active Dash is Gold & Longer) */}
-            <div className="flex items-center justify-center gap-1.5 mt-5">
-              {moments.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => {
-                    setDirection(i > currentIndex ? 1 : -1);
-                    setCurrentIndex(i);
-                  }}
-                  className={`h-1.5 rounded-full transition-all duration-400 cursor-pointer ${
-                    i === currentIndex
-                      ? 'w-8 bg-gradient-to-r from-gold-metallic via-gold-shimmer to-gold-metallic shadow-xs'
-                      : 'w-2.5 bg-gold/30 hover:bg-gold/50'
-                  }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
             </div>
           </div>
         </Reveal>

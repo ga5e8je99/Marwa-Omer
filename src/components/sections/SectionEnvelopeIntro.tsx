@@ -77,21 +77,23 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
   return (
     <div
       id="envelope-intro-overlay"
-      className={`fixed inset-0 z-50 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none transition-colors duration-1000 ${isCardExpanding ? 'bg-cream' : 'bg-[#181311]'
-        }`}
+      className={`fixed inset-0 z-50 w-full h-[100dvh] flex items-center justify-center select-none overflow-hidden touch-none transition-colors duration-1000 ${
+        isCardExpanding ? 'bg-cream' : 'bg-[#181311]'
+      }`}
       style={{ perspective: '1400px' }}
       onClick={handleOpen}
       role="button"
       tabIndex={0}
-      aria-label="Tap to open wedding invitation envelope"
+      aria-label="انقر لفتح ظرف دعوة الزفاف"
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') handleOpen();
       }}
     >
       {/* Ambient Dreamy Background Glow */}
       <div
-        className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${isCardExpanding ? 'opacity-0' : 'opacity-100'
-          }`}
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${
+          isCardExpanding ? 'opacity-0' : 'opacity-100'
+        }`}
       >
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-rose/20 blur-[130px]" />
         <div className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-gold/15 blur-[120px]" />
@@ -126,7 +128,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             </div>
           </div>
 
-          {/* 2. THE WEDDING INVITATION CARD (Layer 2: tucked neatly inside, glides UP out of the envelope!) */}
+          {/* 2. THE WEDDING INVITATION CARD (Layer 2: tucked inside, glides UP out of the envelope) */}
           <motion.div
             initial={{ y: 0, scale: 0.98 }}
             animate={
@@ -157,38 +159,38 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
 
             {/* Top: Quranic Verse Preview */}
             <div className="text-center pt-1 z-10">
-              <span className="font-amiri text-[11px] text-taupe-dark tracking-wide block">
+              <span className="font-amiri text-xs text-taupe-dark tracking-wide block font-semibold">
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </span>
-              <p className="font-serif italic text-[9px] text-taupe/80 mt-0.5 max-w-[240px] mx-auto leading-tight">
-                "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا"
+              <p className="font-amiri text-[12px] text-taupe-dark/90 mt-0.5 max-w-[260px] mx-auto leading-tight font-medium">
+                {INVITATION_DATA.bismillah.verseArabic}
               </p>
             </div>
 
             {/* Center: Grand Couple Names */}
             <div className="text-center my-auto z-10 flex flex-col items-center">
-              <span className="font-cinzel text-[8px] tracking-loose-tracked text-gold uppercase block mb-0.5">
-                TOGETHER WITH THEIR FAMILIES
+              <span className="font-cairo text-[11px] font-semibold text-[#78550E] block mb-0.5">
+                ببركة ورضا الوالدين والأهل والأحباب
               </span>
               <h2 className="font-script text-3xl sm:text-4xl text-gold-gradient py-0.5">
                 {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
               </h2>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cream/80 border border-gold/40 shadow-2xs mt-1">
-                <Sparkles className="w-2.5 h-2.5 text-gold" />
-                <span className="font-cinzel text-[8px] tracking-wider text-taupe-dark uppercase font-semibold">
-                  MONDAY, 12TH OF OCTOBER 2026
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cream/90 border border-gold/40 shadow-2xs mt-1">
+                <Sparkles className="w-3 h-3 text-gold" />
+                <span className="font-cairo text-[11px] text-taupe-dark font-bold">
+                  {INVITATION_DATA.weddingDateFormatted}
                 </span>
               </div>
             </div>
 
             {/* Bottom: Venue & Invitation prompt */}
             <div className="w-full text-center pb-1 z-10 flex flex-col items-center">
-              <p className="font-cinzel text-[8px] tracking-wider text-taupe/80 uppercase">
-                {INVITATION_DATA.venue.address}
+              <p className="font-cairo text-[11px] text-taupe-dark font-medium">
+                {INVITATION_DATA.venue.subtitle}
               </p>
-              <div className="w-10 h-[1px] bg-gold/40 mt-0.5 mb-1" />
-              <span className="font-serif italic text-[9px] text-gold-dark">
-                Wedding Invitation ✦ دعوة زفاف
+              <div className="w-12 h-[1px] bg-gold/40 mt-1 mb-1" />
+              <span className="font-cairo text-xs text-[#78550E] font-bold">
+                دعوة زفاف خاصة ✦ مرحباً بكم
               </span>
             </div>
 
@@ -438,13 +440,13 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             >
               <div className="flex items-center gap-2">
                 <span className="w-6 h-[1px] bg-gold/50" />
-                <span className="font-cinzel text-xs tracking-loose-tracked text-gold-shimmer uppercase font-semibold">
-                  TAP TO OPEN
+                <span className="font-cairo text-sm tracking-wider text-gold-shimmer font-bold">
+                  دعوة زفاف خاصة
                 </span>
                 <span className="w-6 h-[1px] bg-gold/50" />
               </div>
-              <p className="font-serif italic text-xs text-taupe-light/90">
-                انقر على الشمع لفتح ظرف الدعوة
+              <p className="font-cairo text-xs text-taupe-light/90 font-medium">
+                انقر على الشمع لفتح ظرف الدعوة ✉️
               </p>
             </motion.div>
           )}

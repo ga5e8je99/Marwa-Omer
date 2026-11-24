@@ -29,7 +29,7 @@ export default {
           light: '#E7CB84',
           shimmer: '#F1D98B',
           metallic: '#B8913A',
-          dark: '#8D6B26',
+          dark: '#78550E',
         },
         lavender: {
           DEFAULT: '#CFC3DD',
@@ -48,6 +48,7 @@ export default {
         },
       },
       fontFamily: {
+        cairo: ['"Cairo"', 'sans-serif'],
         amiri: ['"Amiri"', 'serif', '"Traditional Arabic"'],
         script: ['"Pinyon Script"', '"Great Vibes"', 'cursive'],
         vibes: ['"Great Vibes"', 'cursive'],

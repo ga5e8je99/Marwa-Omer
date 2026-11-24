@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
@@ -5,27 +7,29 @@ import { Reveal } from '../common/Reveal';
 import { INVITATION_DATA } from '../../data/invitation';
 import { ASSETS } from '../../config/assets';
 
+const CHAPTER_LABELS = ['الفصل الأول', 'الفصل الثاني', 'الفصل الثالث'];
+
 export const SectionOurStory: React.FC = () => {
   return (
     <section
       id="section-our-story"
-      className="relative py-18 px-5 sm:px-6 paper-texture bg-cream select-none overflow-hidden"
+      className="relative py-16 px-5 sm:px-6 paper-texture bg-cream overflow-hidden"
+      dir="rtl"
     >
       <div className="max-w-[420px] mx-auto">
         {/* Header */}
         <Reveal delay={0.1} className="text-center mb-10">
-          <span className="font-cinzel text-xs tracking-loose-tracked text-gold uppercase block mb-1">
-            A Love Written Slowly
+          <span className="font-cairo text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+            حكاية تجمعنا
           </span>
-          <h2 className="font-script text-5xl sm:text-6xl text-taupe-dark">
-            Our Story
+          <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
+            قصتنا
           </h2>
 
-          {/* Thin Gold Divider */}
           <div className="flex items-center justify-center gap-3 mt-3">
             <span className="h-[1px] w-14 bg-gradient-to-r from-transparent via-gold to-transparent" />
-            <div className="w-4 h-4 rounded-full border border-gold/60 flex items-center justify-center">
-              <span className="text-[9px] text-gold-metallic">✦</span>
+            <div className="w-5 h-5 rounded-full border border-gold/60 flex items-center justify-center">
+              <span className="text-xs text-gold-metallic">✦</span>
             </div>
             <span className="h-[1px] w-14 bg-gradient-to-r from-transparent via-gold to-transparent" />
           </div>
@@ -43,23 +47,22 @@ export const SectionOurStory: React.FC = () => {
             <div className="relative w-48 sm:w-52 h-64 sm:h-68 rounded-t-full rounded-b-xl overflow-hidden border border-gold/30 bg-cream">
               <img
                 src={ASSETS.coupleCartoon}
-                alt={`${INVITATION_DATA.couple.bride.firstName} & ${INVITATION_DATA.couple.groom.firstName}`}
+                alt={`${INVITATION_DATA.couple.bride.firstName} و ${INVITATION_DATA.couple.groom.firstName}`}
                 className="w-full h-full object-cover object-top"
                 loading="lazy"
                 decoding="async"
               />
             </div>
-            {/* Delicate name badge beneath portrait */}
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-0.5 rounded-full bg-cream border border-gold/50 shadow-xs whitespace-nowrap">
-              <span className="font-script text-base text-gold-dark font-medium">
+            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cream border border-gold/50 shadow-xs whitespace-nowrap">
+              <span className="font-serif text-sm sm:text-base text-[#78550E] font-bold">
                 {INVITATION_DATA.couple.bride.firstName} &amp; {INVITATION_DATA.couple.groom.firstName}
               </span>
             </div>
           </div>
         </motion.div>
 
-        {/* Three Chapters with Alternating Alignment */}
-        <div className="space-y-12">
+        {/* Three Chapters */}
+        <div className="space-y-10">
           {INVITATION_DATA.story.map((chapter, idx) => {
             const isEven = idx % 2 === 1;
 
@@ -74,63 +77,39 @@ export const SectionOurStory: React.FC = () => {
                   delay: 0.1,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className={`relative rounded-2xl p-6 sm:p-7 border border-gold/35 bg-cream/80 backdrop-blur-xs shadow-paper overflow-hidden ${
-                  isEven
-                    ? 'sm:ml-6 sm:mr-0 text-left sm:text-right'
-                    : 'sm:mr-6 sm:ml-0 text-left'
+                className={`relative rounded-3xl p-6 sm:p-7 border border-gold/35 bg-cream/85 backdrop-blur-xs shadow-paper overflow-hidden text-right ${
+                  isEven ? 'sm:mr-4' : 'sm:ml-4'
                 }`}
               >
-                {/* Inner Delicate Hairline */}
-                <div className="absolute inset-2 rounded-xl border border-gold/20 pointer-events-none" />
+                <div className="absolute inset-2 rounded-2xl border border-gold/20 pointer-events-none" />
 
-                {/* Huge Faded Gold Script Numeral (Scales & Draws In First) */}
-                <motion.div
-                  initial={{ scale: 0.55, opacity: 0, filter: 'blur(8px)' }}
-                  whileInView={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{
-                    duration: 0.85,
-                    delay: 0.05,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className={`absolute -top-3 ${
-                    isEven ? 'right-4 sm:left-4' : 'right-4'
-                  } pointer-events-none select-none`}
-                >
-                  <span className="font-script text-7xl sm:text-8xl text-gold-gradient opacity-20 block leading-none">
+                {/* Number Watermark */}
+                <div className="absolute -top-3 left-4 pointer-events-none select-none">
+                  <span className="font-serif text-6xl sm:text-7xl text-gold-metallic opacity-20 block leading-none font-bold">
                     {chapter.number}
                   </span>
-                </motion.div>
+                </div>
 
-                {/* Content */}
-                <div className="relative z-10 pt-2">
-                  {/* Small Tracked Title */}
-                  <div
-                    className={`flex items-center gap-2 mb-2 ${
-                      isEven ? 'sm:justify-end' : 'justify-start'
-                    }`}
-                  >
-                    <span className="font-cinzel text-[10px] tracking-loose-tracked text-gold-dark uppercase font-semibold">
-                      Chapter {chapter.number}
+                <div className="relative z-10 pt-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-cairo text-xs font-bold text-[#78550E]">
+                      {CHAPTER_LABELS[idx] || `الفصل ${chapter.number}`}
                     </span>
                     {chapter.date && (
-                      <span className="text-xs font-serif italic text-taupe/60">
+                      <span className="text-xs font-cairo text-taupe-dark/60">
                         • {chapter.date}
                       </span>
                     )}
                   </div>
 
-                  {/* Chapter Heading in Script */}
-                  <h3 className="font-script text-3xl sm:text-4xl text-gold-gradient py-0.5 mb-2.5">
+                  <h3 className="font-serif font-bold text-2xl sm:text-3xl text-[#78550E] mb-2.5">
                     {chapter.title}
                   </h3>
 
-                  {/* Paragraph in Italic Serif */}
-                  <p className="font-serif italic text-sm text-taupe/90 leading-relaxed">
+                  <p className="font-serif italic text-sm sm:text-base text-taupe-dark leading-relaxed">
                     "{chapter.text}"
                   </p>
 
-                  {/* Last Chapter Ending Line */}
                   {idx === INVITATION_DATA.story.length - 1 && (
                     <motion.div
                       initial={{ opacity: 0, y: 15 }}
@@ -139,9 +118,9 @@ export const SectionOurStory: React.FC = () => {
                       transition={{ duration: 0.8, delay: 0.3 }}
                       className="mt-6 pt-5 border-t border-gold/30 text-center"
                     >
-                      <Sparkles className="w-4 h-4 text-gold mx-auto mb-2" />
-                      <p className="font-serif italic text-sm text-taupe-dark leading-relaxed font-medium">
-                        "And so we invite you — dear friends and family — to walk with us into the garden of our forever."
+                      <Sparkles className="w-5 h-5 text-gold mx-auto mb-2" />
+                      <p className="font-serif italic text-sm sm:text-base text-taupe-dark leading-relaxed font-bold">
+                        "وهكذا ندعوكم، أهلاً وأحباباً، لتشاركونا بداية رحلة العمر في روضة من رياض السعادة والمودة."
                       </p>
                     </motion.div>
                   )}
