@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import {
   Users,
@@ -17,13 +17,17 @@ import {
   Unlock,
   Heart,
   ChevronLeft,
-
   Phone,
   Calendar,
   LogOut,
   SlidersHorizontal,
+  Music,
+  Play,
+  Pause,
+  Volume2,
 } from 'lucide-react';
 import { fetchRsvps, deleteRsvpApi, StoredRsvpItem } from '../../utils/rsvp';
+import { MUSIC_CONFIG, MUSIC_PRESETS, getEffectiveMusicStartTime } from '../../config/audio';
 
 const DASHBOARD_PIN = '2027'; // رمز الدخول السريع للعروسين
 
@@ -39,6 +43,17 @@ export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState<'all' | 'yes' | 'no'>('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  // Music Settings State
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlayingPreview, setIsPlayingPreview] = useState<boolean>(false);
+  const [startTimeInput, setStartTimeInput] = useState<number>(60);
+  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+  const [showMusicSettings, setShowMusicSettings] = useState<boolean>(false);
+
+  useEffect(() => {
+    setStartTimeInput(getEffectiveMusicStartTime());
+  }, []);
 
   // Check saved session on mount
   useEffect(() => {
@@ -134,6 +149,40 @@ export default function DashboardPage() {
     } catch {
       // fallback
     }
+  };
+
+  // Music Preview & Configuration Handlers
+  const handleTogglePreview = () => {
+    if (!previewAudioRef.current) return;
+    if (isPlayingPreview) {
+      previewAudioRef.current.pause();
+      setIsPlayingPreview(false);
+    } else {
+      previewAudioRef.current.currentTime = startTimeInput;
+      previewAudioRef.current.volume = 0.5;
+      previewAudioRef.current
+        .play()
+        .then(() => setIsPlayingPreview(true))
+        .catch(() => setIsPlayingPreview(false));
+    }
+  };
+
+  const handleSelectPreset = (seconds: number) => {
+    setStartTimeInput(seconds);
+    if (previewAudioRef.current) {
+      previewAudioRef.current.currentTime = seconds;
+      if (!isPlayingPreview) {
+        previewAudioRef.current.play().then(() => setIsPlayingPreview(true)).catch(() => {});
+      }
+    }
+  };
+
+  const handleSaveMusicStart = () => {
+    try {
+      localStorage.setItem('wedding_music_start_time', String(startTimeInput));
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2500);
+    } catch {}
   };
 
   // Delete wish
@@ -341,6 +390,131 @@ export default function DashboardPage() {
               {stats.declinedCount}
             </div>
           </div>
+        </section>
+
+        {/* Hidden Preview Audio for Dashboard */}
+        <audio
+          ref={previewAudioRef}
+          src={MUSIC_CONFIG.src}
+          preload="none"
+          onEnded={() => setIsPlayingPreview(false)}
+          onPause={() => setIsPlayingPreview(false)}
+        />
+
+        {/* Wedding Music Settings Card */}
+        <section className="bg-white/95 border border-gold/40 rounded-2xl p-3.5 mb-4 shadow-xs">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-gold/15 border border-gold/40 flex items-center justify-center text-[#78550E]">
+                <Music className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-xs sm:text-sm font-bold text-taupe-dark">
+                  موسيقى الزفة وجزء التشغيل
+                </h2>
+                <p className="text-[11px] text-[#78550E]">
+                  تبدأ بعد فتح الظرف من:{' '}
+                  <span className="font-bold font-mono">
+                    {Math.floor(startTimeInput / 60)}:
+                    {(startTimeInput % 60).toString().padStart(2, '0')}
+                  </span>{' '}
+                  (الثانية {startTimeInput})
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowMusicSettings((prev) => !prev)}
+              className="text-xs font-bold text-[#78550E] hover:underline px-2.5 py-1 rounded-full bg-gold/10 border border-gold/30 cursor-pointer"
+            >
+              {showMusicSettings ? 'إخفاء' : 'تعديل الوقت'}
+            </button>
+          </div>
+
+          {showMusicSettings && (
+            <div className="mt-3 pt-3 border-t border-gold/20 space-y-3">
+              <div>
+                <span className="text-[11px] font-bold text-taupe block mb-1.5">
+                  مقاطع مقترحة سريعة (اضغط لتجربة أي مقطع):
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {MUSIC_PRESETS.map((preset) => (
+                    <button
+                      key={preset.seconds}
+                      type="button"
+                      onClick={() => handleSelectPreset(preset.seconds)}
+                      className={`px-2.5 py-1 text-xs rounded-full border transition-all cursor-pointer font-medium ${
+                        startTimeInput === preset.seconds
+                          ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
+                          : 'bg-white text-taupe border-gold/40 hover:border-gold'
+                      }`}
+                    >
+                      {preset.timeStr} • {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Slider & Custom Input */}
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min="0"
+                  max="180"
+                  step="1"
+                  value={startTimeInput}
+                  onChange={(e) => {
+                    const sec = parseInt(e.target.value, 10) || 0;
+                    setStartTimeInput(sec);
+                    if (previewAudioRef.current) {
+                      previewAudioRef.current.currentTime = sec;
+                    }
+                  }}
+                  className="flex-1 accent-[#78550E] cursor-pointer"
+                />
+                <span className="text-xs font-mono font-bold text-[#78550E] min-w-[50px] text-center">
+                  {Math.floor(startTimeInput / 60)}:
+                  {(startTimeInput % 60).toString().padStart(2, '0')}
+                </span>
+              </div>
+
+              {/* Buttons: Test Play & Save */}
+              <div className="flex items-center justify-between gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={handleTogglePreview}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-gold/50 text-xs font-bold text-[#78550E] hover:border-gold hover:shadow-xs transition-all cursor-pointer"
+                >
+                  {isPlayingPreview ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5" />
+                      <span>إيقاف المعاينة</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>استماع للمقطع المختار</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSaveMusicStart}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-gold via-gold-shimmer to-gold text-white text-xs font-bold shadow-xs hover:shadow-md transition-all cursor-pointer active:scale-95"
+                >
+                  {saveSuccess ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>تم الحفظ بنجاح!</span>
+                    </>
+                  ) : (
+                    <span>حفظ وقت البدء</span>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Search & Export Bar */}

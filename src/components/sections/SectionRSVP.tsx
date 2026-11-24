@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Send, Check } from 'lucide-react';
+import { Sparkles, Heart, Send, Check } from 'lucide-react';
 import { Reveal } from '../common/Reveal';
 import { submitRsvp } from '../../utils/rsvp';
 import { useLanguage } from '../../context/LanguageContext';
@@ -91,8 +91,10 @@ export const SectionRSVP: React.FC = () => {
           <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
             {t.rsvp.title}
           </h2>
-          <div className="flex items-center justify-center mt-2">
-            <span className="h-[1px] w-16 bg-gold/40" />
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <span className="h-[1px] w-10 bg-gold/40" />
+            <Sparkles className="w-4 h-4 text-gold" />
+            <span className="h-[1px] w-10 bg-gold/40" />
           </div>
           <p className="font-serif italic text-sm text-taupe-dark/85 mt-2 leading-relaxed">
             {t.rsvp.subtitle}
@@ -167,11 +169,10 @@ export const SectionRSVP: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, attending: 'yes' })}
-                        className={`py-2 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                          formData.attending === 'yes'
-                            ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
-                            : 'bg-cream/80 text-taupe-dark border-gold/40 hover:border-gold'
-                        }`}
+                        className={`py-2 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${formData.attending === 'yes'
+                          ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
+                          : 'bg-cream/80 text-taupe-dark border-gold/40 hover:border-gold'
+                          }`}
                       >
                         <Heart className="w-3.5 h-3.5 shrink-0" />
                         <span>{t.rsvp.attendYes}</span>
@@ -180,11 +181,10 @@ export const SectionRSVP: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, attending: 'no' })}
-                        className={`py-2 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                          formData.attending === 'no'
-                            ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
-                            : 'bg-cream/80 text-taupe-dark border-gold/40 hover:border-gold'
-                        }`}
+                        className={`py-2 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${formData.attending === 'no'
+                          ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
+                          : 'bg-cream/80 text-taupe-dark border-gold/40 hover:border-gold'
+                          }`}
                       >
                         <span>{t.rsvp.attendNo}</span>
                       </button>

@@ -3,8 +3,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Lenis from 'lenis';
 
-// Audio asset served from public/music.mp3
-const bgMusic = '/music.mp3';
+// Audio asset and configuration
+import { MUSIC_CONFIG, getEffectiveMusicStartTime } from './config/audio';
+const bgMusic = MUSIC_CONFIG.src;
 
 // Context & Reusable components
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
@@ -135,16 +136,26 @@ const MainAppContent: React.FC = () => {
 
   // Audio Playback
   const handleOpenStart = () => {
+    // Prime the audio element on user gesture to satisfy iOS/Android autoplay policy,
+    // but keep silent until envelope opening completes.
     if (audioRef.current) {
-      audioRef.current.volume = 0.45;
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setIsAudioPlaying(true))
-          .catch((error) => {
-            console.warn('Autoplay prevented by browser policy:', error);
-            setIsAudioPlaying(false);
-          });
+      const startSec = getEffectiveMusicStartTime();
+      try {
+        audioRef.current.currentTime = startSec;
+        audioRef.current.volume = 0;
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = startSec;
+              }
+            })
+            .catch(() => {});
+        }
+      } catch (err) {
+        console.warn('Audio prime error:', err);
       }
     }
   };
@@ -155,6 +166,10 @@ const MainAppContent: React.FC = () => {
       audioRef.current.pause();
       setIsAudioPlaying(false);
     } else {
+      if (audioRef.current.currentTime < 1) {
+        audioRef.current.currentTime = getEffectiveMusicStartTime();
+      }
+      audioRef.current.volume = MUSIC_CONFIG.volume;
       audioRef.current
         .play()
         .then(() => setIsAudioPlaying(true))
@@ -172,6 +187,26 @@ const MainAppContent: React.FC = () => {
       lenisRef.current.start();
     }
     document.body.style.overflow = '';
+
+    // Play music strictly AFTER envelope has opened
+    if (audioRef.current) {
+      const startSec = getEffectiveMusicStartTime();
+      try {
+        audioRef.current.currentTime = startSec;
+        audioRef.current.volume = MUSIC_CONFIG.volume;
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => setIsAudioPlaying(true))
+            .catch((error) => {
+              console.warn('Autoplay prevented by browser policy:', error);
+              setIsAudioPlaying(false);
+            });
+        }
+      } catch (err) {
+        console.warn('Audio play error:', err);
+      }
+    }
   };
 
   return (
@@ -185,8 +220,13 @@ const MainAppContent: React.FC = () => {
       <audio
         ref={audioRef}
         src={bgMusic}
-        loop
-        preload="metadata"
+        preload="auto"
+        onEnded={() => {
+          if (audioRef.current) {
+            audioRef.current.currentTime = getEffectiveMusicStartTime();
+            audioRef.current.play().catch(() => {});
+          }
+        }}
       />
 
 
