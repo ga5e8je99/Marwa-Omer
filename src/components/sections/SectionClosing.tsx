@@ -61,7 +61,7 @@ export const SectionClosing: React.FC = () => {
 
         {/* Couple Signature: Rahma & Omer */}
         <Reveal delay={0.4} className="mb-2">
-          <h1 className="font-script text-5xl sm:text-6xl text-gold-gradient py-0.5 drop-shadow-xs">
+          <h1 className="font-ruqaa text-5xl sm:text-6xl text-gold-gradient py-0.5 drop-shadow-xs">
             {t.couple.bride} &amp; {t.couple.groom}
           </h1>
         </Reveal>

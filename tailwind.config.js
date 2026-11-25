@@ -50,6 +50,7 @@ export default {
       fontFamily: {
         cairo: ['"Cairo"', 'sans-serif'],
         amiri: ['"Amiri"', 'serif', '"Traditional Arabic"'],
+        ruqaa: ['"Aref Ruqaa"', '"Amiri"', 'serif'],
         script: ['"Pinyon Script"', '"Great Vibes"', 'cursive'],
         vibes: ['"Great Vibes"', 'cursive'],
         serif: ['"Cormorant Garamond"', 'serif', 'Georgia'],

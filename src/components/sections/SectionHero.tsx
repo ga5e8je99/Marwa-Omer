@@ -19,6 +19,27 @@ const AnimatedWord: React.FC<AnimatedWordProps> = ({
   className = '',
   isRevealed = true,
 }) => {
+  const isArabic = /[\u0600-\u06FF]/.test(word);
+
+  if (isArabic) {
+    return (
+      <motion.span
+        lang="ar"
+        dir="rtl"
+        className={`inline-block transform-gpu ${className}`}
+        initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+        animate={
+          isRevealed
+            ? { opacity: 1, y: 0, filter: 'blur(0px)' }
+            : { opacity: 0, y: 20, filter: 'blur(10px)' }
+        }
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: isRevealed ? startDelay : 0 }}
+      >
+        {word}
+      </motion.span>
+    );
+  }
+
   return (
     <span className={`inline-flex justify-center ${className}`}>
       {word.split('').map((char, index) => (
@@ -419,7 +440,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
             {/* Couple Names (Arabic Calligraphic Writing) */}
             <div className="mt-3 flex flex-col items-center transform-gpu">
               {/* Bride Name "رحمة" */}
-              <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] leading-tight">
+              <h1 className="font-ruqaa text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] drop-shadow-[0_2px_10px_rgba(78,62,55,0.7)] leading-tight">
                 <AnimatedWord
                   word={t.couple.bride}
                   startDelay={0.35}
@@ -451,7 +472,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
               </motion.div>
 
               {/* Groom Name "عمر" */}
-              <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] leading-tight">
+              <h1 className="font-ruqaa text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] drop-shadow-[0_2px_10px_rgba(78,62,55,0.7)] leading-tight">
                 <AnimatedWord
                   word={t.couple.groom}
                   startDelay={0.75}
