@@ -416,58 +416,50 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
               </span>
             </motion.div>
 
-            {/* Couple Calligraphic Monogram Letters */}
-            <div className="mt-2 sm:mt-3 flex flex-col items-center transform-gpu">
+            {/* Couple Names (Arabic Calligraphic Writing) */}
+            <div className="mt-3 flex flex-col items-center transform-gpu">
+              {/* Bride Name "رحمة" */}
+              <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] leading-tight">
+                <AnimatedWord
+                  word={t.couple.bride}
+                  startDelay={0.35}
+                  isRevealed={isRevealed}
+                />
+              </h1>
+
+              {/* Centered Ampersand */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.85, filter: 'blur(8px)' }}
+                initial={{ opacity: 0, scale: 0.8, filter: 'blur(6px)' }}
                 animate={
                   isRevealed
                     ? { opacity: 1, scale: 1, filter: 'blur(0px)' }
-                    : { opacity: 0, scale: 0.85, filter: 'blur(8px)' }
-                }
-                transition={{
-                  duration: 0.8,
-                  delay: isRevealed ? 0.35 : 0,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                style={{ willChange: 'transform, opacity, filter' }}
-                className="relative flex items-center justify-center my-1 select-none"
-              >
-                {/* Ambient gold glow behind the monogram */}
-                <div
-                  className="absolute inset-0 -m-4 rounded-full bg-gold/25 blur-xl pointer-events-none"
-                  aria-hidden="true"
-                />
-                <img
-                  src={ASSETS.coupleMonogramGold || '/couple-monogram-gold.png?v=4'}
-                  alt={`${t.couple.bride} & ${t.couple.groom}`}
-                  className="relative h-28 sm:h-36 md:h-44 w-auto object-contain filter drop-shadow-[0_4px_18px_rgba(212,175,55,0.45)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.35)] transition-transform duration-500 hover:scale-105"
-                  draggable={false}
-                />
-              </motion.div>
-
-              {/* Couple Names Subtitle */}
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={
-                  isRevealed
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 6 }
+                    : { opacity: 0, scale: 0.8, filter: 'blur(6px)' }
                 }
                 transition={{
                   duration: 0.5,
-                  delay: isRevealed ? 0.65 : 0,
+                  delay: isRevealed ? 0.55 : 0,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="flex items-center gap-2 mt-0.5"
+                style={{ willChange: 'transform, opacity, filter' }}
+                className="flex items-center justify-center -my-1"
               >
-                <span className="h-[1px] w-6 bg-white/50" />
-                <span className="font-serif text-sm sm:text-base font-bold text-white drop-shadow-[0_1px_4px_rgba(78,62,55,0.6)]">
-                  {t.couple.bride} &amp; {t.couple.groom}
+                <span className="h-[1px] w-8 bg-white/60 drop-shadow-xs" />
+                <span className="mx-2 font-serif italic text-base sm:text-lg text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.8)]">
+                  &amp;
                 </span>
-                <span className="h-[1px] w-6 bg-white/50" />
+                <span className="h-[1px] w-8 bg-white/60 drop-shadow-xs" />
               </motion.div>
 
+              {/* Groom Name "عمر" */}
+              <h1 className="font-script text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] leading-tight">
+                <AnimatedWord
+                  word={t.couple.groom}
+                  startDelay={0.75}
+                  isRevealed={isRevealed}
+                />
+              </h1>
+
+              {/* Wedding Date Pill Badge */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={
@@ -477,13 +469,13 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 }
                 transition={{
                   duration: 0.6,
-                  delay: isRevealed ? 0.85 : 0,
+                  delay: isRevealed ? 0.95 : 0,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{ willChange: 'transform, opacity' }}
                 className="mt-2 px-4 py-1 rounded-full bg-cream/90 backdrop-blur-xs border border-white/60 shadow-xs"
               >
-                <p className="text-xs sm:text-sm font-bold text-taupe-dark">
+                <p className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark">
                   {t.weddingDateFormatted}
                 </p>
               </motion.div>

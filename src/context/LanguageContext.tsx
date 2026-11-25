@@ -17,27 +17,32 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const STORAGE_KEY = 'wedding_invitation_language_pref';
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lang, setLangState] = useState<Language>('ar'); // Initial SSR default
+  const [lang, setLangState] = useState<Language>('ar'); // Default: Arabic for this Egyptian wedding
 
-  // Automatic Device Language Detection on mount
+  // Language Preference Detection on mount
   useEffect(() => {
     try {
+      // 1. URL Query Parameter takes highest priority (?lang=ar or ?lang=en)
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang');
+        if (urlLang === 'en' || urlLang === 'ar') {
+          setLangState(urlLang);
+          return;
+        }
+      }
+
+      // 2. Saved preference in localStorage
       const savedLang = localStorage.getItem(STORAGE_KEY) as Language | null;
       if (savedLang === 'ar' || savedLang === 'en') {
         setLangState(savedLang);
         return;
       }
 
-      // Check device language automatically
-      const navLang =
-        (typeof navigator !== 'undefined' &&
-          ((navigator.languages && navigator.languages[0]) || navigator.language)) ||
-        '';
-
-      const detectedLang: Language = navLang.toLowerCase().startsWith('ar') ? 'ar' : 'en';
-      setLangState(detectedLang);
+      // 3. Default to Arabic for Rahma & Omer's wedding
+      setLangState('ar');
     } catch (e) {
-      console.warn('Language auto-detection error:', e);
+      console.warn('Language preference error:', e);
     }
   }, []);
 
