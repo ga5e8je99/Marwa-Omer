@@ -80,29 +80,29 @@ export const SectionRSVP: React.FC = () => {
   return (
     <section
       id="section-rsvp"
-      className="relative py-16 px-4 sm:px-6 paper-texture bg-gradient-to-b from-cream via-blush-50/60 to-cream flex flex-col justify-center"
+      className="relative w-full min-h-[100dvh] py-6 sm:py-8 px-4 flex flex-col items-center justify-center paper-texture bg-gradient-to-b from-cream via-blush-50/60 to-cream snap-start snap-always"
       dir={dir}
     >
       <div className="w-full max-w-[420px] mx-auto text-center">
         {/* Section Heading */}
-        <Reveal delay={0.1} className="mb-8">
-          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+        <Reveal delay={0.1} className="mb-4 sm:mb-5">
+          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-0.5">
             {t.rsvp.tag}
           </span>
-          <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark">
+          <h2 className="font-serif font-bold text-2xl sm:text-3xl text-taupe-dark">
             {t.rsvp.title}
           </h2>
-          <div className="flex items-center justify-center mt-2">
-            <span className="h-[1px] w-16 bg-gold/40" />
+          <div className="flex items-center justify-center mt-1.5">
+            <span className="h-[1px] w-14 bg-gold/40" />
           </div>
-          <p className="font-serif italic text-sm text-taupe-dark/85 mt-2 leading-relaxed">
+          <p className="font-serif italic text-xs sm:text-sm text-taupe-dark/85 mt-1.5 leading-relaxed">
             {t.rsvp.subtitle}
           </p>
         </Reveal>
 
         {/* Form Card */}
         <Reveal delay={0.2}>
-          <div className="relative rounded-[28px] border border-gold/45 bg-blush-50/85 backdrop-blur-md p-6 sm:p-7 shadow-paper overflow-hidden text-start">
+          <div className="relative rounded-[28px] border border-gold/45 bg-blush-50/85 backdrop-blur-md p-5 sm:p-6 shadow-paper overflow-hidden text-start">
             <div className="absolute inset-2 rounded-[22px] border border-gold/25 pointer-events-none" />
 
             <AnimatePresence mode="wait">
@@ -137,7 +137,7 @@ export const SectionRSVP: React.FC = () => {
                   </button>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5">
                   {/* 1. Name Input */}
                   <div>
                     <label className="block text-xs sm:text-sm font-bold text-[#78550E] mb-1">
@@ -152,7 +152,7 @@ export const SectionRSVP: React.FC = () => {
                         if (errors.name) setErrors({ ...errors, name: undefined });
                       }}
                       placeholder={t.rsvp.namePlaceholder}
-                      className="w-full border-0 border-b-2 border-gold/40 bg-transparent focus:border-gold focus:outline-none focus:ring-0 rounded-none px-2 py-2 text-taupe-dark text-sm sm:text-base placeholder:text-taupe/50 transition-colors"
+                      className="w-full border-0 border-b-2 border-gold/40 bg-transparent focus:border-gold focus:outline-none focus:ring-0 rounded-none px-2 py-1.5 text-taupe-dark text-sm sm:text-base placeholder:text-taupe/50 transition-colors"
                     />
                     {errors.name && (
                       <p className="text-xs text-rose-600 mt-1">{errors.name}</p>
@@ -161,14 +161,14 @@ export const SectionRSVP: React.FC = () => {
 
                   {/* 2. Attendance Status */}
                   <div>
-                    <label className="block text-xs sm:text-sm font-bold text-[#78550E] mb-2">
+                    <label className="block text-xs sm:text-sm font-bold text-[#78550E] mb-1.5">
                       {t.rsvp.attendingLabel}
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, attending: 'yes' })}
-                        className={`py-2 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${formData.attending === 'yes'
+                        className={`py-1.5 sm:py-2 px-3 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${formData.attending === 'yes'
                           ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
                           : 'bg-cream/80 text-taupe-dark border-gold/40 hover:border-gold'
                           }`}
@@ -180,7 +180,7 @@ export const SectionRSVP: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, attending: 'no' })}
-                        className={`py-2 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${formData.attending === 'no'
+                        className={`py-1.5 sm:py-2 px-3 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${formData.attending === 'no'
                           ? 'bg-[#78550E] text-white border-[#78550E] shadow-xs'
                           : 'bg-cream/80 text-taupe-dark border-gold/40 hover:border-gold'
                           }`}
@@ -207,7 +207,7 @@ export const SectionRSVP: React.FC = () => {
                       {t.rsvp.messageLabel}
                     </label>
                     <textarea
-                      rows={3}
+                      rows={2}
                       value={formData.message}
                       onFocus={handleInputFocus}
                       onChange={(e) => {
@@ -215,7 +215,7 @@ export const SectionRSVP: React.FC = () => {
                         if (errors.message) setErrors({ ...errors, message: undefined });
                       }}
                       placeholder={t.rsvp.messagePlaceholder}
-                      className="w-full border-0 border-b-2 border-gold/40 bg-transparent focus:border-gold focus:outline-none focus:ring-0 rounded-none px-2 py-2 text-taupe-dark text-sm sm:text-base placeholder:text-taupe/50 resize-none transition-colors"
+                      className="w-full border-0 border-b-2 border-gold/40 bg-transparent focus:border-gold focus:outline-none focus:ring-0 rounded-none px-2 py-1 text-taupe-dark text-xs sm:text-sm placeholder:text-taupe/50 resize-none transition-colors"
                     />
                     {errors.message && (
                       <p className="text-xs text-rose-600 mt-1">{errors.message}</p>
@@ -223,11 +223,11 @@ export const SectionRSVP: React.FC = () => {
                   </div>
 
                   {/* 5. Submit Button */}
-                  <div className="pt-2">
+                  <div className="pt-1.5">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="group relative w-full py-3.5 px-6 min-h-[44px] rounded-full border border-gold/70 bg-gradient-to-r from-gold via-gold-shimmer to-gold text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      className="group relative w-full py-2.5 sm:py-3 px-6 min-h-[40px] rounded-full border border-gold/70 bg-gradient-to-r from-gold via-gold-shimmer to-gold text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       <Send className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                       <span>{isSubmitting ? t.rsvp.submitting : t.rsvp.submitButton}</span>

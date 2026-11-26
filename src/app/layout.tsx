@@ -10,7 +10,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://marwa-omer-six.vercel.app'),
+  metadataBase: new URL('https://marwa-omar-six.vercel.app'),
   title: 'دعوة زفاف رحمة وعمر | 1 يناير 2027',
   description: 'يسرنا ويشرفنا دعوتكم لحضور حفل زفاف رحمة وعمر. الجمعة 1 يناير 2027 في الإسماعيلية، مصر.',
   icons: {

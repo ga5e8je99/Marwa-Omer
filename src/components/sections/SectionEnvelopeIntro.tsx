@@ -430,7 +430,7 @@ export const SectionEnvelopeIntro: React.FC<SectionEnvelopeIntroProps> = ({
             <span className="h-px w-10 bg-gold/50" />
           </div>
           <p className="font-amiri text-[15px] text-[#6F5B50] mt-1.5">
-            {t?.intro?.tapSubtitle || 'اضغط على الشمعة الذهبية عشان تفتح الدعوة'}
+            {t?.intro?.tapSubtitle || 'دوس على الشمعة الذهبية عشان تفتح الدعوة'}
           </p>
         </motion.div>
       </div>

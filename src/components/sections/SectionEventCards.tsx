@@ -130,26 +130,23 @@ export const SectionEventCards: React.FC = () => {
     setTilt({ x: 0, y: 0 });
   };
 
-  const googleMapsUrl = 'https://maps.google.com/?q=Royal+Hall+Ismailia+Egypt';
+  const googleMapsUrl = 'https://maps.google.com/?q=Riviera+Hall+Ismailia+Egypt';
 
   return (
     <section
       id="section-event-cards"
-      className="relative py-16 px-6 paper-texture bg-cream"
+      className="relative w-full min-h-[100dvh] py-6 sm:py-8 px-4 flex flex-col items-center justify-center paper-texture bg-cream snap-start snap-always"
       dir={dir}
     >
-      <div className="max-w-[420px] mx-auto text-center">
+      <div className="max-w-[420px] mx-auto text-center w-full">
         {/* Section Heading */}
-        <Reveal delay={0.1} className="mb-10">
-          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-1">
+        <Reveal delay={0.1} className="mb-3 sm:mb-4">
+          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#78550E] uppercase block mb-0.5">
             {t.event.tag}
           </span>
-          <h2 className="font-serif font-bold text-3xl sm:text-4xl text-taupe-dark mb-2">
+          <h2 className="font-serif font-bold text-2xl sm:text-3xl text-taupe-dark">
             {t.event.title}
           </h2>
-          <p className="font-serif italic text-sm sm:text-base text-taupe-dark/80 max-w-xs mx-auto leading-relaxed">
-            {t.event.description}
-          </p>
         </Reveal>
 
         {/* Wedding Event Card */}
@@ -188,56 +185,56 @@ export const SectionEventCards: React.FC = () => {
           <div className="absolute inset-2.5 rounded-[22px] border border-gold/25 pointer-events-none" />
 
           {/* Card Body */}
-          <div className="relative z-10 pt-10 pb-8 px-6 sm:px-8 text-center flex flex-col items-center">
-            <div className="relative w-full rounded-t-[140px] rounded-b-2xl border border-gold/50 bg-cream/90 backdrop-blur-xs p-6 pt-9 shadow-paper flex flex-col items-center">
+          <div className="relative z-10 pt-6 pb-6 px-4 sm:px-6 text-center flex flex-col items-center">
+            <div className="relative w-full rounded-t-[120px] rounded-b-2xl border border-gold/50 bg-cream/90 backdrop-blur-xs p-4 sm:p-5 pt-6 sm:pt-7 shadow-paper flex flex-col items-center">
               <div className="w-6 h-6 rounded-full bg-cream border border-gold/60 flex items-center justify-center mb-1">
                 <span className="text-xs text-gold-metallic">✦</span>
               </div>
 
-              <h3 className="font-serif font-bold text-3xl sm:text-4xl text-[#78550E] py-1 mb-1">
+              <h3 className="font-serif font-bold text-2xl sm:text-3xl text-[#78550E] py-0.5 mb-0.5">
                 {t.event.title}
               </h3>
 
-              <p className="font-serif italic text-sm text-taupe-dark/85 max-w-[280px] leading-relaxed mb-6">
+              <p className="font-serif italic text-xs sm:text-sm text-taupe-dark/85 max-w-[280px] leading-relaxed mb-4">
                 "{t.event.description}"
               </p>
 
-              <div className="w-full space-y-4 pt-3 border-t border-gold/25">
+              <div className="w-full space-y-2.5 sm:space-y-3 pt-2 border-t border-gold/25">
                 {/* DATE */}
                 <div className="flex flex-col items-center">
-                  <span className="text-xs font-bold text-[#78550E] uppercase">
+                  <span className="text-[11px] font-bold text-[#78550E] uppercase">
                     {t.event.dateLabel}
                   </span>
-                  <p className="text-sm sm:text-base font-semibold text-taupe-dark mt-0.5">
+                  <p className="text-xs sm:text-sm font-semibold text-taupe-dark mt-0.5">
                     {t.weddingDateFormatted}
                   </p>
                 </div>
 
                 {/* TIME */}
                 <div className="flex flex-col items-center">
-                  <span className="text-xs font-bold text-[#78550E] uppercase">
+                  <span className="text-[11px] font-bold text-[#78550E] uppercase">
                     {t.event.timeLabel}
                   </span>
-                  <p className="text-sm sm:text-base font-bold text-taupe-dark mt-0.5">
+                  <p className="text-xs sm:text-sm font-bold text-taupe-dark mt-0.5">
                     {t.timeFormatted}
                   </p>
                 </div>
 
                 {/* VENUE */}
                 <div className="flex flex-col items-center">
-                  <span className="text-xs font-bold text-[#78550E] uppercase">
+                  <span className="text-[11px] font-bold text-[#78550E] uppercase">
                     {t.event.venueLabel}
                   </span>
-                  <p className="text-sm sm:text-base font-bold text-taupe-dark mt-0.5">
+                  <p className="text-xs sm:text-sm font-bold text-taupe-dark mt-0.5">
                     {t.event.venueName}
                   </p>
-                  <p className="text-xs sm:text-sm text-taupe-dark/80 mt-0.5 select-text">
+                  <p className="text-[11px] sm:text-xs text-taupe-dark/80 mt-0.5 select-text">
                     {t.event.venueAddress}
                   </p>
                 </div>
 
                 {/* ATTIRE */}
-                <div className="pt-2 flex items-center justify-center text-xs sm:text-sm text-[#78550E] font-medium">
+                <div className="pt-1 flex items-center justify-center text-[11px] sm:text-xs text-[#78550E] font-medium">
                   <span>
                     {t.event.attireLabel}: {t.event.attireValue}
                   </span>
@@ -245,16 +242,16 @@ export const SectionEventCards: React.FC = () => {
               </div>
 
               {/* Map Button */}
-              <div className="mt-6 w-full flex justify-center">
+              <div className="mt-4 w-full flex justify-center">
                 <a
                   href={googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-full border border-gold/60 bg-cream/95 hover:bg-blush-50 text-taupe-dark hover:text-gold-dark text-xs sm:text-sm font-bold shadow-xs hover:shadow-gold-glow hover:border-gold transition-all duration-300 cursor-pointer"
+                  className="group inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-[40px] rounded-full border border-gold/60 bg-cream/95 hover:bg-blush-50 text-taupe-dark hover:text-gold-dark text-xs font-bold shadow-xs hover:shadow-gold-glow hover:border-gold transition-all duration-300 cursor-pointer"
                 >
-                  <MapPin className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />
+                  <MapPin className="w-3.5 h-3.5 text-gold group-hover:scale-110 transition-transform" />
                   <span>{t.event.mapButton}</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-taupe/60 group-hover:translate-x-0.5 transition-transform" />
+                  <ExternalLink className="w-3 h-3 text-taupe/60 group-hover:translate-x-0.5 transition-transform" />
                 </a>
               </div>
             </div>

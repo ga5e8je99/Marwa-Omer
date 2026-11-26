@@ -1,4 +1,4 @@
-# Marwa & Omer — Interactive Digital Wedding Invitation 💍✨
+# Marwa & omar — Interactive Digital Wedding Invitation 💍✨
 
 A luxurious, mobile-first single-page interactive digital wedding invitation website built with **React 19**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**. Designed for a 390×844 phone viewport first, with smooth responsive scaling to desktop inside a centered gold-bordered frame with ambient blurred background glows.
 

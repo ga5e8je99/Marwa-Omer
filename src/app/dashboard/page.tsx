@@ -398,7 +398,17 @@ export default function DashboardPage() {
           ref={previewAudioRef}
           src={MUSIC_CONFIG.src}
           preload="none"
-          onEnded={() => setIsPlayingPreview(false)}
+          onTimeUpdate={() => {
+            if (previewAudioRef.current && previewAudioRef.current.currentTime >= 139) {
+              previewAudioRef.current.currentTime = startTimeInput;
+            }
+          }}
+          onEnded={() => {
+            if (previewAudioRef.current) {
+              previewAudioRef.current.currentTime = startTimeInput;
+              previewAudioRef.current.play().catch(() => {});
+            }
+          }}
           onPause={() => setIsPlayingPreview(false)}
         />
 
@@ -414,12 +424,9 @@ export default function DashboardPage() {
                   موسيقى الزفة وجزء التشغيل
                 </h2>
                 <p className="text-[11px] text-[#78550E]">
-                  تبدأ بعد فتح الظرف من:{' '}
-                  <span className="font-bold font-mono">
-                    {Math.floor(startTimeInput / 60)}:
-                    {(startTimeInput % 60).toString().padStart(2, '0')}
-                  </span>{' '}
-                  (الثانية {startTimeInput})
+                  مقطع الزفة المكرر: من{' '}
+                  <span className="font-bold font-mono">1:39</span> إلى{' '}
+                  <span className="font-bold font-mono">2:19</span> (يتكرر تلقائياً)
                 </p>
               </div>
             </div>
@@ -436,7 +443,7 @@ export default function DashboardPage() {
             <div className="mt-3 pt-3 border-t border-gold/20 space-y-3">
               <div>
                 <span className="text-[11px] font-bold text-taupe block mb-1.5">
-                  مقاطع مقترحة سريعة (اضغط لتجربة أي مقطع):
+                  مقاطع مقترحة سريعة (دوس لتجربة أي مقطع):
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {MUSIC_PRESETS.map((preset) => (

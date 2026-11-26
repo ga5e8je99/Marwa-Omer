@@ -5,7 +5,8 @@ import path from 'path';
 const CONFIG_FILE = path.join(process.cwd(), 'src', 'data', 'config.json');
 
 const defaultConfig = {
-  musicStartTime: 60,
+  musicStartTime: 99,
+  musicEndTime: 139,
   musicTitle: 'زفة موسيقى طلت عروس',
   volume: 0.5,
 };
@@ -49,6 +50,10 @@ export async function POST(req: NextRequest) {
         typeof body.musicStartTime === 'number'
           ? Math.max(0, Math.min(364, body.musicStartTime))
           : current.musicStartTime,
+      musicEndTime:
+        typeof body.musicEndTime === 'number'
+          ? Math.max(1, Math.min(364, body.musicEndTime))
+          : current.musicEndTime,
       volume: typeof body.volume === 'number' ? body.volume : current.volume,
     };
 

@@ -29,13 +29,13 @@
   <text x="600" y="140" font-family="'Cairo', sans-serif" font-size="24" fill="#78550E" text-anchor="middle" font-weight="700">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</text>
   <text x="600" y="180" font-family="'Cairo', sans-serif" font-size="18" fill="#78550E" text-anchor="middle" font-weight="600">دعوة زفاف مباركة</text>
   
-  <text x="600" y="300" font-family="'Great Vibes', 'Pinyon Script', cursive" font-size="130" fill="url(#ogGold)" text-anchor="middle">Marwa &amp; Omer</text>
+  <text x="600" y="300" font-family="'Great Vibes', 'Pinyon Script', cursive" font-size="130" fill="url(#ogGold)" text-anchor="middle">Rahma &amp; Omar</text>
 
   <line x1="400" y1="360" x2="800" y2="360" stroke="#C9A24B" stroke-width="1.5" stroke-opacity="0.6" />
   <circle cx="600" cy="360" r="5" fill="#78550E" />
 
   <text x="600" y="430" font-family="'Cairo', sans-serif" font-size="32" fill="#2C221E" text-anchor="middle" font-weight="800">الجمعة، 1 يناير 2027</text>
-  <text x="600" y="480" font-family="'Cairo', sans-serif" font-size="22" fill="#78550E" text-anchor="middle" font-weight="600">قاعة رويال للمناسبات · الإسماعيلية، مصر</text>
+  <text x="600" y="480" font-family="'Cairo', sans-serif" font-size="22" fill="#78550E" text-anchor="middle" font-weight="600">قاعة ريفيرا للمناسبات · الإسماعيلية، مصر</text>
 
   <text x="600" y="540" font-family="'Cairo', sans-serif" font-size="16" fill="#8A7468" text-anchor="middle">يسعدنا ويشرفنا حضوركم ومشاركتكم لنا فرحة العمر</text>
 </svg>

@@ -29,7 +29,7 @@ export interface PhotoMoment {
 }
 
 export const INVITATION_DATA = {
-  // Couple Information: Rahma & Omer
+  // Couple Information: Rahma & omar
   couple: {
     bride: {
       name: 'Rahma',
@@ -39,7 +39,7 @@ export const INVITATION_DATA = {
       parentsTitle: 'كريمة الأستاذ / يوسف خان',
     },
     groom: {
-      name: 'Omer',
+      name: 'omar',
       firstName: 'عمر',
       fullName: 'عمر',
       arabicName: 'عمر',
@@ -73,15 +73,15 @@ export const INVITATION_DATA = {
   // Comprehensive Venue / Location Information
   venue: {
     title: 'حفل الزفاف المبارك',
-    subtitle: 'قاعة رويال للمناسبات • الإسماعيلية',
-    estate: 'قاعة رويال',
+    subtitle: 'قاعة ريفيرا للمناسبات • الإسماعيلية',
+    estate: 'قاعة ريفيرا',
     address: 'طريق البلاجات، الإسماعيلية، مصر',
     city: 'الإسماعيلية',
-    fullAddress: 'قاعة رويال للمناسبات - طريق البلاجات، الإسماعيلية، مصر',
+    fullAddress: 'قاعة ريفيرا للمناسبات - طريق البلاجات، الإسماعيلية، مصر',
     valetParking: 'خدمة صف السيارات متوفرة مجاناً',
     arrivalNotice: 'يسعدنا ويشرفنا حضوركم في تمام الساعة السابعة مساءً',
-    googleMapsUrl: 'https://maps.google.com/?q=Royal+Hall+Ismailia+Egypt',
-    embedMapUrl: 'https://maps.google.com/maps?q=Ismailia+Egypt&t=&z=13&ie=UTF8&iwloc=&output=embed',
+    googleMapsUrl: 'https://maps.google.com/?q=Riviera+Hall+Ismailia+Egypt',
+    embedMapUrl: 'https://maps.google.com/maps?q=Riviera+Hall+Ismailia+Egypt&t=&z=14&ie=UTF8&iwloc=&output=embed',
   },
 
   // Events & Celebrations (Single Wedding Event)
@@ -92,11 +92,11 @@ export const INVITATION_DATA = {
       subtitle: 'مراسم عقد القران والاحتفال بحضور الأحباب',
       date: 'الجمعة، 1 يناير 2027',
       time: '7:00 مساءً',
-      venue: 'قاعة رويال للمناسبات',
+      venue: 'قاعة ريفيرا للمناسبات',
       address: 'طريق البلاجات، الإسماعيلية، مصر',
       description: 'يسرنا دعوتكم لمشاركتنا فرحة العمر، متمنين أن يديم الله المحبة والبهجة في قلوبكم.',
       attire: 'ملابس رسمية / أنيقة',
-      googleMapsUrl: 'https://maps.google.com/?q=Royal+Hall+Ismailia+Egypt',
+      googleMapsUrl: 'https://maps.google.com/?q=Riviera+Hall+Ismailia+Egypt',
       image: ASSETS.cardNikkah,
     },
   ] as WeddingEvent[],

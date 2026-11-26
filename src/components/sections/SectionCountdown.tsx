@@ -122,15 +122,12 @@ export const SectionCountdown: React.FC = () => {
   ];
 
   return (
-    <div className="relative w-full">
-      <LaceDivider variant="subtle" />
-
-      <section
-        id="section-countdown"
-        className="relative py-14 px-4 sm:px-6 paper-texture bg-cream overflow-hidden text-center select-none"
-        aria-label={t.countdown.title}
-        dir={dir}
-      >
+    <section
+      id="section-countdown"
+      className="relative w-full min-h-[100dvh] py-12 px-4 sm:px-6 flex flex-col items-center justify-center paper-texture bg-cream overflow-hidden text-center select-none snap-start snap-always"
+      aria-label={t.countdown.title}
+      dir={dir}
+    >
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <img
             src={ASSETS.stripLandscape}
@@ -212,10 +209,7 @@ export const SectionCountdown: React.FC = () => {
             </Reveal>
           )}
         </div>
-      </section>
-
-      <LaceDivider variant="subtle" />
-    </div>
+    </section>
   );
 };
 

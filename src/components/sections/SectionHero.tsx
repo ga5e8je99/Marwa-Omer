@@ -153,9 +153,10 @@ const PARTICLES = [
 
 interface SectionHeroProps {
   isRevealed?: boolean;
+  onScrollNext?: () => void;
 }
 
-export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) => {
+export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false, onScrollNext }) => {
   const { t, isArabic, dir } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -172,6 +173,10 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
   const scrollToNext = () => {
+    if (onScrollNext) {
+      onScrollNext();
+      return;
+    }
     const nextSection = document.getElementById('section-event-cards');
     if (nextSection) {
       nextSection.scrollIntoView({ behavior: 'smooth' });
@@ -182,7 +187,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
     <section
       ref={sectionRef}
       id="section-hero"
-      className="relative w-full h-screen min-h-[640px] max-h-[960px] flex flex-col items-center justify-between text-center overflow-hidden select-none"
+      className="relative w-full h-[100dvh] max-h-[100dvh] flex flex-col items-center justify-between text-center overflow-hidden select-none snap-start snap-always"
       dir={dir}
     >
       <motion.div
@@ -220,7 +225,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
           transformOrigin: '50% 35%',
           willChange: 'transform, opacity, filter',
         }}
-        className="relative w-full h-full flex flex-col items-center justify-between px-6 py-10"
+        className="relative w-full h-full flex flex-col items-center justify-between px-3 py-2 overflow-hidden"
       >
         {/* 1. Background */}
         <motion.div
@@ -371,7 +376,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
         {/* 5. Foreground Content */}
         <motion.div
           style={{ y: contentY, opacity: contentOpacity }}
-          className="relative z-20 w-full flex flex-col items-center justify-between h-full pt-3 pb-2"
+          className="relative z-20 w-full flex flex-col items-center justify-between h-full pt-2 pb-16 sm:pb-20"
         >
           {/* Top Block */}
           <div className="flex flex-col items-center w-full max-w-sm px-4">
@@ -388,7 +393,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ willChange: 'transform, opacity, filter' }}
-              className="font-amiri text-lg sm:text-xl text-white font-bold select-none tracking-wide drop-shadow-[0_0_14px_rgba(255,255,255,0.85)] drop-shadow-[0_2px_4px_rgba(78,62,55,0.4)] block mb-0.5"
+              className="font-amiri text-base sm:text-lg text-white font-bold select-none tracking-wide drop-shadow-[0_0_14px_rgba(255,255,255,0.85)] drop-shadow-[0_2px_4px_rgba(78,62,55,0.4)] block mb-0.5"
             >
               {t.bismillah.arabic}
             </motion.span>
@@ -406,7 +411,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ willChange: 'transform, opacity' }}
-              className="text-xs sm:text-sm font-semibold text-white/95 drop-shadow-[0_1px_4px_rgba(78,62,55,0.5)]"
+              className="text-[11px] sm:text-xs font-semibold text-white/95 drop-shadow-[0_1px_4px_rgba(78,62,55,0.5)]"
             >
               {t.hero.blessing}
             </motion.p>
@@ -425,22 +430,22 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ willChange: 'transform, opacity' }}
-              className="mt-1.5 px-4 py-1.5 rounded-2xl bg-black/25 backdrop-blur-md border border-white/40 shadow-sm text-center max-w-sm"
+              className="mt-1 px-3 py-1 rounded-2xl bg-black/25 backdrop-blur-md border border-white/40 shadow-sm text-center max-w-xs"
             >
               <p
-                className="font-serif text-xs sm:text-sm text-white font-bold leading-relaxed tracking-wide drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] select-none"
+                className="font-serif text-[11px] sm:text-xs text-white font-bold leading-relaxed tracking-wide drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] select-none"
               >
                 {t.bismillah.verse}
               </p>
-              <span className="block text-[11px] text-white/90 font-medium tracking-wider mt-0.5">
+              <span className="block text-[10px] text-white/90 font-medium tracking-wider mt-0.5">
                 {t.bismillah.surahReference}
               </span>
             </motion.div>
 
             {/* Couple Names (Arabic Calligraphic Writing) */}
-            <div className="mt-3 flex flex-col items-center transform-gpu">
+            <div className="mt-1.5 flex flex-col items-center transform-gpu">
               {/* Bride Name "رحمة" */}
-              <h1 className="font-ruqaa text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] drop-shadow-[0_2px_10px_rgba(78,62,55,0.7)] leading-tight">
+              <h1 className="font-ruqaa text-3xl sm:text-4xl md:text-5xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] drop-shadow-[0_2px_10px_rgba(78,62,55,0.7)] leading-tight">
                 <AnimatedWord
                   word={t.couple.bride}
                   startDelay={0.35}
@@ -462,17 +467,17 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{ willChange: 'transform, opacity, filter' }}
-                className="flex items-center justify-center -my-1"
+                className="flex items-center justify-center -my-0.5"
               >
-                <span className="h-[1px] w-8 bg-white/60 drop-shadow-xs" />
-                <span className="mx-2 font-serif italic text-base sm:text-lg text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.8)]">
+                <span className="h-[1px] w-6 bg-white/60 drop-shadow-xs" />
+                <span className="mx-2 font-serif italic text-sm sm:text-base text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.8)]">
                   &amp;
                 </span>
-                <span className="h-[1px] w-8 bg-white/60 drop-shadow-xs" />
+                <span className="h-[1px] w-6 bg-white/60 drop-shadow-xs" />
               </motion.div>
 
               {/* Groom Name "عمر" */}
-              <h1 className="font-ruqaa text-4xl sm:text-5xl md:text-6xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] drop-shadow-[0_2px_10px_rgba(78,62,55,0.7)] leading-tight">
+              <h1 className="font-ruqaa text-3xl sm:text-4xl md:text-5xl text-white tracking-wide py-0 drop-shadow-[0_4px_18px_rgba(255,255,255,0.9)] drop-shadow-[0_2px_8px_rgba(78,62,55,0.4)] drop-shadow-[0_2px_10px_rgba(78,62,55,0.7)] leading-tight">
                 <AnimatedWord
                   word={t.couple.groom}
                   startDelay={0.75}
@@ -494,9 +499,9 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{ willChange: 'transform, opacity' }}
-                className="mt-2 px-4 py-1 rounded-full bg-cream/90 backdrop-blur-xs border border-white/60 shadow-xs"
+                className="mt-1 px-3 py-0.5 rounded-full bg-cream/90 backdrop-blur-xs border border-white/60 shadow-xs"
               >
-                <p className="font-cairo text-xs sm:text-sm font-bold text-taupe-dark">
+                <p className="font-cairo text-[11px] sm:text-xs font-bold text-taupe-dark">
                   {t.weddingDateFormatted}
                 </p>
               </motion.div>
@@ -517,7 +522,7 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
               ease: [0.22, 1, 0.36, 1],
             }}
             style={{ willChange: 'transform, opacity' }}
-            className="flex flex-col items-center gap-3 pb-2"
+            className="flex flex-col items-center gap-1.5"
           >
             <p className="text-xs sm:text-sm text-white font-medium max-w-xs leading-relaxed drop-shadow-[0_1px_4px_rgba(78,62,55,0.6)]">
               {t.hero.invitationLine}
@@ -526,19 +531,19 @@ export const SectionHero: React.FC<SectionHeroProps> = ({ isRevealed = false }) 
             <button
               onClick={scrollToNext}
               type="button"
-              className="group flex flex-col items-center cursor-pointer mt-1 focus:outline-none min-h-[44px] min-w-[44px] justify-center"
+              className="group flex flex-col items-center cursor-pointer mt-0.5 focus:outline-none min-h-[36px] min-w-[36px] justify-center"
               aria-label={t.hero.scrollHint}
             >
               <motion.div
-                animate={{ y: [0, 6, 0] }}
+                animate={{ y: [0, 4, 0] }}
                 transition={{
                   duration: 2.0,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 }}
-                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs border border-white/40 flex items-center justify-center text-white shadow-xs group-hover:bg-white/30 transition-colors"
+                className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-xs border border-white/40 flex items-center justify-center text-white shadow-xs group-hover:bg-white/30 transition-colors"
               >
-                <ChevronDown className="w-5 h-5 text-white" />
+                <ChevronDown className="w-4 h-4 text-white" />
               </motion.div>
             </button>
           </motion.div>

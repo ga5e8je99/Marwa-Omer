@@ -39,7 +39,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return;
       }
 
-      // 3. Default to Arabic for Rahma & Omer's wedding
+      // 3. Default to Arabic for Rahma & omar's wedding
       setLangState('ar');
     } catch (e) {
       console.warn('Language preference error:', e);

@@ -161,7 +161,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     intro: {
       badge: 'دعوة فرح خاصة للغاليين',
       tapPrompt: 'افتح ظرف الفرح',
-      tapSubtitle: 'اضغط على الشمعة الذهبية عشان تفتح الدعوة',
+      tapSubtitle: 'دوس على الشمعة الذهبية عشان تفتح الدعوة',
       welcomeMsg: 'مستنيينكم تنورونا وتشاركونا أحلى ليلة',
       cardTag: 'دعوة فرح خاصة ✦ مرحباً بكم',
     },
@@ -178,7 +178,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       dateLabel: 'التاريخ',
       timeLabel: 'الميعاد',
       venueLabel: 'المكان',
-      venueName: 'قاعة رويال للمناسبات',
+      venueName: 'قاعة ريفيرا للمناسبات',
       venueAddress: 'طريق البلاجات، الإسماعيلية، مصر',
       attireLabel: 'اللبس',
       attireValue: 'شيك وفورمال يليق بيكم وبفرحتنا',
@@ -188,9 +188,9 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       tag: 'مكان الفرح والوصلة',
       title: 'خريطة الوصول',
       subtitle: 'مستنيينكم تنورونا، الطريق سالك ومباشر وما يتوهش',
-      venueTitle: 'قاعة رويال للمناسبات',
+      venueTitle: 'قاعة ريفيرا للمناسبات',
       venueSubtitle: 'طريق البلاجات • الإسماعيلية',
-      fullAddress: 'قاعة رويال للمناسبات - طريق البلاجات، الإسماعيلية، مصر',
+      fullAddress: 'قاعة ريفيرا للمناسبات - طريق البلاجات، الإسماعيلية، مصر',
       mapBadge: 'خريطة جوجل لايف',
       viewLarger: 'افتح الخريطة',
       valetTitle: 'ركن العربيات (فاليه مجاناً)',
@@ -332,7 +332,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       familyBlessing: 'برضا الوالدين ودعوات الأهل والأحباب',
       dateBadge: '١ · ١ · ٢٠٢٧',
       gratitude: 'بكل الحب والتقدير والامتنان',
-      weddingOf: 'حفل زفاف رحمة وعمر • قاعة رويال، الإسماعيلية',
+      weddingOf: 'حفل زفاف رحمة وعمر • قاعة ريفيرا، الإسماعيلية',
       rights: 'جميع الحقوق محفوظة © ٢٠٢٧',
     },
     controls: {
@@ -349,7 +349,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
   en: {
     couple: {
       bride: 'Rahma',
-      groom: 'Omer',
+      groom: 'omar',
       parentsTitle: 'Together with their families',
     },
     weddingDate: '1 January 2027',
@@ -382,7 +382,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       dateLabel: 'Date',
       timeLabel: 'Time',
       venueLabel: 'Venue',
-      venueName: 'Royal Event Hall',
+      venueName: 'Riviera Event Hall',
       venueAddress: 'El Balajat Road, Ismailia, Egypt',
       attireLabel: 'Attire',
       attireValue: 'Festive & Elegant / Formal',
@@ -392,9 +392,9 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       tag: 'Venue & Directions',
       title: 'The Location',
       subtitle: 'We look forward to welcoming you to this picturesque setting',
-      venueTitle: 'Royal Event Hall',
+      venueTitle: 'Riviera Event Hall',
       venueSubtitle: 'El Balajat Road • Ismailia',
-      fullAddress: 'Royal Event Hall - El Balajat Road, Ismailia, Egypt',
+      fullAddress: 'Riviera Event Hall - El Balajat Road, Ismailia, Egypt',
       mapBadge: 'Live Google Maps',
       viewLarger: 'View Larger',
       valetTitle: 'Valet Parking',
@@ -421,7 +421,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     rsvp: {
       tag: 'Wishes & Prayers',
       title: 'Wedding Guestbook',
-      subtitle: 'Leave a heartfelt prayer or sweet blessing for Rahma & Omer.',
+      subtitle: 'Leave a heartfelt prayer or sweet blessing for Rahma & omar.',
       nameLabel: 'Your Name *',
       namePlaceholder: 'Please enter your full name...',
       attendingLabel: 'Will you attend?',
@@ -452,7 +452,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
         },
         {
           name: 'Sara Ibrahim',
-          message: 'Mabrouk Rahma & Omer! Wishing you a lifetime of love, laughter, and beautiful blessings.',
+          message: 'Mabrouk Rahma & omar! Wishing you a lifetime of love, laughter, and beautiful blessings.',
           time: 'Just now',
         },
       ],
@@ -460,7 +460,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
     story: {
       tag: 'Our Journey',
       title: 'Our Story',
-      badge: 'Rahma & Omer',
+      badge: 'Rahma & omar',
       chapters: [
         {
           number: '01',
@@ -493,7 +493,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       moments: [
         {
           id: 'moment-1',
-          title: 'Rahma & Omer',
+          title: 'Rahma & omar',
           caption: 'Two souls united in faith, devotion, and love.',
           image: ASSETS.gallery[0],
         },
@@ -536,7 +536,7 @@ export const TRANSLATIONS: Record<Language, TranslationData> = {
       familyBlessing: 'With the Blessings of Their Families',
       dateBadge: '1 · 1 · 2027',
       gratitude: 'With Love & Gratitude',
-      weddingOf: 'Wedding of Rahma & Omer • Royal Hall, Ismailia',
+      weddingOf: 'Wedding of Rahma & omar • Riviera Hall, Ismailia',
       rights: 'All Rights Reserved © 2027',
     },
     controls: {

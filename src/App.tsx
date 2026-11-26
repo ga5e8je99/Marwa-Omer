@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
-import Lenis from 'lenis';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 // Audio asset and configuration
-import { MUSIC_CONFIG, getEffectiveMusicStartTime, fetchServerMusicConfig } from './config/audio';
+import { MUSIC_CONFIG, getEffectiveMusicStartTime, getEffectiveMusicEndTime, fetchServerMusicConfig } from './config/audio';
 const bgMusic = MUSIC_CONFIG.src;
 
 // Context & Reusable components
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import { LaceDivider } from './components/common/LaceDivider';
 import { AudioPlayer } from './components/common/AudioPlayer';
 
 // Sections in order
@@ -22,15 +20,65 @@ import { SectionRSVP } from './components/sections/SectionRSVP';
 import { SectionOurStory } from './components/sections/SectionOurStory';
 import { SectionClosing } from './components/sections/SectionClosing';
 
+const SECTION_IDS = [
+  'section-hero',
+  'section-event-cards',
+  'section-location',
+  'section-countdown',
+  'section-rsvp',
+  'section-our-story',
+  'section-closing',
+] as const;
+
+const SECTION_LABELS: Record<string, { ar: string; en: string }> = {
+  'section-hero': { ar: 'الرئيسية', en: 'Hero' },
+  'section-event-cards': { ar: 'المناسبة', en: 'Event' },
+  'section-location': { ar: 'الموقع', en: 'Venue' },
+  'section-countdown': { ar: 'العد التنازلي', en: 'Countdown' },
+  'section-rsvp': { ar: 'تأكيد الحضور', en: 'RSVP' },
+  'section-our-story': { ar: 'قصتنا', en: 'Our Story' },
+  'section-closing': { ar: 'الخاتمة', en: 'Blessing' },
+};
+
 const MainAppContent: React.FC = () => {
   const { dir, isArabic } = useLanguage();
-  const [isIntroDismissed, setIsIntroDismissed] = useState(false);
-  const [isHeroRevealed, setIsHeroRevealed] = useState(false);
+  const [isIntroDismissed, setIsIntroDismissed] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('opened')) {
+      return true;
+    }
+    return false;
+  });
+  const [isHeroRevealed, setIsHeroRevealed] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('opened')) {
+      return true;
+    }
+    return false;
+  });
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   const isAutoScrollingRef = useRef(false);
   isAutoScrollingRef.current = isAutoScrolling;
+
+  const currentSectionIndexRef = useRef(0);
+  currentSectionIndexRef.current = currentSectionIndex;
+
+  const isScrollingRef = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Smooth Native Section Jump (100% native smooth scroll)
+  const goToSection = useCallback((index: number) => {
+    if (index < 0 || index >= SECTION_IDS.length) return;
+    setCurrentSectionIndex(index);
+    currentSectionIndexRef.current = index;
+
+    const targetId = SECTION_IDS[index];
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
 
   useEffect(() => {
     fetchServerMusicConfig();
@@ -41,104 +89,125 @@ const MainAppContent: React.FC = () => {
     }
   }, []);
 
-  const lenisRef = useRef<Lenis | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Initialize Lenis smooth scroll and lock/unlock based on envelope
+  // Lock document scroll while envelope is active
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-    });
-    lenisRef.current = lenis;
-
-    // Body & HTML scroll locked while envelope is active
     if (!isIntroDismissed) {
-      lenis.stop();
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
     } else {
-      lenis.start();
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
     }
-
-    let animationFrameId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      animationFrameId = requestAnimationFrame(raf);
-    }
-    animationFrameId = requestAnimationFrame(raf);
-
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      lenis.destroy();
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isIntroDismissed]);
 
-  // Start auto-scroll automatically 2.2s after envelope is opened
+  // Desktop Mouse Wheel Handler (1 wheel notch = 1 section jump)
+  // On mobile touch, CSS scroll-snap handles 100% of gestures with native 120Hz physics!
   useEffect(() => {
     if (!isIntroDismissed) return;
 
-    const timer = setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 2200);
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement | null;
+      // Allow native scroll inside scrollable form elements
+      if (target?.closest('input, textarea, select')) return;
 
-    return () => clearTimeout(timer);
-  }, [isIntroDismissed]);
+      // Ignore small wheel jitters
+      if (Math.abs(e.deltaY) < 18) return;
 
-  // Smooth Auto-scroll RAF loop
-  useEffect(() => {
-    if (!isIntroDismissed || !isAutoScrolling) return;
+      e.preventDefault();
 
-    let rafId: number;
-    let lastTime = performance.now();
-    const speed = 46; // pixels per second
+      if (isScrollingRef.current) return;
+      isScrollingRef.current = true;
 
-    const step = (time: number) => {
-      const delta = (time - lastTime) / 1000;
-      lastTime = time;
-
-      const lenis = lenisRef.current;
-      if (lenis && isAutoScrollingRef.current) {
-        const maxScroll = lenis.limit || (document.documentElement.scrollHeight - window.innerHeight);
-        if (lenis.scroll >= maxScroll - 4) {
-          setIsAutoScrolling(false);
-          return;
-        }
-        lenis.scrollTo(lenis.scroll + speed * delta, { immediate: true });
-      }
-
-      rafId = requestAnimationFrame(step);
-    };
-
-    rafId = requestAnimationFrame(step);
-
-    const handleUserInteraction = () => {
       if (isAutoScrollingRef.current) {
         setIsAutoScrolling(false);
       }
+
+      if (e.deltaY > 0) {
+        goToSection(currentSectionIndexRef.current + 1);
+      } else {
+        goToSection(currentSectionIndexRef.current - 1);
+      }
+
+      // Smooth throttle window between wheel notches
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 650);
     };
 
-    window.addEventListener('wheel', handleUserInteraction, { passive: true });
-    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
-    window.addEventListener('keydown', handleUserInteraction, { passive: true });
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select')) return;
+
+      if (['ArrowDown', 'PageDown', 'Space'].includes(e.code) || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (isAutoScrollingRef.current) setIsAutoScrolling(false);
+        goToSection(currentSectionIndexRef.current + 1);
+      } else if (['ArrowUp', 'PageUp'].includes(e.code) || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (isAutoScrollingRef.current) setIsAutoScrolling(false);
+        goToSection(currentSectionIndexRef.current - 1);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener('wheel', handleUserInteraction);
-      window.removeEventListener('touchstart', handleUserInteraction);
-      window.removeEventListener('keydown', handleUserInteraction);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isIntroDismissed, isAutoScrolling]);
+  }, [isIntroDismissed, goToSection]);
 
-  // Audio Playback
+  // Sync golden indicator dots with current visible section via IntersectionObserver
+  useEffect(() => {
+    if (!isIntroDismissed) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = SECTION_IDS.indexOf(entry.target.id as any);
+            if (idx !== -1) {
+              setCurrentSectionIndex(idx);
+              currentSectionIndexRef.current = idx;
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+      }
+    );
+
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [isIntroDismissed]);
+
+  // Section-by-Section Auto-scroll: advances to next section every 5.5s
+  useEffect(() => {
+    if (!isIntroDismissed || !isAutoScrolling) return;
+
+    const interval = setInterval(() => {
+      if (currentSectionIndexRef.current < SECTION_IDS.length - 1) {
+        goToSection(currentSectionIndexRef.current + 1);
+      } else {
+        setIsAutoScrolling(false);
+      }
+    }, 5500);
+
+    return () => clearInterval(interval);
+  }, [isIntroDismissed, isAutoScrolling, goToSection]);
+
+  // Audio Playback Handlers
   const handleOpenStart = () => {
-    // Prime the audio element on user gesture to satisfy iOS/Android autoplay policy,
-    // but keep silent until envelope opening completes.
     if (audioRef.current) {
       const startSec = getEffectiveMusicStartTime();
       try {
@@ -167,8 +236,10 @@ const MainAppContent: React.FC = () => {
       audioRef.current.pause();
       setIsAudioPlaying(false);
     } else {
-      if (audioRef.current.currentTime < 1) {
-        audioRef.current.currentTime = getEffectiveMusicStartTime();
+      const startSec = getEffectiveMusicStartTime();
+      const endSec = getEffectiveMusicEndTime();
+      if (audioRef.current.currentTime < startSec || audioRef.current.currentTime >= endSec) {
+        audioRef.current.currentTime = startSec;
       }
       audioRef.current.volume = MUSIC_CONFIG.volume;
       audioRef.current
@@ -178,16 +249,31 @@ const MainAppContent: React.FC = () => {
     }
   };
 
+  // High-precision audio loop watcher: 1:39 (99s) to 2:19 (139s)
+  useEffect(() => {
+    if (!isAudioPlaying) return;
+
+    const checkInterval = setInterval(() => {
+      if (audioRef.current && !audioRef.current.paused) {
+        const startSec = getEffectiveMusicStartTime();
+        const endSec = getEffectiveMusicEndTime();
+        if (audioRef.current.currentTime >= endSec) {
+          audioRef.current.currentTime = startSec;
+        }
+      }
+    }, 80);
+
+    return () => clearInterval(checkInterval);
+  }, [isAudioPlaying]);
+
   const toggleAutoScroll = () => {
     setIsAutoScrolling((prev) => !prev);
   };
 
   const handleOpenComplete = () => {
     setIsIntroDismissed(true);
-    if (lenisRef.current) {
-      lenisRef.current.start();
-    }
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
 
     // Play music strictly AFTER envelope has opened
     if (audioRef.current) {
@@ -217,11 +303,23 @@ const MainAppContent: React.FC = () => {
         isArabic ? 'font-cairo' : 'font-sans'
       }`}
     >
-      {/* Hidden Audio Element */}
+      {/* Hidden Audio Element with 1:39 to 2:19 loop boundary */}
       <audio
         ref={audioRef}
         src={bgMusic}
         preload="auto"
+        onTimeUpdate={() => {
+          if (audioRef.current) {
+            const startSec = getEffectiveMusicStartTime();
+            const endSec = getEffectiveMusicEndTime();
+            if (audioRef.current.currentTime >= endSec) {
+              audioRef.current.currentTime = startSec;
+              if (audioRef.current.paused && isAudioPlaying) {
+                audioRef.current.play().catch(() => {});
+              }
+            }
+          }
+        }}
         onEnded={() => {
           if (audioRef.current) {
             audioRef.current.currentTime = getEffectiveMusicStartTime();
@@ -229,8 +327,6 @@ const MainAppContent: React.FC = () => {
           }
         }}
       />
-
-
 
       {/* 1. Full Viewport Envelope Intro Screen */}
       {!isIntroDismissed && (
@@ -241,7 +337,7 @@ const MainAppContent: React.FC = () => {
         />
       )}
 
-      {/* Floating Controls: Music Player & Auto-Scroll & Language (Shown after opening) */}
+      {/* Floating Controls: Music Player & Auto-Scroll & Language */}
       <AudioPlayer
         isPlaying={isAudioPlaying}
         onToggle={toggleAudio}
@@ -249,6 +345,48 @@ const MainAppContent: React.FC = () => {
         onToggleAutoScroll={toggleAutoScroll}
         visible={isIntroDismissed}
       />
+
+      {/* Floating Vertical Section Dots Indicator */}
+      {isIntroDismissed && (
+        <aside
+          aria-label="Section navigation"
+          className="fixed z-40 top-1/2 -translate-y-1/2 end-2.5 sm:end-5 flex flex-col items-center gap-2 p-1.5 sm:p-2 rounded-full bg-cream/85 backdrop-blur-md border border-gold/40 shadow-soft-float"
+        >
+          {SECTION_IDS.map((id, index) => {
+            const isActive = currentSectionIndex === index;
+            const label = isArabic ? SECTION_LABELS[id].ar : SECTION_LABELS[id].en;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  if (isAutoScrollingRef.current) setIsAutoScrolling(false);
+                  goToSection(index);
+                }}
+                title={label}
+                aria-label={label}
+                className="group relative flex items-center justify-center p-0.5 cursor-pointer"
+              >
+                <span
+                  className={`block rounded-full transition-all duration-300 ${
+                    isActive
+                      ? 'w-2 sm:w-2.5 h-5 sm:h-6 bg-gradient-to-b from-[#B8913A] via-[#F1D98B] to-[#B8913A] shadow-[0_0_8px_rgba(201,162,75,0.7)]'
+                      : 'w-2 h-2 bg-[#78550E]/30 hover:bg-[#78550E]/80 hover:scale-125'
+                  }`}
+                />
+                {/* Tooltip on hover */}
+                <span
+                  className={`absolute pointer-events-none whitespace-nowrap px-2 py-0.5 rounded text-[10px] font-bold text-[#78550E] bg-cream border border-gold/40 shadow-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 ${
+                    isArabic ? 'left-full ml-2' : 'right-full mr-2'
+                  }`}
+                >
+                  {label}
+                </span>
+              </button>
+            );
+          })}
+        </aside>
+      )}
 
       {/* Desktop Ambient Dreamy Blurred Background */}
       <div className="fixed inset-0 pointer-events-none hidden md:block overflow-hidden">
@@ -260,33 +398,25 @@ const MainAppContent: React.FC = () => {
 
       {/* Mobile-First Centered Container (390px - 480px width) */}
       <main className="relative w-full max-w-[480px] min-h-screen bg-cream shadow-2xl md:border-x md:border-gold/30 flex flex-col overflow-x-hidden">
-        {/* 2. Hero: The primary grand invitation */}
-        <SectionHero isRevealed={isHeroRevealed} />
+        {/* 1. Hero: The primary grand invitation */}
+        <SectionHero isRevealed={isHeroRevealed} onScrollNext={() => goToSection(1)} />
 
-        <LaceDivider />
-
-        {/* 3. Wedding Event Card */}
+        {/* 2. Wedding Event Card */}
         <SectionEventCards />
 
-        <LaceDivider variant="subtle" />
-
-        {/* 5. Dedicated Venue Location & Interactive Map Section */}
+        {/* 3. Dedicated Venue Location & Interactive Map Section */}
         <SectionLocation />
 
-        {/* 7. Countdown timer */}
+        {/* 4. Countdown timer */}
         <SectionCountdown />
 
-        {/* 8. RSVP / Guestbook form */}
+        {/* 5. RSVP / Guestbook form */}
         <SectionRSVP />
 
-        <LaceDivider />
-
-        {/* 9. Our Story */}
+        {/* 6. Our Story */}
         <SectionOurStory />
 
-        <LaceDivider />
-
-        {/* 11. Closing blessing + footer credit */}
+        {/* 7. Closing blessing + footer credit */}
         <SectionClosing />
       </main>
     </div>
